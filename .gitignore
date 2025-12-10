@@ -1,0 +1,13 @@
+# Dossiers de build
+/build/
+
+# Fichiers temporaires
+*.o
+*.obj
+*.exe
+*.log
+
+# Mac / Linux / IDE
+.DS_Store
+*.swp
+*.vscode/
