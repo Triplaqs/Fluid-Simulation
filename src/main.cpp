@@ -339,6 +339,7 @@ int main(int argc, char* argv[]){
     glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
     glUniform1f(loc_scale, 1.0f);
 
+    //génère grille ou pas
     generate_grid(10, 15);
 
 
