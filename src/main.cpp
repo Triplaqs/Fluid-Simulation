@@ -2,12 +2,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
-#include <iostream>
 #include <ostream>
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
+//autre
+#include <random>
+#include <cstdlib>
+#include <ctime>
+
+
+
 
 
 // Ajout : handles pour la grille
@@ -24,16 +30,57 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 //GESTION INPUTS
 //gestion input clavier : ici, si KEY_ESCAPE préssée
-void processInput(GLFWwindow *window){
+void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft){
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
     if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, true);
+        if(*moveRight == false){
+            *moveRight = true;
+        }
+        else {
+            *moveRight = false;
+        }
     }
     if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, true);
+        if(*moveLeft == false){
+            *moveLeft = true;
+        }
+        else {
+            *moveLeft = false;
+        }
     }
+}
+
+//Edit de rendering
+// Fonction pour éditer la position du triangle via uniform (exemple avec translation matrix)
+void setTrianglePosition(unsigned int shaderProgram, float x, float y, float z = 0.0f, float w = 1.0f) {
+    glUseProgram(shaderProgram);
+    int posLoc = glGetUniformLocation(shaderProgram, "offset");
+    glUniform4f(posLoc, x, y, z, w);
+}
+
+// Fonction pour éditer la couleur du triangle via uniform
+void setTriangleColor(unsigned int shaderProgram, float r, float g, float b, float a) {
+    glUseProgram(shaderProgram);
+    int colorLoc = glGetUniformLocation(shaderProgram, "color");
+    glUniform4f(colorLoc, r, g, b, a);
+}
+
+void setTriangleColorRand(unsigned int shaderProgram) {
+    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float a = 1.0f;
+    setTriangleColor(shaderProgram, r, g, b, a);
+}
+
+void makeTriangleSpin(unsigned int shaderProgram, float time) {
+    float angle = time;
+    //float angle = (float)glfwGetTime();
+    float x = 0.5f * cos(angle);
+    float y = 0.5f * sin(angle);
+    setTrianglePosition(shaderProgram, x, y);
 }
 
 
@@ -129,34 +176,50 @@ int main(int argc, char* argv[]){
     //Def de Shader (basique) à travers un C String
     const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "uniform vec4 offset;\n"
     "void main()\n"
     "{\n"
-    " gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    " gl_Position = vec4(aPos + offset.xyz, 1.0);\n"
+    "}\0";
+
+    const char *vertexShaderSourceGrid = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "uniform vec4 offset;\n"
+    "void main()\n"
+    "{\n"
+    " gl_Position = vec4(aPos + offset.xyz, 1.0);\n"
     "}\0";
 
     //création objet Shader
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER); // -> type de shader
+    unsigned int vertexShaderGrid;
+    vertexShaderGrid = glCreateShader(GL_VERTEX_SHADER);
 
     //Association de l'objet et de notre shader
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glShaderSource(vertexShaderGrid, 1, &vertexShaderSourceGrid, NULL);
     //compilation
     glCompileShader(vertexShader);
+    glCompileShader(vertexShaderGrid);
 
     //Idem que le vertex shader mais avec la couleur
     //Def de Shader 
     const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec4 color = vec4(1.0f, 0.2f, 0.2f, 1.0f);\n"
     "void main()\n"
     "{\n"
-    " FragColor = vec4(1.0f, 0.2f, 0.2f, 1.0f);\n"
+    " FragColor = color;\n"
     "}\0";
+//vec4(1.0f, 0.2f, 0.2f, 1.0f)
 
     const char *fragmentShaderSourceGrid = "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec4 color=vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
     "void main()\n"
     "{\n"
-    " FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+    " FragColor = color;\n"
     "}\0";
 
 
@@ -181,7 +244,7 @@ int main(int argc, char* argv[]){
     //attache les objets au programme
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgramGrid, vertexShader);
+    glAttachShader(shaderProgramGrid, vertexShaderGrid);
     glAttachShader(shaderProgramGrid, fragmentShaderGrid);
     glLinkProgram(shaderProgram);
     glLinkProgram(shaderProgramGrid);
@@ -192,6 +255,7 @@ int main(int argc, char* argv[]){
 
     //On supprime les objets après les avoir attaché
     glDeleteShader(vertexShader);
+    glDeleteShader(vertexShaderGrid);
     glDeleteShader(fragmentShader);
     glDeleteShader(fragmentShaderGrid);
 
@@ -244,7 +308,9 @@ int main(int argc, char* argv[]){
         
         
     //P2 : gestion input clavier
-        processInput(window);
+        bool moveRight = false;
+        bool moveLeft = false;
+        processInput(window, &moveRight, &moveLeft);
 
     //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
@@ -261,6 +327,12 @@ int main(int argc, char* argv[]){
         //dessin du triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
+        if(moveRight){    
+            setTriangleColorRand(shaderProgram);
+        }
+        if(moveLeft){    
+            makeTriangleSpin(shaderProgram, (float)glfwGetTime());
+        }
         glDrawArrays(GL_TRIANGLES, 0, 3);
         
         
