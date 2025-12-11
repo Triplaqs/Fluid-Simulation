@@ -1,4 +1,0 @@
-/home/triplaqs/Documents/Code/FluidSimulation/build/CMakeFiles/glad.dir
-/home/triplaqs/Documents/Code/FluidSimulation/build/CMakeFiles/out.dir
-/home/triplaqs/Documents/Code/FluidSimulation/build/CMakeFiles/edit_cache.dir
-/home/triplaqs/Documents/Code/FluidSimulation/build/CMakeFiles/rebuild_cache.dir
