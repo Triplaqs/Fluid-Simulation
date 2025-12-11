@@ -12,7 +12,8 @@
 *.swp
 *.vscode/
 
-
+##Latex en plus :
+*.gz
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
