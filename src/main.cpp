@@ -12,14 +12,22 @@
 #include <cstdlib>
 #include <ctime>
 
-
-
-
-
 // Ajout : handles pour la grille
 unsigned int gridVAO = 0;
 unsigned int gridVBO = 0;
 int gridVertexCount = 0;
+
+// Vertices du triangle (global)
+float vertices[] = {
+    -0.75f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f
+};
+
+// État de la dilatation (accumulation)
+float currentScale = 1.0f;
+// État de la température (accumulation)
+float currentHeat = 0.0f;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
 
 
 //GESTION FENETRE
@@ -27,29 +35,24 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
+//Structure pour manipuler points
+typedef struct {
+    double x;
+    double y;
+    double z;
+    double w;
+} Vec4;
 
 //GESTION INPUTS
 //gestion input clavier : ici, si KEY_ESCAPE préssée
-void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft){
+void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft, bool* moveUp, bool* moveDown){
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        if(*moveRight == false){
-            *moveRight = true;
-        }
-        else {
-            *moveRight = false;
-        }
-    }
-    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        if(*moveLeft == false){
-            *moveLeft = true;
-        }
-        else {
-            *moveLeft = false;
-        }
-    }
+    *moveRight = (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS);
+    *moveLeft = (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS);
+    *moveUp = (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS);
+    *moveDown = (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS);
 }
 
 //Edit de rendering
@@ -81,6 +84,37 @@ void makeTriangleSpin(unsigned int shaderProgram, float time) {
     float x = 0.5f * cos(angle);
     float y = 0.5f * sin(angle);
     setTrianglePosition(shaderProgram, x, y);
+}
+
+void dilateTriangle(unsigned int shaderProgram, float factor) {
+    //Calcul du centre du triangle
+    float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
+    float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
+    float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
+    
+    glUseProgram(shaderProgram);
+    GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
+    GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
+    
+    glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
+    glUniform1f(loc_scale, factor);
+}
+
+void heatTriangle(unsigned int shaderProgram, float factor) {
+    // Clamp la température entre -1 et 1
+    if (currentHeat + factor > 1.0f) currentHeat = 1.0f;
+    else if (currentHeat + factor < -1.0f) currentHeat = -1.0f;
+    else currentHeat += factor;
+    
+    // Interpoler entre bleu (froid) et rouge (chaud)
+    // currentHeat = -1.0 -> (0, 0, 1) bleu
+    // currentHeat =  0.0 -> (1, 1, 1) blanc
+    // currentHeat =  1.0 -> (1, 0, 0) rouge
+    float r = (currentHeat + 1.0f) / 2.0f;  // 0 à 1
+    float g = (1.0f - fabs(currentHeat)) * 0.5f;  // Max au milieu
+    float b = (1.0f - currentHeat) / 2.0f;  // 1 à 0
+    
+    setTriangleColor(shaderProgram, r, g, b, 1.0f);
 }
 
 
@@ -152,11 +186,6 @@ int main(int argc, char* argv[]){
 
     //Création d'objets :
     //création 3 points :
-    float vertices[] = {
-        -0.75f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
-    };
 
     //Genère un buffer et créé son l'ID
     unsigned int VBO;
@@ -176,11 +205,16 @@ int main(int argc, char* argv[]){
     //Def de Shader (basique) à travers un C String
     const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "uniform vec4 offset;\n"
+    "uniform vec4 u_centroid;\n" // centre autour duquel on scale
+    "uniform float u_scale;  \n" // 1.05 ou 0.95
+    "uniform vec4 offset; \n"    
     "void main()\n"
     "{\n"
-    " gl_Position = vec4(aPos + offset.xyz, 1.0);\n"
+    "vec4 centered = vec4(aPos, 1.0) - u_centroid;\n"
+    "vec4 scaled = u_centroid + u_scale * centered;\n"
+    " gl_Position = scaled + offset;\n"
     "}\0";
+
 
     const char *vertexShaderSourceGrid = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
@@ -296,7 +330,16 @@ int main(int argc, char* argv[]){
     glBindVertexArray(VAO);
     //someOpenGLFunctionThatDrawsOurTriangle();
 
-    generate_grid(10, 10);
+    // Initialiser les uniforms du dilate triangle
+    float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
+    float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
+    float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
+    GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
+    GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
+    glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
+    glUniform1f(loc_scale, 1.0f);
+
+    generate_grid(10, 15);
 
 
     //render loop (maintient la fenêtre ouverte, une loop = une frame)
@@ -310,7 +353,9 @@ int main(int argc, char* argv[]){
     //P2 : gestion input clavier
         bool moveRight = false;
         bool moveLeft = false;
-        processInput(window, &moveRight, &moveLeft);
+        bool moveUp = false;
+        bool moveDown = false;
+        processInput(window, &moveRight, &moveLeft, &moveUp, &moveDown);
 
     //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
@@ -327,10 +372,33 @@ int main(int argc, char* argv[]){
         //dessin du triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
+        
+        // Accumuler la dilatation et la température
+        if(moveUp){    
+            currentScale *= 1.01f;  // Augmenter de 1% par frame
+            heatTriangle(shaderProgram, -0.01f);  // Augmenter la température
+        }
+        if(moveDown){    
+            currentScale *= 0.99f;  // Diminuer de 1% par frame
+            heatTriangle(shaderProgram, 0.01f);  // Diminuer la température
+        }
+        
+        // Réinitialiser les uniforms à chaque frame
+        float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
+        float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
+        float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
+        GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
+        GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
+        GLint loc_offset = glGetUniformLocation(shaderProgram, "offset");
+        glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
+        glUniform1f(loc_scale, currentScale);
+        glUniform4f(loc_offset, 0.0f, 0.0f, 0.0f, 0.0f);
+        
         if(moveRight){    
             setTriangleColorRand(shaderProgram);
         }
         if(moveLeft){    
+            currentScale = 1.0f;  // Annuler la dilatation quand on tourne
             makeTriangleSpin(shaderProgram, (float)glfwGetTime());
         }
         glDrawArrays(GL_TRIANGLES, 0, 3);
