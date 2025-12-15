@@ -7,6 +7,7 @@
 \usepackage{listings}
 \usepackage{cancel}
 \usepackage[T1]{fontenc}
+\usepackage{microtype}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage[a4paper]{geometry}
@@ -67,13 +68,99 @@
    \section{Planning prévisionnel}
    
    \subsection{Découpage en étapes}
+   Afin d’assurer une progression régulière, le travail sera découpé en plusieurs étapes correspondant à des jalons fonctionnels clairement identifiés.
+
+   \begin{itemize}
+    
+    \item \textbf{Phase 1 – Implémentation de la simulation (janvier-février)} \\
+    L’objectif est d’obtenir une simulation de fluide 2D fonctionnelle sur une grille régulière. 
+    Cette phase inclut la représentation des champs physiques (vitesse, densité, pression) et l’implémentation des 
+    principales étapes de calcul : advection, diffusion et projection afin de garantir l’incompressibilité du fluide.
+    
+    \item \textbf{Phase 2 – Interaction et visualisation (fevrier-mars)} \\
+    Cette étape vise à enrichir la simulation par des interactions utilisateur (ajout de forces locales, 
+    injection de matière) et par une visualisation plus avancée du fluide sous forme d’animation 2D en temps réel.
+    
+    \item \textbf{Phase 3 – Extensions et finalisation (mars-avril)} \\
+    Cette dernière phase est dédiée à l’implémentation de fonctionnalités optionnelles (contrôle à distance via 
+    smartphone, réactions au son/à la musique), ainsi qu’à la finalisation du rapport et de la présentation.
+   \end{itemize}
+
+
    \subsection{Priorités des premiers Sprints}
-   \subsection{tâches prévues de Janvier au 30 Avril}
-   \subsection*{Diagramme de Gantt}
+   Les premiers sprints, correspondant principalement aux mois de janvier et février, sont centrés sur la mise en 
+   place de fondations solides pour le projet. Les priorités identifiées sont les suivantes :
+
+   \begin{itemize}
+      \item Compréhension et formalisation du modèle de simulation du fluide.
+      \item Mise en place d’une architecture de code en C++.
+      \item Création d’une première visualisation graphique du fluide.
+      \item Obtention d’une simulation stable d’un fluide de type eau avec des paramètres simples.
+   \end{itemize}
+
+   Ces objectifs constituent un socle fonctionnel minimal sur lequel pourront s’appuyer les développements ultérieurs 
+   et les extensions du projet.
+
+   \subsection{Tâches prévues de janvier au 30 avril (Gantt prévisionnel)}
+
+   Les principales tâches prévues pour la durée du projet sont réparties comme suit :
+   
+   \par\vspace{0.5\baselineskip}
+   \textbf{Février}
+   \begin{itemize}
+      \item Implémentation de l’advection, diffusion (viscosité), projection
+      \item Tests de stabilité en fonction des paramètres choisi
+      \item Premières simulations visuelles du fluide
+   \end{itemize}
+
+   \textbf{Mars}
+   \begin{itemize}
+      \item Ajout des interactions utilisateur (forces locales, injection de matière)
+      \item Paramétrage dynamique du fluide (pression, température, viscosité)
+      \item Amélioration de la visualisation (couleurs, animations)
+      \item Début de l’implémentation du contrôle à distance via smartphone
+   \end{itemize}
+
+   \textbf{Avril}
+   \begin{itemize}
+      \item Finalisation du contrôle à distance
+      \item Implémentation d’un prototype du "mode musique"
+      \item Tests finaux et corrections
+      \item Rédaction du rapport final et préparation de la soutenance
+   \end{itemize}
+
+   La répartition des tâches entre les membres du groupe est prévue de manière équilibrée, chaque étudiant étant 
+   responsable d’un axe principal du projet tout en collaborant sur les autres aspects du projet.
+
 
    \section{Prototype réalisé}
 
-	\subsection{Description des tests et développements}
-	\subsection{Justification des choix}
-	\subsection{Justification des choix}
+   \subsection{Description du prototype actuel}
+
+   À l’issue de la première semaine de projet, un prototype minimal a été développé afin de valider 
+   les choix techniques initiaux. Ce prototype comprend :
+
+   \begin{itemize}
+      \item Une grille 2D................
+      \item blabla un triangle !
+      \item Un affichage graphique simple permettant de visualiser.............
+      \item Des tests ?? on peut pas faire 1000 trucs en 1 semaine non plus !
+   \end{itemize}
+
+   Ce prototype, bien que très simple, permet de vérifier la faisabilité de la simulation et constitue une 
+   base de travail pour les développements ultérieurs.
+
+   \subsection{Justification des choix initiaux}
+
+   Le langage \textbf{C++} a été retenu pour ce projet en raison de ses performances et de son contrôle précis 
+   de la mémoire, des aspects essentiels pour une simulation numérique interactive en temps réel.
+
+   Le choix d’une \textbf{approche sur grille (Eulerienne)} a été privilégié par rapport à une approche 
+   par particules, car elle est plus simple à mettre en œuvre dans un premier temps et mieux adaptée à la 
+   visualisation continue de phénomènes tels que l’eau ou la fumée.
+
+   Le projet débute avec la simulation d’un fluide de type eau, avec des paramètres ajustables (pression, 
+   température, viscosité), afin de valider progressivement le modèle physique avant d’envisager des extensions 
+   plus complexes, telles que l’interaction avec la musique ou le contrôle à distance via un smartphone.
+
 \end{document}
