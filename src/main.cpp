@@ -28,7 +28,6 @@
 
 
 
-
 //GESTION FENETRE
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -83,6 +82,134 @@ void generate_grid(int scalev = 20, int scaleh = 20){
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// Helper: initialize the cell grid -- create quad vertices and buffers
+void initCellsGrid(int cols = 100, int rows = 100){
+    gridCols = cols;
+    gridRows = rows;
+    cells.assign(cols * rows, 0);
+    cellsNext.assign(cols * rows, 0);
+
+    float cellW = 2.0f / (float)cols;  // in NDC (-1..1)
+    float cellH = 2.0f / (float)rows;
+
+    cellVertices.clear();
+    cellColors.clear();
+    cellVertices.reserve(cols * rows * 6 * 3);
+    cellColors.reserve(cols * rows * 6 * 3);
+
+    for(int y = 0; y < rows; ++y){
+        for(int x = 0; x < cols; ++x){
+            float left = -1.0f + x * cellW;
+            float right = left + cellW;
+            float bottom = -1.0f + y * cellH;
+            float top = bottom + cellH;
+            // two triangles per cell
+            // tri 1
+            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+            // tri 2
+            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+            cellVertices.push_back(left);  cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+
+            // default color black (dead)
+            for(int v = 0; v < 6; ++v){
+                cellColors.push_back(0.0f);
+                cellColors.push_back(0.0f);
+                cellColors.push_back(0.0f);
+            }
+        }
+    }
+
+    cellsVertexCount = (int)cellVertices.size() / 3;
+
+    if(cellsVAO == 0) glGenVertexArrays(1, &cellsVAO);
+    if(cellsVBO == 0) glGenBuffers(1, &cellsVBO);
+    if(cellsCBO == 0) glGenBuffers(1, &cellsCBO);
+
+    glBindVertexArray(cellsVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cellsVBO);
+    glBufferData(GL_ARRAY_BUFFER, cellVertices.size() * sizeof(float), cellVertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferData(GL_ARRAY_BUFFER, cellColors.size() * sizeof(float), cellColors.data(), GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+}
+
+// Fill cells randomly
+void randomizeCells(float aliveProbability=0.2f){
+    std::mt19937 rng((unsigned int)time(NULL));
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    for(size_t i = 0; i < cells.size(); ++i){
+        cells[i] = (dist(rng) < aliveProbability) ? 1 : 0;
+    }
+    // update colors buffer
+    for(int i = 0; i < gridCols * gridRows; ++i){
+        int base = i * 6 * 3;
+        float r = cells[i] ? 1.0f : 0.0f;
+        float g = cells[i] ? 1.0f : 0.0f;
+        float b = cells[i] ? 1.0f : 0.0f;
+        for(int v = 0; v < 6; ++v){
+            cellColors[base + v*3 + 0] = r;
+            cellColors[base + v*3 + 1] = g;
+            cellColors[base + v*3 + 2] = b;
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// update Game of Life rules (conway-like)
+void updateSimulation(){
+    for(int y = 0; y < gridRows; ++y){
+        for(int x = 0; x < gridCols; ++x){
+            int idx = y * gridCols + x;
+            int neighbors = 0;
+            for(int oy = -1; oy <= 1; ++oy){
+                for(int ox = -1; ox <= 1; ++ox){
+                    if(ox == 0 && oy == 0) continue;
+                    int nx = x + ox;
+                    int ny = y + oy;
+                    // wrap around (toroidal) or clamp; let's wrap
+                    if(nx < 0) nx = gridCols - 1; if(nx >= gridCols) nx = 0;
+                    if(ny < 0) ny = gridRows - 1; if(ny >= gridRows) ny = 0;
+                    neighbors += cells[ny * gridCols + nx];
+                }
+            }
+            if(cells[idx]){
+                // alive -> survive only with 2 or 3 neighbors
+                cellsNext[idx] = //moyenne de toutes les cases voisines
+            } else {
+                // dead -> become alive with exactly 3 neighbors
+                cellsNext[idx] = (neighbors == 3) ? 1 : 0;
+            }
+        }
+    }
+    // swap and update colors
+    cells.swap(cellsNext);
+    for(int i = 0; i < gridCols * gridRows; ++i){
+        int base = i * 6 * 3;
+        float r = cells[i] ? 1.0f : 0.0f;
+        float g = cells[i] ? 1.0f : 0.0f;
+        float b = cells[i] ? 1.0f : 0.0f;
+        for(int v = 0; v < 6; ++v){
+            cellColors[base + v*3 + 0] = r;
+            cellColors[base + v*3 + 1] = g;
+            cellColors[base + v*3 + 2] = b;
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -302,6 +429,7 @@ int main(int argc, char* argv[]){
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
 
+    
     //FS rudimentaire pour cellules
     /*const char *fragmentShaderSourceCells = "#version 330 core\n"
     "in vec3 vColor;\n"
@@ -318,6 +446,7 @@ int main(int argc, char* argv[]){
     "{\n"
     "    FragColor = color;\n"
     "}\0";
+
 
 //création objet Shader
     unsigned int fragmentShader;
@@ -532,6 +661,7 @@ int main(int argc, char* argv[]){
         glfwPollEvents();
 
         // Contrôles de la simulation, à editer si besoin
+
         if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
         if(rPressed && !lastRPressed){ randomizeCells(); }
         if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCells); }
