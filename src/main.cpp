@@ -11,11 +11,28 @@
 #include <random>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 // Ajout : handles pour la grille
 unsigned int gridVAO = 0;
 unsigned int gridVBO = 0;
 int gridVertexCount = 0;
+
+// Cellule de la grille de simulation
+unsigned int cellsVAO = 0;
+unsigned int cellsVBO = 0;     // positions
+unsigned int cellsCBO = 0;     // colors
+int cellsVertexCount = 0;      // number of vertices (6 * cols * rows)
+
+int gridCols = 50;
+int gridRows = 50;
+std::vector<int> cells;      // (0-100) intensité de la cellule, intensité à déterminer (température ?)
+std::vector<char> cellsNext;  // next state
+std::vector<float> cellVertices; // per-vertex positions
+std::vector<float> cellColors;   // per-vertex colors (rgb)
+bool simRunning = true; // start running by default
+float simStepSeconds = 0.1f;
+std::chrono::steady_clock::time_point lastStepTime;
 
 // Vertices du triangle (global)
 float vertices[] = {
@@ -153,8 +170,140 @@ void generate_grid(int scalev = 20, int scaleh = 20){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+// Helper: initialize the cell grid -- create quad vertices and buffers
+void initCellsGrid(int cols = 100, int rows = 100){
+    gridCols = cols;
+    gridRows = rows;
+    cells.assign(cols * rows, 0);
+    cellsNext.assign(cols * rows, 0);
+
+    float cellW = 2.0f / (float)cols;  // in NDC (-1..1)
+    float cellH = 2.0f / (float)rows;
+
+    cellVertices.clear();
+    cellColors.clear();
+    cellVertices.reserve(cols * rows * 6 * 3);
+    cellColors.reserve(cols * rows * 6 * 3);
+
+    for(int y = 0; y < rows; ++y){
+        for(int x = 0; x < cols; ++x){
+            float left = -1.0f + x * cellW;
+            float right = left + cellW;
+            float bottom = -1.0f + y * cellH;
+            float top = bottom + cellH;
+            // two triangles per cell
+            // tri 1
+            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+            // tri 2
+            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
+            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+            cellVertices.push_back(left);  cellVertices.push_back(top);    cellVertices.push_back(0.0f);
+
+            // default color black (dead)
+            for(int v = 0; v < 6; ++v){
+                cellColors.push_back(0.0f);
+                cellColors.push_back(0.0f);
+                cellColors.push_back(0.0f);
+            }
+        }
+    }
+
+    cellsVertexCount = (int)cellVertices.size() / 3;
+
+    if(cellsVAO == 0) glGenVertexArrays(1, &cellsVAO);
+    if(cellsVBO == 0) glGenBuffers(1, &cellsVBO);
+    if(cellsCBO == 0) glGenBuffers(1, &cellsCBO);
+
+    glBindVertexArray(cellsVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cellsVBO);
+    glBufferData(GL_ARRAY_BUFFER, cellVertices.size() * sizeof(float), cellVertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferData(GL_ARRAY_BUFFER, cellColors.size() * sizeof(float), cellColors.data(), GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+}
+
+// Fill cells randomly
+void randomizeCells(float aliveProbability=0.2f){
+    std::mt19937 rng((unsigned int)time(NULL));
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    for(size_t i = 0; i < cells.size(); ++i){
+        cells[i] = (dist(rng) < aliveProbability) ? 1 : 0;
+    }
+    // update colors buffer
+    for(int i = 0; i < gridCols * gridRows; ++i){
+        int base = i * 6 * 3;
+        float r = cells[i] ? 1.0f : 0.0f;
+        float g = cells[i] ? 1.0f : 0.0f;
+        float b = cells[i] ? 1.0f : 0.0f;
+        for(int v = 0; v < 6; ++v){
+            cellColors[base + v*3 + 0] = r;
+            cellColors[base + v*3 + 1] = g;
+            cellColors[base + v*3 + 2] = b;
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// update Game of Life rules (conway-like)
+void updateSimulation(){
+    for(int y = 0; y < gridRows; ++y){
+        for(int x = 0; x < gridCols; ++x){
+            int idx = y * gridCols + x;
+            int neighbors = 0;
+            for(int oy = -1; oy <= 1; ++oy){
+                for(int ox = -1; ox <= 1; ++ox){
+                    if(ox == 0 && oy == 0) continue;
+                    int nx = x + ox;
+                    int ny = y + oy;
+                    // wrap around (toroidal) or clamp; let's wrap
+                    if(nx < 0) nx = gridCols - 1; if(nx >= gridCols) nx = 0;
+                    if(ny < 0) ny = gridRows - 1; if(ny >= gridRows) ny = 0;
+                    neighbors += cells[ny * gridCols + nx];
+                }
+            }
+            if(cells[idx]){
+                // alive -> survive only with 2 or 3 neighbors
+                cellsNext[idx] = //moyenne de toutes les cases voisines
+            } else {
+                // dead -> become alive with exactly 3 neighbors
+                cellsNext[idx] = (neighbors == 3) ? 1 : 0;
+            }
+        }
+    }
+    // swap and update colors
+    cells.swap(cellsNext);
+    for(int i = 0; i < gridCols * gridRows; ++i){
+        int base = i * 6 * 3;
+        float r = cells[i] ? 1.0f : 0.0f;
+        float g = cells[i] ? 1.0f : 0.0f;
+        float b = cells[i] ? 1.0f : 0.0f;
+        for(int v = 0; v < 6; ++v){
+            cellColors[base + v*3 + 0] = r;
+            cellColors[base + v*3 + 1] = g;
+            cellColors[base + v*3 + 2] = b;
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 
 int main(int argc, char* argv[]){
+    std::string prec;
+    std::cout << "Which precision for the display ? (from 50 to 200)\n";
+    std::cin >> prec;
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -256,6 +405,24 @@ int main(int argc, char* argv[]){
     " FragColor = color;\n"
     "}\0";
 
+    const char *vertexShaderSourceCells = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 vColor;\n"
+    "void main()\n"
+    "{\n"
+    "    vColor = aColor;\n"
+    "    gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+
+    const char *fragmentShaderSourceCells = "#version 330 core\n"
+    "in vec3 vColor;\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = vec4(vColor, 1.0);\n"
+    "}\0";
+
 
 //création objet Shader
     unsigned int fragmentShader;
@@ -268,30 +435,48 @@ int main(int argc, char* argv[]){
     //compilation
     glCompileShader(fragmentShader);
     glCompileShader(fragmentShaderGrid);
+    
+    // Compile cells shaders
+    unsigned int vertexShaderCells;
+    unsigned int fragmentShaderCells;
+    vertexShaderCells = glCreateShader(GL_VERTEX_SHADER);
+    fragmentShaderCells = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(vertexShaderCells, 1, &vertexShaderSourceCells, NULL);
+    glShaderSource(fragmentShaderCells, 1, &fragmentShaderSourceCells, NULL);
+    glCompileShader(vertexShaderCells);
+    glCompileShader(fragmentShaderCells);
 
     //Creer objet programme
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
     unsigned int shaderProgramGrid;
     shaderProgramGrid = glCreateProgram();
+    unsigned int shaderProgramCells;
+    shaderProgramCells = glCreateProgram();
 
     //attache les objets au programme
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glAttachShader(shaderProgramGrid, vertexShaderGrid);
     glAttachShader(shaderProgramGrid, fragmentShaderGrid);
+    glAttachShader(shaderProgramCells, vertexShaderCells);
+    glAttachShader(shaderProgramCells, fragmentShaderCells);
     glLinkProgram(shaderProgram);
     glLinkProgram(shaderProgramGrid);
+    glLinkProgram(shaderProgramCells);
 
     //appel au programme 
     glUseProgram(shaderProgram);
     glUseProgram(shaderProgramGrid);
+    glUseProgram(shaderProgramCells);
 
     //On supprime les objets après les avoir attaché
     glDeleteShader(vertexShader);
     glDeleteShader(vertexShaderGrid);
     glDeleteShader(fragmentShader);
     glDeleteShader(fragmentShaderGrid);
+    glDeleteShader(vertexShaderCells);
+    glDeleteShader(fragmentShaderCells);
 
     //On précise à OpenGL comment interpréter nos données pour les afficher
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),  (void*)0);
@@ -340,7 +525,12 @@ int main(int argc, char* argv[]){
     glUniform1f(loc_scale, 1.0f);
 
     //génère grille ou pas
-    generate_grid(10, 15);
+    //generate_grid(10, 15);
+
+    // Initialize cell grid for Game of Life-like animation
+    initCellsGrid(std::stoi(prec), std::stoi(prec));
+    //randomizeCells(0.25f);
+    //lastStepTime = std::chrono::steady_clock::now();
 
 
     //render loop (maintient la fenêtre ouverte, une loop = une frame)
@@ -361,8 +551,14 @@ int main(int argc, char* argv[]){
     //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
 
+        // Dessine les cellules
+        glUseProgram(shaderProgramCells);
+        glBindVertexArray(cellsVAO);
+        if(cellsVertexCount > 0){
+            glDrawArrays(GL_TRIANGLES, 0, cellsVertexCount);
+        }
+
         //Dessine la grille
-        
         glUseProgram(shaderProgramGrid);
         if (gridVAO != 0 && gridVertexCount > 0) {
             glLineWidth(1.5f); //épaisseur des lignes
@@ -410,6 +606,30 @@ int main(int argc, char* argv[]){
         glfwSwapBuffers(window);
         //vérifie si un input a été trigger
         glfwPollEvents();
+
+        // Contrôles de la simulation, à editer si besoin
+        static bool lastSpacePressed = false;
+        static bool lastRPressed = false;
+        static bool lastNPressed = false;
+        bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+        bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
+        bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
+        if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
+        if(rPressed && !lastRPressed){ randomizeCells(0.25f); }
+        if(nPressed && !lastNPressed){ updateSimulation(); }
+        lastSpacePressed = spacePressed;
+        lastRPressed = rPressed;
+        lastNPressed = nPressed;
+
+        // Simulation stepping
+        if(simRunning){
+            auto now = std::chrono::steady_clock::now();
+            std::chrono::duration<float> diff = now - lastStepTime;
+            if(diff.count() >= simStepSeconds){
+                updateSimulation();
+                lastStepTime = now;
+            }
+        }
     }
 
     printf("fenêtre de fluides fermée\n");
