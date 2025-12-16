@@ -16,6 +16,10 @@
 \usepackage[]{enumitem}
 \usepackage[]{lipsum}
 \usepackage[]{multicol}
+
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{graphicx}
 %%\input{/home/triplaqs/Documents/Perso/Code/LaTeX/macros.tex}
 %% PRINCIPALES COMMANDES DE LA MACRO
 %% \int      :   intégrales
@@ -53,16 +57,63 @@
 	
    \section{Première architecture du projet}
    
-   \subsection{Organisation générale}
+   \subsection{Organisation générale}\label{partie 3.1}
+
+   \indent Concernant l'organisation générale de notre projet, premièrement nous avons choisi de donner des rôles précis à chaque membre (cf. \hyperref[partieroles]{partie répartition des rôles}). Ces rôles sont susceptibles de changer
+   en fonction de l'envie des membres, des besoins du groupe et des compétences de chacun. \\
+   Ensuite, nous avons convenu, avec notre chargé de projet, d'un rendez-vous hebdomadaire. Cela nous permettra de ne pas trop s'écarter de notre idée et de valider nos avancées sur le projet.
+   A la suite de cette réunion, nous, les membres du groupe, nous mettrons d'accord sur les différentes tâches à venir et nous répartirons les rôles. \\
+   De plus, pour nous permettre d'avancer au mieux le projet en prenant en compte les contraintes de chacun nous avons décidé que chaque membre du groupe travaillerait sur sa propre branche git. Cela permet à
+   chacun d'avancer à son rythme sur sa tâche. Une fois que tous les membres seront d'accord sur les modifications de chacun, nous mettrons en commun sur la branche principale. \\
+   Pour la mise en place du projet nous avons décidé de nous concentrer premièrement sur la simulation d'un seul fluide.
+   Nous avons choisi de d'abord nous intéresser à l'eau (si nous avons le temps nous mettrons en place la simulation d'autres fluides comme la fumée par exemple).
+   
    \subsection{Schéma simple/Description textuelle}
    
+   \indent Intéressons nous maintentant au projet en lui même. Nous avons comme projet de créer une interface (cf \hyperref[schéma]{schéma}) sur laquelle nous pourrons voir le comportement du fluide 
+   et une barre de commandes (types curseurs) permettant d'intéragir avec le fluide. \\
+   Comme dit plus haut (cf. \hyperref[partie 3.1]{partie 3.1}), nous avons décidé dans un premier temps de nous concentrer 
+   sur la simulation de l'eau. Nous allons modéliser ce fluide en faisant varier plusieurs paramètres tels que la pression, la température ou encore la viscosité.\\
+   Une fois la première étape réussie nous avons envisager des extensions plus complexes telles que le contrôle à distance via un smartphone ou l'interaction entre le fluide 
+   et la musique. 
+
+   \begin{figure}[h] 
+      \label{schéma}
+      \centering
+      \includegraphics[width=0.7\textwidth]{schemaproj2.png}
+      \caption{Schéma simple du projet}
+   \end{figure}
+
+   
    \section{Organisation interne du groupe}
-	\subsection{Répartition des rôles}
+
+   Notre groupe est composé de quatre étudiants de double-licence.
+   Pour mener au mieux le projet, nous avons attribué des rôles à chaque membre du groupe. Ces rôles sont amenés à évoluer en fonction des tâches nécessaires au projet.\\
+
+
+	\subsection{Répartition des rôles}\label{partieroles}
    \subsubsection*{Gaëlle Milezi :}
-   \subsubsection*{Saurane Delrieu :}
+   
    \subsubsection*{Satine Barraux :}
+   \subsubsection*{Saurane Delrieu :}
    \subsubsection*{Axel Pereyrol :}
+   Gaëlle et Saurane seront en charge de faire les recherches pour fournir les connaissances nécessaires au bon dévéloppement du projet.
+   Elles s'occuperont de comprendre et d'expliquer les étapes de la simulation du fluide. Elles devront chercher les équations physiques permettant cette modélisation.
+   Axel est intéréssé par le code en lui même, il sera donc en charge de la partie développement.
+   Il pourra être amené à partager le travail en fonction de la quantité de celui-ci.\\
+   Satine est quand à elle plus attirée par l'affichage du projet. Elle sera donc en charge de la gestion de l'interface (cohérence des couleurs, position des éléments sur l'interface).
+   
+
+   
+   
+   
+
    \subsection{Outils utilisés}
+   Pour mener à bien ce projet, nous avons mis en place un git (sur GitHub) auquel notre chargé de projet a accès.
+   De plus, nous avons instauré une réunion hebdomadaire avec tous les membres du groupe et notre chargé de projet, cela nous permettra de valider nos choix et 
+   d'avancer constamment. \\
+   Nous avons également décidé de faire une réunion hebdomadaire avec seulement les membres du groupe pour nous répartir les tâches chaque semaine.\\
+   Finalement, nous avons choisi de développer ce projet en C++ (avec OpenGL) cela nous permettra d'avoir une simulation performante.
 
    \section{Planning prévisionnel}
    
