@@ -8,6 +8,8 @@
 \usepackage{cancel}
 \usepackage[T1]{fontenc}
 \usepackage{microtype}
+\usepackage{pgfgantt}
+\usepackage{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage[a4paper]{geometry}
@@ -101,37 +103,98 @@
    Ces objectifs constituent un socle fonctionnel minimal sur lequel pourront s’appuyer les développements ultérieurs 
    et les extensions du projet.
 
-   \subsection{Tâches prévues de janvier au 30 avril (Gantt prévisionnel)}
+   \subsection{Tâches prévues de janvier à avril (Gantt prévisionnel)}
 
-   Les principales tâches prévues pour la durée du projet sont réparties comme suit :
-   
-   \par\vspace{0.5\baselineskip}
-   \textbf{Février}
+   Les principales tâches prévues pour la durée du projet sont représentées sous la forme
+   d’un diagramme de Gantt prévisionnel, de la dernière semaine de janvier à la fin du mois d’avril.
+
+   \noindent
+   \makebox[\textwidth][c]{
+   \begin{ganttchart}[
+      hgrid,
+      vgrid,
+      x unit=0.9cm,
+      bar height=0.6,
+      group height=0.8
+   ]{1}{14}
+
+   \gantttitle{Planning prévisionnel du projet}{14} \\
+   \gantttitlelist{1,...,14}{1} \\
+
+   % =====================
+   % JANVIER / FEVRIER
+   % =====================
+   \ganttgroup{Simulation du fluide}{1}{5} \\
+
+   \ganttbar[
+      bar/.append style={fill=blue}
+   ]{Advection}{1}{2} \\
+
+   \ganttbar[
+      bar/.append style={fill=red}
+   ]{Diffusion et viscosité}{2}{4} \\
+
+   \ganttbar[
+      bar/.append style={fill=green!60!black}
+   ]{Projection et incompressibilité}{3}{5} \\
+
+   \ganttbar[
+      bar/.append style={fill=orange}
+   ]{Tests de stabilité et réglages}{4}{5} \\
+
+   % =====================
+   % MARS
+   % =====================
+   \ganttgroup{Interaction et visualisation}{6}{9} \\
+
+   \ganttbar[
+      bar/.append style={fill=blue}
+   ]{Forces et interactions utilisateur}{6}{7} \\
+
+   \ganttbar[
+      bar/.append style={fill=red}
+   ]{Paramètres dynamiques du fluide}{7}{8} \\
+
+   \ganttbar[
+      bar/.append style={fill=green!60!black}
+   ]{Visualisation}{7}{9} \\
+
+   \ganttbar[
+      bar/.append style={fill=orange}
+   ]{Contrôle via smartphone}{8}{9} \\
+
+   % =====================
+   % AVRIL
+   % =====================
+   \ganttgroup{Extensions}{10}{14} \\
+
+   \ganttbar[
+      bar/.append style={fill=blue}
+   ]{Finalisation des interactions}{10}{11} \\
+
+   \ganttbar[
+      bar/.append style={fill=red}
+   ]{Analyse des performances et stabilité}{10}{14} \\
+
+   \ganttbar[
+      bar/.append style={fill=green!60!black}
+   ]{Mode musique : réaction au son}{11}{13} \\
+
+   \ganttbar[
+      bar/.append style={fill=orange}
+   ]{Intégration finale et rédaction du rapport}{12}{14}
+
+   \end{ganttchart}
+   }
+
+   \textbf{Répartition des tâches :}
    \begin{itemize}
-      \item Implémentation de l’advection, diffusion (viscosité), projection
-      \item Tests de stabilité en fonction des paramètres choisi
-      \item Premières simulations visuelles du fluide
+      \item \textcolor{gray!70}{Tâches déjà réalisées}
+      \item \textcolor{blue}{Axel}
+      \item \textcolor{red}{Saurane}
+      \item \textcolor{green!60!black}{Gaëlle}
+      \item \textcolor{orange}{Satine}
    \end{itemize}
-
-   \textbf{Mars}
-   \begin{itemize}
-      \item Ajout des interactions utilisateur (forces locales, injection de matière)
-      \item Paramétrage dynamique du fluide (pression, température, viscosité)
-      \item Amélioration de la visualisation (couleurs, animations)
-      \item Début de l’implémentation du contrôle à distance via smartphone
-   \end{itemize}
-
-   \textbf{Avril}
-   \begin{itemize}
-      \item Finalisation du contrôle à distance
-      \item Implémentation d’un prototype du "mode musique"
-      \item Tests finaux et corrections
-      \item Rédaction du rapport final et préparation de la soutenance
-   \end{itemize}
-
-   La répartition des tâches entre les membres du groupe est prévue de manière équilibrée, chaque étudiant étant 
-   responsable d’un axe principal du projet tout en collaborant sur les autres aspects du projet.
-
 
    \section{Prototype réalisé}
 
