@@ -601,14 +601,22 @@ int main(int argc, char* argv[]){
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
 
-    const char *fragmentShaderSourceCells = "#version 330 core\n"
+    //FS rudimentaire pour cellules
+    /*const char *fragmentShaderSourceCells = "#version 330 core\n"
     "in vec3 vColor;\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
     "    FragColor = vec4(vColor, 1.0);\n"
-    "}\0";
+    "}\0";*/
 
+    const char *fragmentShaderSourceCells = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "uniform vec4 color;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = color;\n"
+    "}\0";
 
 //création objet Shader
     unsigned int fragmentShader;
@@ -751,10 +759,15 @@ int main(int argc, char* argv[]){
         glUseProgram(shaderProgramCells);
         for (const Cell& c : cells) {
             glBindVertexArray(c.VAO1);
-            heatTriangle(shaderProgram, c.temperature);
+            //une des deux fonctions ne marche pas
+            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+            //heatTriangle(shaderProgram, c.temperature);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
 
             glBindVertexArray(c.VAO2);
-            heatTriangle(shaderProgram, c.temperature);
+            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+            //heatTriangle(shaderProgram, c.temperature);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
 }
         //old method
         /*
@@ -763,13 +776,15 @@ int main(int argc, char* argv[]){
             glDrawArrays(GL_TRIANGLES, 0, cellsVertexCount);
         }*/
 
+        //on s'en blc de la grille déssinée
+        /*
         //Dessine la grille
         glUseProgram(shaderProgramGrid);
         if (gridVAO != 0 && gridVertexCount > 0) {
             glLineWidth(1.5f); //épaisseur des lignes
             glBindVertexArray(gridVAO);
             glDrawArrays(GL_LINES, 0, gridVertexCount);
-        }
+        }*/
 
         //dessin du triangle
         //Plus besoin
@@ -797,6 +812,8 @@ int main(int argc, char* argv[]){
         glUniform1f(loc_scale, currentScale);
         glUniform4f(loc_offset, 0.0f, 0.0f, 0.0f, 0.0f);
         
+        //ancien tests triangle
+        /*
         if(moveRight){    
             setTriangleColorRand(shaderProgram);
         }
@@ -804,7 +821,7 @@ int main(int argc, char* argv[]){
             currentScale = 1.0f;  // Annuler la dilatation quand on tourne
             makeTriangleSpin(shaderProgram, (float)glfwGetTime());
         }
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);*/
         
         
     //P4 : fin render loop
