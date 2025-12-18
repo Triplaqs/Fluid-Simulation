@@ -10,6 +10,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage[a4paper]{geometry}
+\usepackage{hyperref}
 \geometry{hmargin=2.5cm,vmargin=1cm}
 \usepackage{babel}
 \usepackage[]{tcolorbox}
@@ -39,17 +40,76 @@
 	%\end{tcolorbox}
 
    \section{Compte rendu de la réunion avec l'encadrant}
-   
-   \subsection*{Date et heure de la réunion}
-   \subsection*{Participant.es}
-   \subsection*{Points clarifiés et décisions prises}
+
+   Nous avons pris, dans un premier temps rendez-vous avec Marc HARTLEY 
+   notre encadrant le jeudi 11 décembre à 13 heures 15 afin d'éclaircir 
+   les objectifs et les attentes de ce projet.\\ 
+   Lors de cet entretient était present MILLEZI Gaëlle, 
+   DELRIEU Saurane, PEREYROL AXEL et BARRAUX Satine. \\
+   Afin de pouvoir nous guidé au mieux, monsieur HARTLEY nous 
+   a préalablement demander de préparé ce que nous avions 
+   compris du sujet et ce que nous voulions faire dans ce projet, 
+   en quoi nous intérésse t'il et enfin ce que nous voudrions faire si 
+   nous avions un temps de travaille infini.\\
+   A la suite de ce premier échange, nous avons éclairci les détaille sur la mise au point notament 
+   avec l'aide d'un exemple, décidé de ce que nous ferions durant les prochains mois et établi un 
+   premier appercu de l'objectif que nous voulions atteindre.\\
+   Point éclaircis et décisions prises durant cette réunion :
+   \begin{itemize}
+      \item Le projet doit être interactif.
+      \item Il doit y avoir une interface graphique.
+      \item Il doit y avoir une simulation de fluide.
+      \item Le languange de programmation sera le C++.
+      \item L'interface graphique sera faite avec OpenGL.
+      \item Le projet sera fait en 2D.
+      \item Décidession des fonctionnalités principales (MVP).
+      \item Different module du projet.
+   \end{itemize}
    
    \section{Cahier de charges}
    
    \subsection{Description du sujet et des objectifs}
+
+   \indent Intéressons nous maintentant au projet en lui même. 
+   Nous avons comme projet de créer une interface (cf \hyperref[schéma]{schéma}) sur laquelle nous pourrons voir le comportement du fluide 
+   et une barre de commandes (types curseurs) permettant d'intéragir avec le fluide. \\
+   Nous avons décidé dans un premier temps de nous concentrer 
+   sur la simulation de l'eau. Nous allons modéliser ce fluide en faisant varier plusieurs paramètres tels que la pression, la température ou encore la viscosité.\\
+   Une fois la première étape réussie nous avons envisager des extensions plus complexes telles que le contrôle à distance via un smartphone ou l'interaction entre le fluide 
+   et la musique. 
+
+   \begin{figure}[h] 
+      \label{schéma}
+      \centering
+      \includegraphics[width=0.7\textwidth]{schemaproj2.png}
+      \caption{Schéma simple du projet}
+   \end{figure}
+
    \subsection{Périmètre retenu pour le projet}
+
+   Le périmètre retenu pour le projet est une approche eulerienne du fluide en 2D.
+   Nous utiliserons des vecteurs d'une grille, et des curseurs. Nous utiliserons notamment des équations 
+   sur les fluides afin d'avoir un un projet interactif qui permetera 
+   une visualisation et une interaction en temps reel (notammentvia l'utilisation de la souris ou plus
+   tard d'un second écrant).
+
    \subsection{Fonctionnalités principales (MVP)}
+
+   Les fonctionnalités principales que nous allons implémenter sont :
+   \begin{itemize}
+      \item Une interface graphique avec une fenêtre d'affichage du fluide et des curseurs.
+      \item La simulation d'un fluide (l'eau) en 2D.
+      \item La possibilité d'agir sur le fluide à l'aide des curseurs.
+      \item La possibilité d'ajouter des obstacles dans le fluide.
+      \item Une musique fesant vibrer le son.
+      \item La possibilité de contrôler le fluide à distance via un smartphone
+   \end{itemize}
+
    \subsection{Contraintes techniques et choix de technologies}
+
+   L'ensemble du projet sera programer en C++ avec une interface graphique OpenGL.
+   De plus, nous procederons sur une grille de $100 \times 100$ pour la simulation du fluide et 
+   le vitsse de rafraichissement sera de 10 images par secondes au minimum.
 	
    \section{Première architecture du projet}
    
@@ -75,36 +135,5 @@
 
 	\subsection{Description des tests et développements}
 	\subsection{Justification des choix}
-
-\newpage
-
-\setcounter{section}{0}
-\section{Compte rendu de la réunion avec l'encadrant}
-
-Nous avons pris, dans un premier temps rendez-vous avec Marc HARTLEY 
-notre encadrant le jeudi 11 décembre à 13 heures 15 afin d'éclaircir 
-les objectifs et les attentes de ce projet.\\ 
-Lors de cet entretient était present MILLEZI Gaëlle, 
-DELRIEU Saurane, PEREYROL AXEL et BARRAUX Satine. \\
-Afin de pouvoir nous guidé au mieux, monsieur HARTLEY nous 
-a préalablement demander de préparé ce que nous avions 
-compris du sujet et ce que nous voulions faire dans ce projet, 
-en quoi nous intérésse t'il et enfin ce que nous voudrions faire si 
-nous avions un temps de travaille infini.\\
-A la suite de ce premier échange, nous avons éclairci les détaille sur la mise au point notament 
-avec l'aide d'un exemple, décidé de ce que nous ferions durant les prochains mois et établi un 
-premier appercu de l'objectif que nous voulions atteindre.
-
-\section{Cahier de charges}
-
-\subsection{Description du sujet et des objectifs}
-L'objectif de ce project et de générer un un fluide (dans un premier temps de l'eau),
-qui réagisse à des événement que nous lui ferions subire tel que le passage de la sourit et autre.
-
-\subsection{Périmètre retenu pour le projet}
-?
-\subsection{Fonctionnalités principales (MVP)}
-
-\subsection{Contraintes techniques et choix de technologies}
-L'ensemble du projet sera programer en C++ et s'ouvrira dans une fenêtre en OpenGL.
+   
 \end{document}
