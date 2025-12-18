@@ -22,6 +22,10 @@
 \usepackage[]{enumitem}
 \usepackage[]{lipsum}
 \usepackage[]{multicol}
+
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{graphicx}
 %%\input{/home/triplaqs/Documents/Perso/Code/LaTeX/macros.tex}
 %% PRINCIPALES COMMANDES DE LA MACRO
 %% \int      :   intégrales
@@ -123,16 +127,107 @@
 	
    \section{Première architecture du projet}
    
-   \subsection{Organisation générale}
+   \subsection{Organisation générale}\label{partie 3.1}
+   Notre projet sera structuré en plusieurs modules :
+
+   \begin{itemize}
+      \item \textbf{Module de gestion des paramètres :} \\
+      Ce module permet de regrouper les réglages de la simulation 
+      (taille de la grille, viscosité). \\
+      Classe envisagée : \fbox{\texttt{SimulationParametres}}
+      
+
+      \item \textbf{Module de calcul pour la simulation du fluide :}\\
+      Dans ce module nous implémenterons les étapes principales de la
+      simulation du fluide : advection, diffusion et projection.\\
+      Classe envisagée : \fbox{\texttt{EquationFluide}}
+
+
+      \item \textbf{Module d'affichage et de visualisation :}\\
+      Ce module permettra l'affichage des différentes simulations
+      (champ de vecteurs, champ de scalaires)\\
+      Classe envisagée : \fbox{\texttt{Affiche}}
+
+
+      \item \textbf{Module d'interaction avec l'utilisateur :}\\
+      Ce module permettra de gérer les interactions (clavier, souris)
+      avec l'utilisateur. Nous pourrons ajouter des forces ou des obstacles.
+      Classe envisagée : \fbox{\texttt{GestionInput}}
+
+
+
+      \item \textbf{Module principal :}\\
+      Ce module sera le point d'entrée du programme, il met en lien tous les modules.
+      C'est-à-dire qu'il récupère les entrées de l'utilisateur, met à jour le fluide,
+      et affiche. 
+
+   \end{itemize}
+   
+
+   
+   
    \subsection{Schéma simple/Description textuelle}
+
+   Voilà une représentation de l'architecture et du fonctionnement de notre projet.
+   \begin{figure}[h] 
+      \centering
+      \includegraphics[width=0.7\textwidth]{schema_fonctionnement.png}
+      \caption{Schéma simple architecture/fonctionnement du projet}
+   \end{figure}
+
+   
+
+   
+
+   
    
    \section{Organisation interne du groupe}
-	\subsection{Répartition des rôles}
+
+   Notre groupe est composé de quatre étudiants de double-licence. Pour mener au mieux le projet, 
+   nous avons décidé de nous organiser de la manière suivante.
+
+   Premièrement nous avons choisi de donner des rôles précis à chaque membre 
+   (cf. \hyperref[partieroles]{partie répartition des rôles}). Ces rôles sont susceptibles
+   de changer en fonction de l'envie des membres, des besoins du groupe et des compétences de chacun. \\
+   Ensuite, nous avons convenu, avec notre chargé de projet, d'un rendez-vous hebdomadaire. Cela nous 
+   permettra de ne pas trop nous écarter de notre idée et de valider nos avancées sur le projet.
+   A la suite de cette réunion, nous, les membres du groupe, nous mettrons d'accord sur les différentes 
+   tâches à venir et nous répartirons les rôles. \\
+   De plus, pour nous permettre d'avancer au mieux le projet en prenant en compte les contraintes de 
+   chacun nous avons décidé que chaque membre du groupe travaillerait sur sa propre branche git. Cela permet à
+   chacun d'avancer à son rythme sur sa tâche. Une fois que tous les membres seront d'accord sur les
+   modifications de chacun, nous mettrons en commun sur la branche principale. \\
+
+	\subsection{Répartition des rôles}\label{partieroles}
+   Nous avons décidé, pour une progression optimale, que chaque membre serait en charge d'un module.
+   Le développement du module principal sera réalisé collectivement. 
+
    \subsubsection*{Gaëlle Milezi :}
-   \subsubsection*{Saurane Delrieu :}
+   Gaëlle sera en charge du module calcul pour la simulation du fluide.
+   Elle devra implémenter les différents algorithmes pour permettre la simulation 
+   (advection, diffusion, projection).
+   
    \subsubsection*{Satine Barraux :}
+   Satine s'occupera du module de la gestion des paramètres. 
+   Elle sera responsable de la définition et du contrôle des paramètres.
+
+   \subsubsection*{Saurane Delrieu :}
+   Saurane sera en charge du modue interactions. 
+   Son rôle est de traduire les actions (clavier ou souris) de l'utilisateur 
+   en modifications du champ de fluide.
+
    \subsubsection*{Axel Pereyrol :}
+   Axel sera responsable du module d'affichage.
+   Il assure le rendu graphique en temps réel, la clarté et la cohérence de la visualisation.
+   
+   
+
    \subsection{Outils utilisés}
+   Pour mener à bien ce projet, nous avons mis en place un git (sur GitHub) auquel notre chargé de projet a accès.
+   De plus, comme dit plus haut, nous avons instauré deux réunions hebdomadaires, celles-ci nous permettront d'avancer régulièrement le projet.\\
+   Nous avons également mis en place un groupe discord sur lequel les quatre membres du groupe et notre chargé de projet sont présents. Celui-ci nous 
+   aide à communiquer et échanger les informations à distance.\\
+   Finalement, nous avons choisi de développer ce projet en C++ (avec OpenGL) cela nous permettra d'avoir une simulation performante.
 
    \section{Planning prévisionnel}
    
