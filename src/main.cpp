@@ -561,7 +561,6 @@ int main(int argc, char* argv[]){
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
 
-    
     //FS rudimentaire pour cellules
     /*const char *fragmentShaderSourceCells = "#version 330 core\n"
     "in vec3 vColor;\n"
@@ -578,7 +577,6 @@ int main(int argc, char* argv[]){
     "{\n"
     "    FragColor = color;\n"
     "}\0";
-
 
 //création objet Shader
     unsigned int fragmentShader;
