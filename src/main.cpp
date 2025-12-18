@@ -205,6 +205,7 @@ void initCellsGrid(int gridWidth=100, int gridHeight=100) {
             // Crée et ajoute la cellule
             Cell cell = createCell(i, j, cellWidth, cellHeight);
             cells.push_back(cell);
+            cellsNext.push_back(cell);
         }
     }
 }
@@ -276,9 +277,13 @@ void randomizeCells(){
     //initialisation random de la température des cellules
     std::mt19937 rng((unsigned int)time(NULL));
     std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-    for(size_t i = 0; i < cells.size(); ++i){
+    /*for(size_t i = 0; i < cells.size(); ++i){
         cells[i].temperature = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    }
+    }*/
+   //nouvelle DA
+   for (Cell& c : cells){
+    c.temperature = dist(rng);
+   }
 /*
     // mise à couleur de l'initialisation random
     for(int i = 0; i < gridCols * gridRows; ++i){
@@ -302,8 +307,8 @@ void updateSimulation(unsigned int shaderProgram){
     //float newVals[gridRows][gridCols]; (pas besoin de matrice)
     for(int y = 0; y < gridRows; ++y){
         for(int x = 0; x < gridCols; ++x){
+            //ordonnancement linéaire de la grille
             int idx = y * gridCols + x;
-            int neighbors = 0;
 
             //calcul de la moyenne des voisins
             float mean = 0.0f;
@@ -324,7 +329,9 @@ void updateSimulation(unsigned int shaderProgram){
             //update
             cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
             //changement de couleur
-            heatCells(shaderProgram, cells[idx], mean);
+            //heatCells(shaderProgram, cells[idx], mean);
+        
+            //Askip le rendemendent je dois le faire dans la boucle de rendue... ici seulement calculs
         }
     }
     // passe le contenu de CellsNext dans Cells
@@ -332,9 +339,10 @@ void updateSimulation(unsigned int shaderProgram){
     /*for(int i = 0; i < gridCols * gridRows; ++i){
         
     }*/
-    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    /*glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    */
 }
 
 
