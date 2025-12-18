@@ -13,23 +13,75 @@
 #include <ctime>
 #include <chrono>
 
+//ligne pour générer un aléatoire :
+//float entre 0 et 1 :
+//float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+//int entre 0 et N :
+//int k = rand() % N+1;
+//int entre a et b :
+//int k = rand() % (b-a+1) + a;
+
 // Ajout : handles pour la grille
 unsigned int gridVAO = 0;
 unsigned int gridVBO = 0;
 int gridVertexCount = 0;
 
+//Structure pour manipuler points
+typedef struct {
+    double x;
+    double y;
+    double z;
+    double w;
+} Vec4;
+
+//Structure pour champ vectoriel 2D
+typedef struct {
+    double x;
+    double y;
+} Vec2;
+
+//dimension de la grille par défaut
+int gridCols = 100;
+int gridRows = 100;
+
+//nouvelle structure de cellulle
+typedef struct Cell {
+    unsigned int VAO1;  // VAO du premier triangle
+    unsigned int VAO2;  // VAO du deuxième triangle
+    unsigned int VBO1;  // VBO du premier triangle
+    unsigned int VBO2;  // VBO du deuxième triangle
+    float temperature = 0.0f; // température de la cellule (0.0f à 1.0f) (sera le facteur dans les fonctions heat)
+    Vec2 vect = {0.0, 0.0}; // vecteur de la case
+    float pression = 0.0f; // pression de la cellule
+    float concentration = 0.0f; //concentration de la cellule
+    int x,y; // position dans la grille
+    //indique si c'est un bord ou non, afin de mieux manipuler les cases en bord de grille
+    bool bh(){return x == 0.0;};
+    bool bb(){return x == gridRows-1;};
+    bool bg(){return y == 0.0;};
+    bool bd(){return y == gridCols-1;};
+    int nbVoisins(){
+        int nb = 8;
+        if(bh() || bb()) nb -= 3;
+        if(bg() || bd()) nb -=3;
+        if((bh() && bg()) || (bh() && bd()) || (bb() && bg()) || (bb() && bd())) nb += 1; 
+        return nb;
+    } // nombre de voisins (utile pour les bords)
+} Cell;
+
+//essai avec création de cellule, mise en suspend
+/*
 // Cellule de la grille de simulation
 unsigned int cellsVAO = 0;
 unsigned int cellsVBO = 0;     // positions
 unsigned int cellsCBO = 0;     // colors
 int cellsVertexCount = 0;      // number of vertices (6 * cols * rows)
+*/
 
-int gridCols = 50;
-int gridRows = 50;
-std::vector<int> cells;      // (0-100) intensité de la cellule, intensité à déterminer (température ?)
-std::vector<char> cellsNext;  // next state
-std::vector<float> cellVertices; // per-vertex positions
-std::vector<float> cellColors;   // per-vertex colors (rgb)
+std::vector<Cell> cells;      // vecteur des cellules (tableau)
+std::vector<Cell> cellsNext;  // next state
+//std::vector<float> cellVertices; // per-vertex positions
+//std::vector<float> cellColors;   // per-vertex colors (rgb)
 bool simRunning = true; // start running by default
 float simStepSeconds = 0.1f;
 std::chrono::steady_clock::time_point lastStepTime;
@@ -52,13 +104,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-//Structure pour manipuler points
-typedef struct {
-    double x;
-    double y;
-    double z;
-    double w;
-} Vec4;
+
+
 
 //GESTION INPUTS
 //gestion input clavier : ici, si KEY_ESCAPE préssée
@@ -134,8 +181,19 @@ void heatTriangle(unsigned int shaderProgram, float factor) {
     setTriangleColor(shaderProgram, r, g, b, 1.0f);
 }
 
+//on vient juste appliquer heatTriangle sur les 2 triangles de chaque cellule
+void heatCells(unsigned int shaderProgram, Cell cell, float factor){
+    // Appliquer la chaleur au premier triangle
+    glBindVertexArray(cell.VAO1);
+    heatTriangle(shaderProgram, factor);
+    
+    // Appliquer la chaleur au deuxième triangle
+    glBindVertexArray(cell.VAO2);
+    heatTriangle(shaderProgram, factor); 
+}
 
-//créait une grille affichée dans la fenêtre
+
+//créait une grille affichée dans la fenêtre (affichage seulement)
 void generate_grid(int scalev = 20, int scaleh = 20){
     // crée des lignes dans l'espace clip [-1,1] en X et Y
     std::vector<float> verts;
@@ -170,14 +228,133 @@ void generate_grid(int scalev = 20, int scaleh = 20){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// Helper: initialize the cell grid -- create quad vertices and buffers
-void initCellsGrid(int cols = 100, int rows = 100){
+Cell createCell(int x, int y, float cellW, float cellH){
+    Cell cell;
+    cell.x = x;
+    cell.y = y;
+
+    float x0 = -1.0f + x * cellW;
+    float y0 = -1.0f + y * cellH;
+    float x1 = x0 + cellW;
+    float y1 = y0 + cellH;
+
+    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
+    float vertices1[] = {
+        x0, y0, 0.0f,
+        x1, y0, 0.0f,
+        x1, y1, 0.0f
+    };
+    
+    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
+    float vertices2[] = {
+        x0, y0, 0.0f,
+        x1, y1, 0.0f,
+        x0, y1, 0.0f
+    };
+    
+    // === Création Triangle 1 ===
+    glGenVertexArrays(1, &cell.VAO1);
+    glGenBuffers(1, &cell.VBO1);
+    
+    glBindVertexArray(cell.VAO1);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // === Création Triangle 2 ===
+    glGenVertexArrays(1, &cell.VAO2);
+    glGenBuffers(1, &cell.VBO2);
+    
+    glBindVertexArray(cell.VAO2);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    return cell;
+
+
+}
+
+/*Cell createCellOld(float x0, float y0, float x1, float y1) {
+    Cell cell;
+    cell.x = (x0 + x1) / 2.0f;
+    cell.y = (y0 + y1) / 2.0f;
+    cell.temperature = 0.0f;
+    
+    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
+    float vertices1[] = {
+        x0, y0, 0.0f,
+        x1, y0, 0.0f,
+        x1, y1, 0.0f
+    };
+    
+    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
+    float vertices2[] = {
+        x0, y0, 0.0f,
+        x1, y1, 0.0f,
+        x0, y1, 0.0f
+    };
+    
+    // === Création Triangle 1 ===
+    glGenVertexArrays(1, &cell.VAO1);
+    glGenBuffers(1, &cell.VBO1);
+    
+    glBindVertexArray(cell.VAO1);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // === Création Triangle 2 ===
+    glGenVertexArrays(1, &cell.VAO2);
+    glGenBuffers(1, &cell.VBO2);
+    
+    glBindVertexArray(cell.VAO2);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    return cell;
+}*/
+
+void initCellsGrid(int gridWidth=100, int gridHeight=100) {
+    float cellWidth = 2.0f / gridWidth;   //2.0f = longueur de la fenêtre (-1 -> 1)
+    float cellHeight = 2.0f / gridHeight;   
+    cells.clear();
+    cells.reserve(gridWidth * gridHeight);
+    
+    for (int j = 0; j < gridHeight; ++j) {
+        for (int i = 0; i < gridWidth; ++i) {     
+            // Crée et ajoute la cellule
+            Cell cell = createCell(i, j, cellWidth, cellHeight);
+            cells.push_back(cell);
+        }
+    }
+}
+
+
+//Initialise la grille/ les cellules (ici objet pratique)
+/*void initCellsGridOld(int cols = 100, int rows = 100){
     gridCols = cols;
     gridRows = rows;
-    cells.assign(cols * rows, 0);
-    cellsNext.assign(cols * rows, 0);
+    Cell c = Cell();
+    cells.assign(cols * rows, c);
+    cellsNext.assign(cols * rows, c);
 
-    float cellW = 2.0f / (float)cols;  // in NDC (-1..1)
+    float cellW = 2.0f / (float)cols; 
     float cellH = 2.0f / (float)rows;
 
     cellVertices.clear();
@@ -191,12 +368,12 @@ void initCellsGrid(int cols = 100, int rows = 100){
             float right = left + cellW;
             float bottom = -1.0f + y * cellH;
             float top = bottom + cellH;
-            // two triangles per cell
-            // tri 1
+            // une cellule est composée de 2 triangles
+            // triangle 1
             cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
             cellVertices.push_back(right); cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
             cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
-            // tri 2
+            // triangle 2
             cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
             cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
             cellVertices.push_back(left);  cellVertices.push_back(top);    cellVertices.push_back(0.0f);
@@ -228,21 +405,23 @@ void initCellsGrid(int cols = 100, int rows = 100){
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-}
+}*/
 
-// Fill cells randomly
-void randomizeCells(float aliveProbability=0.2f){
+// Remplissage des cellules aléatoirement
+void randomizeCells(){
+    //initialisation random de la température des cellules
     std::mt19937 rng((unsigned int)time(NULL));
     std::uniform_real_distribution<float> dist(0.0f, 1.0f);
     for(size_t i = 0; i < cells.size(); ++i){
-        cells[i] = (dist(rng) < aliveProbability) ? 1 : 0;
+        cells[i].temperature = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     }
-    // update colors buffer
+/*
+    // mise à couleur de l'initialisation random
     for(int i = 0; i < gridCols * gridRows; ++i){
         int base = i * 6 * 3;
-        float r = cells[i] ? 1.0f : 0.0f;
-        float g = cells[i] ? 1.0f : 0.0f;
-        float b = cells[i] ? 1.0f : 0.0f;
+        float r = cells[i].temperature; 
+        float g = cells[i].temperature;
+        float b = cells[i].temperature;
         for(int v = 0; v < 6; ++v){
             cellColors[base + v*3 + 0] = r;
             cellColors[base + v*3 + 1] = g;
@@ -251,48 +430,44 @@ void randomizeCells(float aliveProbability=0.2f){
     }
     glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
 
-// update Game of Life rules (conway-like)
-void updateSimulation(){
+//Met à jour la simulation (diffusion)
+void updateSimulation(unsigned int shaderProgram){
+    //float newVals[gridRows][gridCols]; (pas besoin de matrice)
     for(int y = 0; y < gridRows; ++y){
         for(int x = 0; x < gridCols; ++x){
             int idx = y * gridCols + x;
             int neighbors = 0;
+
+            //calcul de la moyenne des voisins
+            float mean = 0.0f;
             for(int oy = -1; oy <= 1; ++oy){
                 for(int ox = -1; ox <= 1; ++ox){
                     if(ox == 0 && oy == 0) continue;
+                    if(cells[idx].bh() && oy == -1) continue;
+                    if(cells[idx].bb() && oy == 1) continue;
+                    if(cells[idx].bg() && ox == -1) continue;
+                    if(cells[idx].bd() && ox == 1) continue;
                     int nx = x + ox;
                     int ny = y + oy;
-                    // wrap around (toroidal) or clamp; let's wrap
-                    if(nx < 0) nx = gridCols - 1; if(nx >= gridCols) nx = 0;
-                    if(ny < 0) ny = gridRows - 1; if(ny >= gridRows) ny = 0;
-                    neighbors += cells[ny * gridCols + nx];
+                    mean += cells[nx + ny * gridCols].temperature;
                 }
             }
-            if(cells[idx]){
-                // alive -> survive only with 2 or 3 neighbors
-                cellsNext[idx] = //moyenne de toutes les cases voisines
-            } else {
-                // dead -> become alive with exactly 3 neighbors
-                cellsNext[idx] = (neighbors == 3) ? 1 : 0;
-            }
+            //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
+            mean /= cells[idx].nbVoisins();
+            //update
+            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
+            //changement de couleur
+            heatCells(shaderProgram, cells[idx], mean);
         }
     }
-    // swap and update colors
+    // passe le contenu de CellsNext dans Cells
     cells.swap(cellsNext);
-    for(int i = 0; i < gridCols * gridRows; ++i){
-        int base = i * 6 * 3;
-        float r = cells[i] ? 1.0f : 0.0f;
-        float g = cells[i] ? 1.0f : 0.0f;
-        float b = cells[i] ? 1.0f : 0.0f;
-        for(int v = 0; v < 6; ++v){
-            cellColors[base + v*3 + 0] = r;
-            cellColors[base + v*3 + 1] = g;
-            cellColors[base + v*3 + 2] = b;
-        }
-    }
+    /*for(int i = 0; i < gridCols * gridRows; ++i){
+        
+    }*/
     glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -300,9 +475,12 @@ void updateSimulation(){
 
 
 int main(int argc, char* argv[]){
-    std::string prec;
+    //ça c'est si on demande la précision :D
+    /*std::string prec;
     std::cout << "Which precision for the display ? (from 50 to 200)\n";
-    std::cin >> prec;
+    std::cin >> prec;*/
+    //mais on la demande pas ;)
+    std::string prec = "100";
     
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -529,11 +707,13 @@ int main(int argc, char* argv[]){
 
     // Initialize cell grid for Game of Life-like animation
     initCellsGrid(std::stoi(prec), std::stoi(prec));
-    //randomizeCells(0.25f);
+    gridCols = std::stoi(prec);
+    gridRows = std::stoi(prec);
+    randomizeCells();
     //lastStepTime = std::chrono::steady_clock::now();
 
 
-    //render loop (maintient la fenêtre ouverte, une loop = une frame)
+//render loop (maintient la fenêtre ouverte, une loop = une frame)
     //se divise en 4 parties : nettoyage, input, render puis cloture
     while(!glfwWindowShouldClose(window)){
     //P1 : nettoyage
@@ -542,11 +722,19 @@ int main(int argc, char* argv[]){
         
         
     //P2 : gestion input clavier
+        //Basiques
         bool moveRight = false;
         bool moveLeft = false;
         bool moveUp = false;
         bool moveDown = false;
         processInput(window, &moveRight, &moveLeft, &moveUp, &moveDown);
+        //Simulation
+        static bool lastSpacePressed = false;
+        static bool lastRPressed = false;
+        static bool lastNPressed = false;
+        bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+        bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
+        bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
 
     //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
@@ -567,8 +755,9 @@ int main(int argc, char* argv[]){
         }
 
         //dessin du triangle
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
+        //Plus besoin
+        //glUseProgram(shaderProgram);
+        //glBindVertexArray(VAO);
         
         // Accumuler la dilatation et la température
         if(moveUp){    
@@ -608,15 +797,9 @@ int main(int argc, char* argv[]){
         glfwPollEvents();
 
         // Contrôles de la simulation, à editer si besoin
-        static bool lastSpacePressed = false;
-        static bool lastRPressed = false;
-        static bool lastNPressed = false;
-        bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
-        bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
-        bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
         if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
-        if(rPressed && !lastRPressed){ randomizeCells(0.25f); }
-        if(nPressed && !lastNPressed){ updateSimulation(); }
+        if(rPressed && !lastRPressed){ randomizeCells(); }
+        if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCells); }
         lastSpacePressed = spacePressed;
         lastRPressed = rPressed;
         lastNPressed = nPressed;
@@ -626,7 +809,7 @@ int main(int argc, char* argv[]){
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<float> diff = now - lastStepTime;
             if(diff.count() >= simStepSeconds){
-                updateSimulation();
+                updateSimulation(shaderProgramCells);
                 lastStepTime = now;
             }
         }
