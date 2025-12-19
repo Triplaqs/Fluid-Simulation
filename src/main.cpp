@@ -193,11 +193,10 @@ void heatCells(unsigned int shaderProgram, Cell cell, float factor){
 }
 
 
-//créait une grille affichée dans la fenêtre
-//void generate_grid(int scalev = 100, int scaleh = 100){
 
-//créait une grille affichée dans la fenêtre (affichage seulement)
-void generate_grid(int scalev = 20, int scaleh = 20){
+
+//créait une grille affichée dans la fenêtre
+void generate_grid(int scalev = 100, int scaleh = 100){
 
     // crée des lignes dans l'espace clip [-1,1] en X et Y
     std::vector<float> verts;
@@ -747,8 +746,6 @@ int main(int argc, char* argv[]){
 
     //génère grille ou pas
 
-    generate_grid(100, 100);
-
     //generate_grid(10, 15);
 
     // Initialize cell grid for Game of Life-like animation
@@ -757,6 +754,8 @@ int main(int argc, char* argv[]){
     gridRows = std::stoi(prec);
     randomizeCells();
     //lastStepTime = std::chrono::steady_clock::now();
+
+    generate_grid(100, 100);
 
 
 
