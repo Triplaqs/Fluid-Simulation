@@ -193,8 +193,11 @@ void heatCells(unsigned int shaderProgram, Cell cell, float factor){
 }
 
 
-//créait une grille affichée dans la fenêtre (affichage seulement)
-void generate_grid(int scalev = 20, int scaleh = 20){
+
+
+//créait une grille affichée dans la fenêtre
+void generate_grid(int scalev = 100, int scaleh = 100){
+
     // crée des lignes dans l'espace clip [-1,1] en X et Y
     std::vector<float> verts;
     verts.reserve((scaleh+1 + scalev+1) * 2 * 3);
@@ -482,6 +485,29 @@ void updateSimulation(unsigned int shaderProgram){
 }
 
 
+//initialisation des vecteurs par défaut {1.0, 1.0}
+//void initVectors(int nx, int ny){
+ //   for (int i=0; i<ny;i++){
+   //     for (int j=0; j<nx;j++){
+     //       int indice = i*nx + j;
+       //     cells[indice].vectors = {1.0,1.0};
+        //}
+    //}
+//}
+
+// initialisation des vecteurs aléatoires
+//void initVectorsAleatoires(int nx, int ny){
+  //  for (int i=0; i<ny;i++){
+    //    for (int j=0; j<nx;j++){
+      //      int indice = i*nx + j;
+        //    double u = 2.0 * rand() / RAND_MAX - 1.0;
+          //  double v = 2.0 * rand() / RAND_MAX - 1.0;
+            //cells[indice].vectors = {u,v}
+        //}
+    //}
+//}
+
+
 int main(int argc, char* argv[]){
     //ça c'est si on demande la précision :D
     /*std::string prec;
@@ -719,6 +745,7 @@ int main(int argc, char* argv[]){
     glUniform1f(loc_scale, 1.0f);
 
     //génère grille ou pas
+
     //generate_grid(10, 15);
 
     // Initialize cell grid for Game of Life-like animation
@@ -727,6 +754,9 @@ int main(int argc, char* argv[]){
     gridRows = std::stoi(prec);
     randomizeCells();
     //lastStepTime = std::chrono::steady_clock::now();
+
+    generate_grid(100, 100);
+
 
 
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
