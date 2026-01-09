@@ -179,102 +179,6 @@ void updateSimulation(unsigned int shaderProgram){
 }
 
 
-
-/*Cell createCellOld(float x0, float y0, float x1, float y1) {
-    Cell cell;
-    cell.x = (x0 + x1) / 2.0f;
-    cell.y = (y0 + y1) / 2.0f;
-    cell.temperature = 0.0f;
-    
-    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
-    float vertices1[] = {
-        x0, y0, 0.0f,
-        x1, y0, 0.0f,
-        x1, y1, 0.0f
-    };
-    
-    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
-    float vertices2[] = {
-        x0, y0, 0.0f,
-        x1, y1, 0.0f,
-        x0, y1, 0.0f
-    };
-    
-    // === Création Triangle 1 ===
-    glGenVertexArrays(1, &cell.VAO1);
-    glGenBuffers(1, &cell.VBO1);
-    
-    glBindVertexArray(cell.VAO1);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // === Création Triangle 2 ===
-    glGenVertexArrays(1, &cell.VAO2);
-    glGenBuffers(1, &cell.VBO2);
-    
-    glBindVertexArray(cell.VAO2);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    return cell;
-}*/
-
-
-
-
-//Met à jour la simulation (diffusion)
-void updateSimulation(unsigned int shaderProgram){
-    //float newVals[gridRows][gridCols]; (pas besoin de matrice)
-    for(int y = 0; y < gridRows; ++y){
-        for(int x = 0; x < gridCols; ++x){
-            //ordonnancement linéaire de la grille
-            int idx = y * gridCols + x;
-
-            //calcul de la moyenne des voisins
-            float mean = 0.0f;
-            for(int oy = -1; oy <= 1; ++oy){
-                for(int ox = -1; ox <= 1; ++ox){
-                    if(ox == 0 && oy == 0) continue;
-                    if(cells[idx].bh() && oy == -1) continue;
-                    if(cells[idx].bb() && oy == 1) continue;
-                    if(cells[idx].bg() && ox == -1) continue;
-                    if(cells[idx].bd() && ox == 1) continue;
-                    int nx = x + ox;
-                    int ny = y + oy;
-                    mean += cells[nx + ny * gridCols].temperature;
-                }
-            }
-            //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
-            mean /= cells[idx].nbVoisins();
-            //update
-            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
-            //changement de couleur
-            //heatCells(shaderProgram, cells[idx], mean);
-        
-            //Askip le rendemendent je dois le faire dans la boucle de rendue... ici seulement calculs
-        }
-    }
-    // passe le contenu de CellsNext dans Cells
-    cells.swap(cellsNext);
-    /*for(int i = 0; i < gridCols * gridRows; ++i){
-        
-    }*/
-    /*glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
-}
-
-
 int main(int argc, char* argv[]){
     //ça c'est si on demande la précision :D
     /*std::string prec;
@@ -283,7 +187,13 @@ int main(int argc, char* argv[]){
     //mais on la demande pas ;)
     std::string prec = "100";
     
-    glfwInit();
+    //glfwInit();
+    //après erreur de génération : tests :
+    if (!glfwInit()) {
+        std::cerr << "GLFW init failed" << std::endl;
+    return -1;
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
