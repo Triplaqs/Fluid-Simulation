@@ -46,16 +46,6 @@ void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft, bool* mov
 }
 
 
-//on vient juste appliquer heatTriangle sur les 2 triangles de chaque cellule
-void heatCells(unsigned int shaderProgram, Cell cell, float factor){
-    // Appliquer la chaleur au premier triangle
-    glBindVertexArray(cell.VAO1);
-    heatTriangle(shaderProgram, factor);
-    
-    // Appliquer la chaleur au deuxième triangle
-    glBindVertexArray(cell.VAO2);
-    heatTriangle(shaderProgram, factor); 
-}
 
 //créait une grille affichée dans la fenêtre (affichage seulement)
 void generate_grid(int scalev = 20, int scaleh = 20){
@@ -92,59 +82,7 @@ void generate_grid(int scalev = 20, int scaleh = 20){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-Cell createCell(int x, int y, float cellW, float cellH){
-    Cell cell;
-    cell.x = x;
-    cell.y = y;
 
-    float x0 = -1.0f + x * cellW;
-    float y0 = -1.0f + y * cellH;
-    float x1 = x0 + cellW;
-    float y1 = y0 + cellH;
-
-    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
-    float vertices1[] = {
-        x0, y0, 0.0f,
-        x1, y0, 0.0f,
-        x1, y1, 0.0f
-    };
-    
-    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
-    float vertices2[] = {
-        x0, y0, 0.0f,
-        x1, y1, 0.0f,
-        x0, y1, 0.0f
-    };
-    
-    // === Création Triangle 1 ===
-    glGenVertexArrays(1, &cell.VAO1);
-    glGenBuffers(1, &cell.VBO1);
-    
-    glBindVertexArray(cell.VAO1);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // === Création Triangle 2 ===
-    glGenVertexArrays(1, &cell.VAO2);
-    glGenBuffers(1, &cell.VBO2);
-    
-    glBindVertexArray(cell.VAO2);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    return cell;
-
-
-}
 
 /*Cell createCellOld(float x0, float y0, float x1, float y1) {
     Cell cell;
@@ -194,113 +132,8 @@ Cell createCell(int x, int y, float cellW, float cellH){
     return cell;
 }*/
 
-void initCellsGrid(int gridWidth=100, int gridHeight=100) {
-    float cellWidth = 2.0f / gridWidth;   //2.0f = longueur de la fenêtre (-1 -> 1)
-    float cellHeight = 2.0f / gridHeight;   
-    cells.clear();
-    cells.reserve(gridWidth * gridHeight);
-    
-    for (int j = 0; j < gridHeight; ++j) {
-        for (int i = 0; i < gridWidth; ++i) {     
-            // Crée et ajoute la cellule
-            Cell cell = createCell(i, j, cellWidth, cellHeight);
-            cells.push_back(cell);
-            cellsNext.push_back(cell);
-        }
-    }
-}
 
 
-//Initialise la grille/ les cellules (ici objet pratique)
-/*void initCellsGridOld(int cols = 100, int rows = 100){
-    gridCols = cols;
-    gridRows = rows;
-    Cell c = Cell();
-    cells.assign(cols * rows, c);
-    cellsNext.assign(cols * rows, c);
-
-    float cellW = 2.0f / (float)cols; 
-    float cellH = 2.0f / (float)rows;
-
-    cellVertices.clear();
-    cellColors.clear();
-    cellVertices.reserve(cols * rows * 6 * 3);
-    cellColors.reserve(cols * rows * 6 * 3);
-
-    for(int y = 0; y < rows; ++y){
-        for(int x = 0; x < cols; ++x){
-            float left = -1.0f + x * cellW;
-            float right = left + cellW;
-            float bottom = -1.0f + y * cellH;
-            float top = bottom + cellH;
-            // une cellule est composée de 2 triangles
-            // triangle 1
-            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
-            cellVertices.push_back(right); cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
-            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
-            // triangle 2
-            cellVertices.push_back(left);  cellVertices.push_back(bottom); cellVertices.push_back(0.0f);
-            cellVertices.push_back(right); cellVertices.push_back(top);    cellVertices.push_back(0.0f);
-            cellVertices.push_back(left);  cellVertices.push_back(top);    cellVertices.push_back(0.0f);
-
-            // default color black (dead)
-            for(int v = 0; v < 6; ++v){
-                cellColors.push_back(0.0f);
-                cellColors.push_back(0.0f);
-                cellColors.push_back(0.0f);
-            }
-        }
-    }
-
-    cellsVertexCount = (int)cellVertices.size() / 3;
-
-    if(cellsVAO == 0) glGenVertexArrays(1, &cellsVAO);
-    if(cellsVBO == 0) glGenBuffers(1, &cellsVBO);
-    if(cellsCBO == 0) glGenBuffers(1, &cellsCBO);
-
-    glBindVertexArray(cellsVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cellsVBO);
-    glBufferData(GL_ARRAY_BUFFER, cellVertices.size() * sizeof(float), cellVertices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
-    glBufferData(GL_ARRAY_BUFFER, cellColors.size() * sizeof(float), cellColors.data(), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
-}*/
-
-// Remplissage des cellules aléatoirement
-void randomizeCells(){
-    //initialisation random de la température des cellules
-    std::mt19937 rng((unsigned int)time(NULL));
-    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-    /*for(size_t i = 0; i < cells.size(); ++i){
-        cells[i].temperature = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    }*/
-   //nouvelle DA
-   for (Cell& c : cells){
-    c.temperature = dist(rng);
-   }
-/*
-    // mise à couleur de l'initialisation random
-    for(int i = 0; i < gridCols * gridRows; ++i){
-        int base = i * 6 * 3;
-        float r = cells[i].temperature; 
-        float g = cells[i].temperature;
-        float b = cells[i].temperature;
-        for(int v = 0; v < 6; ++v){
-            cellColors[base + v*3 + 0] = r;
-            cellColors[base + v*3 + 1] = g;
-            cellColors[base + v*3 + 2] = b;
-        }
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-}
 
 //Met à jour la simulation (diffusion)
 void updateSimulation(unsigned int shaderProgram){
