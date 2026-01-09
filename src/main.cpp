@@ -191,7 +191,12 @@ int main(int argc, char* argv[]){
     //mais on la demande pas ;)
     std::string prec = "100";
     
-    glfwInit();
+    //glfwInit();
+    //après erreur de génération : tests :
+    if (!glfwInit()) {
+        std::cerr << "GLFW init failed" << std::endl;
+    return -1;
+}
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
