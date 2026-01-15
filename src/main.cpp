@@ -3,6 +3,11 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <ostream>
+//Les autres modules du projet (headers)
+#include "utils.h"
+#include "interaction.h"
+#include "fluides.h"
+#include "display.h"
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
@@ -11,23 +16,15 @@
 #include <random>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
-// Ajout : handles pour la grille
-unsigned int gridVAO = 0;
-unsigned int gridVBO = 0;
-int gridVertexCount = 0;
-
-// Vertices du triangle (global)
-float vertices[] = {
-    -0.75f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f
-};
-
-// État de la dilatation (accumulation)
-float currentScale = 1.0f;
-// État de la température (accumulation)
-float currentHeat = 0.0f;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
+//ligne pour générer un aléatoire :
+//float entre 0 et 1 :
+//float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+//int entre 0 et N :
+//int k = rand() % N+1;
+//int entre a et b :
+//int k = rand() % (b-a+1) + a;
 
 
 //GESTION FENETRE
@@ -35,13 +32,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-//Structure pour manipuler points
-typedef struct {
-    double x;
-    double y;
-    double z;
-    double w;
-} Vec4;
 
 //GESTION INPUTS
 //gestion input clavier : ici, si KEY_ESCAPE préssée
@@ -55,70 +45,9 @@ void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft, bool* mov
     *moveDown = (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS);
 }
 
-//Edit de rendering
-// Fonction pour éditer la position du triangle via uniform (exemple avec translation matrix)
-void setTrianglePosition(unsigned int shaderProgram, float x, float y, float z = 0.0f, float w = 1.0f) {
-    glUseProgram(shaderProgram);
-    int posLoc = glGetUniformLocation(shaderProgram, "offset");
-    glUniform4f(posLoc, x, y, z, w);
-}
-
-// Fonction pour éditer la couleur du triangle via uniform
-void setTriangleColor(unsigned int shaderProgram, float r, float g, float b, float a) {
-    glUseProgram(shaderProgram);
-    int colorLoc = glGetUniformLocation(shaderProgram, "color");
-    glUniform4f(colorLoc, r, g, b, a);
-}
-
-void setTriangleColorRand(unsigned int shaderProgram) {
-    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float a = 1.0f;
-    setTriangleColor(shaderProgram, r, g, b, a);
-}
-
-void makeTriangleSpin(unsigned int shaderProgram, float time) {
-    float angle = time;
-    //float angle = (float)glfwGetTime();
-    float x = 0.5f * cos(angle);
-    float y = 0.5f * sin(angle);
-    setTrianglePosition(shaderProgram, x, y);
-}
-
-void dilateTriangle(unsigned int shaderProgram, float factor) {
-    //Calcul du centre du triangle
-    float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
-    float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
-    float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
-    
-    glUseProgram(shaderProgram);
-    GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
-    GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
-    
-    glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
-    glUniform1f(loc_scale, factor);
-}
-
-void heatTriangle(unsigned int shaderProgram, float factor) {
-    // Clamp la température entre -1 et 1
-    if (currentHeat + factor > 1.0f) currentHeat = 1.0f;
-    else if (currentHeat + factor < -1.0f) currentHeat = -1.0f;
-    else currentHeat += factor;
-    
-    // Interpoler entre bleu (froid) et rouge (chaud)
-    // currentHeat = -1.0 -> (0, 0, 1) bleu
-    // currentHeat =  0.0 -> (1, 1, 1) blanc
-    // currentHeat =  1.0 -> (1, 0, 0) rouge
-    float r = (currentHeat + 1.0f) / 2.0f;  // 0 à 1
-    float g = (1.0f - fabs(currentHeat)) * 0.5f;  // Max au milieu
-    float b = (1.0f - currentHeat) / 2.0f;  // 1 à 0
-    
-    setTriangleColor(shaderProgram, r, g, b, 1.0f);
-}
 
 
-//créait une grille affichée dans la fenêtre
+//créait une grille affichée dans la fenêtre (affichage seulement)
 void generate_grid(int scalev = 20, int scaleh = 20){
     // crée des lignes dans l'espace clip [-1,1] en X et Y
     std::vector<float> verts;
@@ -154,8 +83,117 @@ void generate_grid(int scalev = 20, int scaleh = 20){
 }
 
 
+
+/*Cell createCellOld(float x0, float y0, float x1, float y1) {
+    Cell cell;
+    cell.x = (x0 + x1) / 2.0f;
+    cell.y = (y0 + y1) / 2.0f;
+    cell.temperature = 0.0f;
+    
+    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
+    float vertices1[] = {
+        x0, y0, 0.0f,
+        x1, y0, 0.0f,
+        x1, y1, 0.0f
+    };
+    
+    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
+    float vertices2[] = {
+        x0, y0, 0.0f,
+        x1, y1, 0.0f,
+        x0, y1, 0.0f
+    };
+    
+    // === Création Triangle 1 ===
+    glGenVertexArrays(1, &cell.VAO1);
+    glGenBuffers(1, &cell.VBO1);
+    
+    glBindVertexArray(cell.VAO1);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // === Création Triangle 2 ===
+    glGenVertexArrays(1, &cell.VAO2);
+    glGenBuffers(1, &cell.VBO2);
+    
+    glBindVertexArray(cell.VAO2);
+    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    return cell;
+}*/
+
+
+
+
+//Met à jour la simulation (diffusion)
+void updateSimulation(unsigned int shaderProgram){
+    //float newVals[gridRows][gridCols]; (pas besoin de matrice)
+    for(int y = 0; y < gridRows; ++y){
+        for(int x = 0; x < gridCols; ++x){
+            //ordonnancement linéaire de la grille
+            int idx = y * gridCols + x;
+
+            //calcul de la moyenne des voisins
+            float mean = 0.0f;
+            for(int oy = -1; oy <= 1; ++oy){
+                for(int ox = -1; ox <= 1; ++ox){
+                    if(ox == 0 && oy == 0) continue;
+                    if(cells[idx].bh() && oy == -1) continue;
+                    if(cells[idx].bb() && oy == 1) continue;
+                    if(cells[idx].bg() && ox == -1) continue;
+                    if(cells[idx].bd() && ox == 1) continue;
+                    int nx = x + ox;
+                    int ny = y + oy;
+                    mean += cells[nx + ny * gridCols].temperature;
+                }
+            }
+            //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
+            mean /= cells[idx].nbVoisins();
+            //update
+            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
+            //changement de couleur
+            //heatCells(shaderProgram, cells[idx], mean);
+        
+            //Askip le rendemendent je dois le faire dans la boucle de rendue... ici seulement calculs
+        }
+    }
+    // passe le contenu de CellsNext dans Cells
+    cells.swap(cellsNext);
+    /*for(int i = 0; i < gridCols * gridRows; ++i){
+        
+    }*/
+    /*glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    */
+}
+
+
 int main(int argc, char* argv[]){
-    glfwInit();
+    //ça c'est si on demande la précision :D
+    /*std::string prec;
+    std::cout << "Which precision for the display ? (from 50 to 200)\n";
+    std::cin >> prec;*/
+    //mais on la demande pas ;)
+    std::string prec = "100";
+    
+    //glfwInit();
+    //après erreur de génération : tests :
+    if (!glfwInit()) {
+        std::cerr << "GLFW init failed" << std::endl;
+    return -1;
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -256,6 +294,32 @@ int main(int argc, char* argv[]){
     " FragColor = color;\n"
     "}\0";
 
+    const char *vertexShaderSourceCells = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 vColor;\n"
+    "void main()\n"
+    "{\n"
+    "    vColor = aColor;\n"
+    "    gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+
+    //FS rudimentaire pour cellules
+    /*const char *fragmentShaderSourceCells = "#version 330 core\n"
+    "in vec3 vColor;\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = vec4(vColor, 1.0);\n"
+    "}\0";*/
+
+    const char *fragmentShaderSourceCells = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "uniform vec4 color;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = color;\n"
+    "}\0";
 
 //création objet Shader
     unsigned int fragmentShader;
@@ -268,30 +332,48 @@ int main(int argc, char* argv[]){
     //compilation
     glCompileShader(fragmentShader);
     glCompileShader(fragmentShaderGrid);
+    
+    // Compile cells shaders
+    unsigned int vertexShaderCells;
+    unsigned int fragmentShaderCells;
+    vertexShaderCells = glCreateShader(GL_VERTEX_SHADER);
+    fragmentShaderCells = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(vertexShaderCells, 1, &vertexShaderSourceCells, NULL);
+    glShaderSource(fragmentShaderCells, 1, &fragmentShaderSourceCells, NULL);
+    glCompileShader(vertexShaderCells);
+    glCompileShader(fragmentShaderCells);
 
     //Creer objet programme
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
     unsigned int shaderProgramGrid;
     shaderProgramGrid = glCreateProgram();
+    unsigned int shaderProgramCells;
+    shaderProgramCells = glCreateProgram();
 
     //attache les objets au programme
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glAttachShader(shaderProgramGrid, vertexShaderGrid);
     glAttachShader(shaderProgramGrid, fragmentShaderGrid);
+    glAttachShader(shaderProgramCells, vertexShaderCells);
+    glAttachShader(shaderProgramCells, fragmentShaderCells);
     glLinkProgram(shaderProgram);
     glLinkProgram(shaderProgramGrid);
+    glLinkProgram(shaderProgramCells);
 
     //appel au programme 
     glUseProgram(shaderProgram);
     glUseProgram(shaderProgramGrid);
+    glUseProgram(shaderProgramCells);
 
     //On supprime les objets après les avoir attaché
     glDeleteShader(vertexShader);
     glDeleteShader(vertexShaderGrid);
     glDeleteShader(fragmentShader);
     glDeleteShader(fragmentShaderGrid);
+    glDeleteShader(vertexShaderCells);
+    glDeleteShader(fragmentShaderCells);
 
     //On précise à OpenGL comment interpréter nos données pour les afficher
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),  (void*)0);
@@ -340,10 +422,17 @@ int main(int argc, char* argv[]){
     glUniform1f(loc_scale, 1.0f);
 
     //génère grille ou pas
-    generate_grid(10, 15);
+    //generate_grid(10, 15);
+
+    // Initialize cell grid for Game of Life-like animation
+    initCellsGrid(std::stoi(prec), std::stoi(prec));
+    gridCols = std::stoi(prec);
+    gridRows = std::stoi(prec);
+    randomizeCells();
+    //lastStepTime = std::chrono::steady_clock::now();
 
 
-    //render loop (maintient la fenêtre ouverte, une loop = une frame)
+//render loop (maintient la fenêtre ouverte, une loop = une frame)
     //se divise en 4 parties : nettoyage, input, render puis cloture
     while(!glfwWindowShouldClose(window)){
     //P1 : nettoyage
@@ -352,27 +441,58 @@ int main(int argc, char* argv[]){
         
         
     //P2 : gestion input clavier
+        //Basiques
         bool moveRight = false;
         bool moveLeft = false;
         bool moveUp = false;
         bool moveDown = false;
         processInput(window, &moveRight, &moveLeft, &moveUp, &moveDown);
+        //Simulation
+        static bool lastSpacePressed = false;
+        static bool lastRPressed = false;
+        static bool lastNPressed = false;
+        bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+        bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
+        bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
 
     //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
 
+        // Dessine les cellules
+        glUseProgram(shaderProgramCells);
+        for (const Cell& c : cells) {
+            glBindVertexArray(c.VAO1);
+            //une des deux fonctions ne marche pas
+            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+            //heatTriangle(shaderProgram, c.temperature);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            glBindVertexArray(c.VAO2);
+            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+            //heatTriangle(shaderProgram, c.temperature);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+        //old method
+        /*
+        glBindVertexArray(cellsVAO);
+        if(cellsVertexCount > 0){
+            glDrawArrays(GL_TRIANGLES, 0, cellsVertexCount);
+        }*/
+
+        //on s'en blc de la grille déssinée
+        /*
         //Dessine la grille
-        
         glUseProgram(shaderProgramGrid);
         if (gridVAO != 0 && gridVertexCount > 0) {
             glLineWidth(1.5f); //épaisseur des lignes
             glBindVertexArray(gridVAO);
             glDrawArrays(GL_LINES, 0, gridVertexCount);
-        }
+        }*/
 
         //dessin du triangle
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
+        //Plus besoin
+        //glUseProgram(shaderProgram);
+        //glBindVertexArray(VAO);
         
         // Accumuler la dilatation et la température
         if(moveUp){    
@@ -395,6 +515,8 @@ int main(int argc, char* argv[]){
         glUniform1f(loc_scale, currentScale);
         glUniform4f(loc_offset, 0.0f, 0.0f, 0.0f, 0.0f);
         
+        //ancien tests triangle
+        /*
         if(moveRight){    
             setTriangleColorRand(shaderProgram);
         }
@@ -402,7 +524,7 @@ int main(int argc, char* argv[]){
             currentScale = 1.0f;  // Annuler la dilatation quand on tourne
             makeTriangleSpin(shaderProgram, (float)glfwGetTime());
         }
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);*/
         
         
     //P4 : fin render loop
@@ -410,10 +532,27 @@ int main(int argc, char* argv[]){
         glfwSwapBuffers(window);
         //vérifie si un input a été trigger
         glfwPollEvents();
+
+        // Contrôles de la simulation, à editer si besoin
+        if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
+        if(rPressed && !lastRPressed){ randomizeCells(); }
+        if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCells); }
+        lastSpacePressed = spacePressed;
+        lastRPressed = rPressed;
+        lastNPressed = nPressed;
+
+        // Simulation stepping
+        if(simRunning){
+            auto now = std::chrono::steady_clock::now();
+            std::chrono::duration<float> diff = now - lastStepTime;
+            if(diff.count() >= simStepSeconds){
+                updateSimulation(shaderProgramCells);
+                lastStepTime = now;
+            }
+        }
     }
 
     printf("fenêtre de fluides fermée\n");
     glfwTerminate();
     return 0;
 }
-

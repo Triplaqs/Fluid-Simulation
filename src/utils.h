@@ -1,0 +1,94 @@
+#ifndef UTILS_H
+#define UTILS_H
+
+//openGL
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+//utiles
+#include <random>
+#include <ctime>
+#include <vector>
+#include <chrono>
+
+//Variables globales nécessaires pour structures:
+
+//dimension de la grille par défaut
+extern int gridCols;
+extern int gridRows;
+
+//Structures :
+
+//Structure pour manipuler points
+typedef struct Vec4 {
+    double x;
+    double y;
+    double z;
+    double w;
+} Vec4;
+
+//Structure pour champ vectoriel 2D
+typedef struct Vec2{
+    double x;
+    double y;
+} Vec2;
+
+//nouvelle structure de cellulle
+typedef struct Cell {
+    unsigned int VAO1;  // VAO du premier triangle
+    unsigned int VAO2;  // VAO du deuxième triangle
+    unsigned int VBO1;  // VBO du premier triangle
+    unsigned int VBO2;  // VBO du deuxième triangle
+    float temperature = 0.0f; // température de la cellule (0.0f à 1.0f) (sera le facteur dans les fonctions heat)
+    Vec2 vect = {0.0, 0.0}; // vecteur de la case
+    float pression = 0.0f; // pression de la cellule
+    float concentration = 0.0f; //concentration de la cellule
+    int x,y; // position dans la grille
+    //indique si c'est un bord ou non, afin de mieux manipuler les cases en bord de grille
+    bool bh(){return x == 0.0;};
+    bool bb(){return x == gridRows-1;};
+    bool bg(){return y == 0.0;};
+    bool bd(){return y == gridCols-1;};
+    int nbVoisins(){
+        int nb = 8;
+        if(bh() || bb()) nb -= 3;
+        if(bg() || bd()) nb -=3;
+        if((bh() && bg()) || (bh() && bd()) || (bb() && bg()) || (bb() && bd())) nb += 1; 
+        return nb;
+    } // nombre de voisins (utile pour les bords)
+} Cell;
+
+
+//Variables globales :
+
+// Ajout : handles pour la grille
+extern unsigned int gridVAO;
+extern unsigned int gridVBO;
+extern int gridVertexCount;
+
+//essai avec création de cellule, mise en suspend
+/*
+// Cellule de la grille de simulation
+unsigned int cellsVAO = 0;
+unsigned int cellsVBO = 0;     // positions
+unsigned int cellsCBO = 0;     // colors
+int cellsVertexCount = 0;      // number of vertices (6 * cols * rows)
+*/
+
+extern std::vector<Cell> cells;      // vecteur des cellules (tableau)
+extern std::vector<Cell> cellsNext;  // next state
+//std::vector<float> cellVertices; // per-vertex positions
+//std::vector<float> cellColors;   // per-vertex colors (rgb)
+extern bool simRunning; // start running by default
+extern float simStepSeconds;
+extern std::chrono::steady_clock::time_point lastStepTime;
+
+// Vertices du triangle (global)
+extern float vertices[9];
+
+// État de la dilatation (accumulation)
+extern float currentScale;
+// État de la température (accumulation)
+extern float currentHeat;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
+
+
+#endif
