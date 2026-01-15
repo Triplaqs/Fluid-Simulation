@@ -3,7 +3,7 @@ Programmation project for the third year of double licence Mathematics/Computer 
 
 ### Here a sample of the simulation (Thermal convection) :
 The Simulation can be reset by pressing 'R'.\
-![Simulation](./Results/changing.gif)\
+![Simulation](./Results/changing.gif)
 
 ### Here some of the steps displayed during simulation :
 Setting pixels to a random temperature.\
