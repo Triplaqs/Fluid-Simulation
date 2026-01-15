@@ -2,9 +2,9 @@
 Programmation project for the third year of double licence Mathematics/Computer sciences at the University of Montpellier.
 
 ### Here a sample of the simulation (Thermal convection) :
-![Simulation](./results/changing.gif)
+![Simulation](./Results/changing.gif)
 
 ### Here some of the steps displayed during simulation :
-![Random](./results/random.png)
-![change](./results/change.png)
-![final](./results/final.png)
+![Random](./Results/random.png)
+![change](./Results/change.png)
+![final](./Results/final.png)
