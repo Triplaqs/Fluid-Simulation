@@ -113,3 +113,40 @@ void randomizeCells(){
     glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
+
+
+//Met à jour la simulation (diffusion)
+void updateSimulation(unsigned int shaderProgram){
+    //float newVals[gridRows][gridCols]; (pas besoin de matrice)
+    for(int y = 0; y < gridRows; ++y){
+        for(int x = 0; x < gridCols; ++x){
+            //ordonnancement linéaire de la grille
+            int idx = y * gridCols + x;
+
+            //calcul de la moyenne des voisins
+            float mean = 0.0f;
+            for(int oy = -1; oy <= 1; ++oy){
+                for(int ox = -1; ox <= 1; ++ox){
+                    if(ox == 0 && oy == 0) continue;
+                    if(cells[idx].bh() && oy == -1) continue;
+                    if(cells[idx].bb() && oy == 1) continue;
+                    if(cells[idx].bg() && ox == -1) continue;
+                    if(cells[idx].bd() && ox == 1) continue;
+                    int nx = x + ox;
+                    int ny = y + oy;
+                    mean += cells[nx + ny * gridCols].temperature;
+                }
+            }
+            //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
+            mean /= cells[idx].nbVoisins();
+            //update
+            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
+            //changement de couleur
+            //heatCells(shaderProgram, cells[idx], mean);
+        
+            //Askip le rendemendent je dois le faire dans la boucle de rendue... ici seulement calculs
+        }
+    }
+    // passe le contenu de CellsNext dans Cells
+    cells.swap(cellsNext);
+}

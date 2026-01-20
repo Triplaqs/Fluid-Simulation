@@ -13,4 +13,7 @@ void initCellsGrid(int gridWidth=100, int gridHeight=100);
 // Remplissage des cellules aléatoirement
 void randomizeCells();
 
+//Met à jour la simulation (diffusion)
+void updateSimulation(unsigned int shaderProgram);
+
 #endif 

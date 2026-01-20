@@ -45,96 +45,6 @@ void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft, bool* mov
     *moveDown = (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS);
 }
 
-
-
-//créait une grille affichée dans la fenêtre (affichage seulement)
-void generate_grid(int scalev = 20, int scaleh = 20){
-    // crée des lignes dans l'espace clip [-1,1] en X et Y
-    std::vector<float> verts;
-    verts.reserve((scaleh+1 + scalev+1) * 2 * 3);
-
-    // lignes verticales
-    for (int i = 0; i <= scaleh; ++i){
-        float x = -1.0f + 2.0f * i / (float)scaleh;
-        verts.push_back(x); verts.push_back(-1.0f); verts.push_back(0.0f);
-        verts.push_back(x); verts.push_back( 1.0f); verts.push_back(0.0f);
-    }
-    // lignes horizontales
-    for (int j = 0; j <= scalev; ++j){
-        float y = -1.0f + 2.0f * j / (float)scalev;
-        verts.push_back(-1.0f); verts.push_back(y); verts.push_back(0.0f);
-        verts.push_back( 1.0f); verts.push_back(y); verts.push_back(0.0f);
-    }
-
-    gridVertexCount = (int)verts.size() / 3;
-
-    glGenVertexArrays(1, &gridVAO);
-    glGenBuffers(1, &gridVBO);
-
-    glBindVertexArray(gridVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
-    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-
-
-/*Cell createCellOld(float x0, float y0, float x1, float y1) {
-    Cell cell;
-    cell.x = (x0 + x1) / 2.0f;
-    cell.y = (y0 + y1) / 2.0f;
-    cell.temperature = 0.0f;
-    
-    // Triangle 1 :  bas-gauche, bas-droit, haut-droit
-    float vertices1[] = {
-        x0, y0, 0.0f,
-        x1, y0, 0.0f,
-        x1, y1, 0.0f
-    };
-    
-    // Triangle 2 : bas-gauche, haut-droit, haut-gauche
-    float vertices2[] = {
-        x0, y0, 0.0f,
-        x1, y1, 0.0f,
-        x0, y1, 0.0f
-    };
-    
-    // === Création Triangle 1 ===
-    glGenVertexArrays(1, &cell.VAO1);
-    glGenBuffers(1, &cell.VBO1);
-    
-    glBindVertexArray(cell.VAO1);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // === Création Triangle 2 ===
-    glGenVertexArrays(1, &cell.VAO2);
-    glGenBuffers(1, &cell.VBO2);
-    
-    glBindVertexArray(cell.VAO2);
-    glBindBuffer(GL_ARRAY_BUFFER, cell.VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    return cell;
-}*/
-
-
-
-
 //Met à jour la simulation (diffusion)
 void updateSimulation(unsigned int shaderProgram){
     //float newVals[gridRows][gridCols]; (pas besoin de matrice)
@@ -169,13 +79,6 @@ void updateSimulation(unsigned int shaderProgram){
     }
     // passe le contenu de CellsNext dans Cells
     cells.swap(cellsNext);
-    /*for(int i = 0; i < gridCols * gridRows; ++i){
-        
-    }*/
-    /*glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
 }
 
 
