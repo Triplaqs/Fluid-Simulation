@@ -12,10 +12,11 @@ target_include_directories(glad PUBLIC glad/include)
 
 # ---- Compile your executable
 add_executable(out
-    src/main.cpp
-    src/display.cpp
-    src/fluides.cpp
+    src/utils.cpp
     src/interaction.cpp
+    src/fluides.cpp
+    src/display.cpp
+    src/main.cpp
 )
 
 # Include headers from src/

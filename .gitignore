@@ -11,7 +11,6 @@
 .DS_Store
 *.swp
 *.vscode/
-<<<<<<< HEAD
 
 ##Latex en plus :
 *.gz
@@ -342,5 +341,3 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
-=======
->>>>>>> ce4f1e2 (Add .gitignore to exclude build and temp files)
