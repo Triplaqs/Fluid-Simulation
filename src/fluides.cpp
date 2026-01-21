@@ -127,7 +127,7 @@ void updateSimulation(unsigned int shaderProgram){
             float mean = 0.0f;
             for(int oy = -1; oy <= 1; ++oy){
                 for(int ox = -1; ox <= 1; ++ox){
-                    if(ox == 0 && oy == 0) continue;
+                    //if(ox == 0 && oy == 0) continue; //on prend la valeur du milieu aussi
                     if(cells[idx].bh() && oy == -1) continue;
                     if(cells[idx].bb() && oy == 1) continue;
                     if(cells[idx].bg() && ox == -1) continue;
@@ -138,7 +138,7 @@ void updateSimulation(unsigned int shaderProgram){
                 }
             }
             //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
-            mean /= cells[idx].nbVoisins();
+            mean /= cells[idx].nbVoisins()+1; //+1 car ya celle du milieu aussi
             //update
             cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
             //changement de couleur
