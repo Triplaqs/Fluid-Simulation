@@ -125,10 +125,10 @@ void updateSimulation(unsigned int shaderProgram){
             for(int oy = -1; oy <= 1; ++oy){
                 for(int ox = -1; ox <= 1; ++ox){
                     //if(ox == 0 && oy == 0) continue; //on prend la valeur du milieu aussi
-                    if(cells[idx].bh() && oy == -1) continue;
-                    if(cells[idx].bb() && oy == 1) continue;
-                    if(cells[idx].bg() && ox == -1) continue;
-                    if(cells[idx].bd() && ox == 1) continue;
+                    if(cells[idx].bh() && ox == -1) continue;
+                    if(cells[idx].bb() && ox == 1) continue;
+                    if(cells[idx].bg() && oy == -1) continue;
+                    if(cells[idx].bd() && oy == 1) continue;
                     int nx = x + ox;
                     int ny = y + oy;
                     mean += cells[nx + ny * gridCols].temperature;
