@@ -45,42 +45,6 @@ void processInput(GLFWwindow *window, bool* moveRight, bool* moveLeft, bool* mov
     *moveDown = (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS);
 }
 
-//Met à jour la simulation (diffusion)
-void updateSimulation(unsigned int shaderProgram){
-    //float newVals[gridRows][gridCols]; (pas besoin de matrice)
-    for(int y = 0; y < gridRows; ++y){
-        for(int x = 0; x < gridCols; ++x){
-            //ordonnancement linéaire de la grille
-            int idx = y * gridCols + x;
-
-            //calcul de la moyenne des voisins
-            float mean = 0.0f;
-            for(int oy = -1; oy <= 1; ++oy){
-                for(int ox = -1; ox <= 1; ++ox){
-                    if(ox == 0 && oy == 0) continue;
-                    if(cells[idx].bh() && oy == -1) continue;
-                    if(cells[idx].bb() && oy == 1) continue;
-                    if(cells[idx].bg() && ox == -1) continue;
-                    if(cells[idx].bd() && ox == 1) continue;
-                    int nx = x + ox;
-                    int ny = y + oy;
-                    mean += cells[nx + ny * gridCols].temperature;
-                }
-            }
-            //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
-            mean /= cells[idx].nbVoisins();
-            //update
-            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
-            //changement de couleur
-            //heatCells(shaderProgram, cells[idx], mean);
-        
-            //Askip le rendemendent je dois le faire dans la boucle de rendue... ici seulement calculs
-        }
-    }
-    // passe le contenu de CellsNext dans Cells
-    cells.swap(cellsNext);
-}
-
 
 int main(int argc, char* argv[]){
     //ça c'est si on demande la précision :D
@@ -206,15 +170,6 @@ int main(int argc, char* argv[]){
     "    vColor = aColor;\n"
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
-
-    //FS rudimentaire pour cellules
-    /*const char *fragmentShaderSourceCells = "#version 330 core\n"
-    "in vec3 vColor;\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "    FragColor = vec4(vColor, 1.0);\n"
-    "}\0";*/
 
     const char *fragmentShaderSourceCells = "#version 330 core\n"
     "out vec4 FragColor;\n"
@@ -374,28 +329,7 @@ int main(int argc, char* argv[]){
             setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
             //heatTriangle(shaderProgram, c.temperature);
             glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-        //old method
-        /*
-        glBindVertexArray(cellsVAO);
-        if(cellsVertexCount > 0){
-            glDrawArrays(GL_TRIANGLES, 0, cellsVertexCount);
-        }*/
-
-        //on s'en blc de la grille déssinée
-        /*
-        //Dessine la grille
-        glUseProgram(shaderProgramGrid);
-        if (gridVAO != 0 && gridVertexCount > 0) {
-            glLineWidth(1.5f); //épaisseur des lignes
-            glBindVertexArray(gridVAO);
-            glDrawArrays(GL_LINES, 0, gridVertexCount);
-        }*/
-
-        //dessin du triangle
-        //Plus besoin
-        //glUseProgram(shaderProgram);
-        //glBindVertexArray(VAO);
+        }
         
         // Accumuler la dilatation et la température
         if(moveUp){    
@@ -417,17 +351,6 @@ int main(int argc, char* argv[]){
         glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
         glUniform1f(loc_scale, currentScale);
         glUniform4f(loc_offset, 0.0f, 0.0f, 0.0f, 0.0f);
-        
-        //ancien tests triangle
-        /*
-        if(moveRight){    
-            setTriangleColorRand(shaderProgram);
-        }
-        if(moveLeft){    
-            currentScale = 1.0f;  // Annuler la dilatation quand on tourne
-            makeTriangleSpin(shaderProgram, (float)glfwGetTime());
-        }
-        glDrawArrays(GL_TRIANGLES, 0, 3);*/
         
         
     //P4 : fin render loop

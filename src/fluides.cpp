@@ -12,8 +12,6 @@
 #include "fluides.h"
 
 
-
-
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH){
     Cell cell;
@@ -118,27 +116,26 @@ void randomizeCells(){
 //Met à jour la simulation (diffusion)
 void updateSimulation(unsigned int shaderProgram){
     //float newVals[gridRows][gridCols]; (pas besoin de matrice)
-    for(int y = 0; y < gridRows; ++y){
-        for(int x = 0; x < gridCols; ++x){
+    for(int x = 0; x < gridCols; ++x){    
+        for(int y = 0; y < gridRows; ++y){
             //ordonnancement linéaire de la grille
             int idx = y * gridCols + x;
-
             //calcul de la moyenne des voisins
             float mean = 0.0f;
             for(int oy = -1; oy <= 1; ++oy){
                 for(int ox = -1; ox <= 1; ++ox){
-                    if(ox == 0 && oy == 0) continue;
-                    if(cells[idx].bh() && oy == -1) continue;
-                    if(cells[idx].bb() && oy == 1) continue;
-                    if(cells[idx].bg() && ox == -1) continue;
-                    if(cells[idx].bd() && ox == 1) continue;
+                    //if(ox == 0 && oy == 0) continue; //on prend la valeur du milieu aussi
+                    if(cells[idx].bh() && ox == -1) continue;
+                    if(cells[idx].bb() && ox == 1) continue;
+                    if(cells[idx].bg() && oy == -1) continue;
+                    if(cells[idx].bd() && oy == 1) continue;
                     int nx = x + ox;
                     int ny = y + oy;
                     mean += cells[nx + ny * gridCols].temperature;
                 }
             }
             //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
-            mean /= cells[idx].nbVoisins();
+            mean /= cells[idx].nbVoisins()+1; //+1 car ya celle du milieu aussi
             //update
             cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
             //changement de couleur

@@ -9,12 +9,16 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
+//#include <tuple>
 
 //Variables globales nécessaires pour structures:
 
 //dimension de la grille par défaut
 extern int gridCols;
 extern int gridRows;
+
+extern float cellHgt; //calcule la hauteur/largeur d'une cellule afin de normaliser les vecteur pour l'affichage du champ vect
+extern float cellWdt;
 
 //Structures :
 
@@ -42,12 +46,14 @@ typedef struct Cell {
     Vec2 vect = {0.0, 0.0}; // vecteur de la case
     float pression = 0.0f; // pression de la cellule
     float concentration = 0.0f; //concentration de la cellule
-    int x,y; // position dans la grille
+    int x,y; // position dans la grill
+
     //indique si c'est un bord ou non, afin de mieux manipuler les cases en bord de grille
     bool bh(){return x == 0.0;};
     bool bb(){return x == gridRows-1;};
     bool bg(){return y == 0.0;};
     bool bd(){return y == gridCols-1;};
+
     int nbVoisins(){
         int nb = 8;
         if(bh() || bb()) nb -= 3;
@@ -55,7 +61,21 @@ typedef struct Cell {
         if((bh() && bg()) || (bh() && bd()) || (bb() && bg()) || (bb() && bd())) nb += 1; 
         return nb;
     } // nombre de voisins (utile pour les bords)
+
+    std::tuple<Vec2, Vec2> get_vec_pts(){
+        std::tuple<Vec2, Vec2> vec;
+        return vec;
+    }
 } Cell;
+
+typedef struct Grid{
+    std::vector<Cell> grid;
+    int taille = 100*100;
+
+    void set_vec_rand(){
+        return;  //à compléter avec la fonction de Gaëlle
+    }
+}Grid;
 
 
 //Variables globales :
