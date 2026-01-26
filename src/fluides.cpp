@@ -12,8 +12,6 @@
 #include "fluides.h"
 
 
-
-
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH){
     Cell cell;
@@ -118,11 +116,10 @@ void randomizeCells(){
 //Met à jour la simulation (diffusion)
 void updateSimulation(unsigned int shaderProgram){
     //float newVals[gridRows][gridCols]; (pas besoin de matrice)
-    for(int y = 0; y < gridRows; ++y){
-        for(int x = 0; x < gridCols; ++x){
+    for(int x = 0; x < gridCols; ++x){    
+        for(int y = 0; y < gridRows; ++y){
             //ordonnancement linéaire de la grille
             int idx = y * gridCols + x;
-
             //calcul de la moyenne des voisins
             float mean = 0.0f;
             for(int oy = -1; oy <= 1; ++oy){

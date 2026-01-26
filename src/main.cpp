@@ -329,28 +329,7 @@ int main(int argc, char* argv[]){
             setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
             //heatTriangle(shaderProgram, c.temperature);
             glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-        //old method
-        /*
-        glBindVertexArray(cellsVAO);
-        if(cellsVertexCount > 0){
-            glDrawArrays(GL_TRIANGLES, 0, cellsVertexCount);
-        }*/
-
-        //on s'en blc de la grille déssinée
-        /*
-        //Dessine la grille
-        glUseProgram(shaderProgramGrid);
-        if (gridVAO != 0 && gridVertexCount > 0) {
-            glLineWidth(1.5f); //épaisseur des lignes
-            glBindVertexArray(gridVAO);
-            glDrawArrays(GL_LINES, 0, gridVertexCount);
-        }*/
-
-        //dessin du triangle
-        //Plus besoin
-        //glUseProgram(shaderProgram);
-        //glBindVertexArray(VAO);
+        }
         
         // Accumuler la dilatation et la température
         if(moveUp){    
