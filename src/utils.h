@@ -64,6 +64,7 @@ typedef struct Cell {
 
     std::tuple<Vec2, Vec2> get_vec_pts(){
         std::tuple<Vec2, Vec2> vec;
+        return vec;
     }
 } Cell;
 
