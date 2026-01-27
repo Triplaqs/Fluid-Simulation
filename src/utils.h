@@ -70,6 +70,8 @@ typedef struct Cell {
 } Cell;
 
 typedef struct Grid{
+    int aff_mode = 0;
+    int mode_max = 0;
     std::vector<Cell> grid;
     int taille = 100*100;
 
