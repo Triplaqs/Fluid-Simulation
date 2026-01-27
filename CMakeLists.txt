@@ -16,6 +16,7 @@ add_executable(out
     src/interaction.cpp
     src/fluides.cpp
     src/display.cpp
+    src/matrix.cpp
     src/main.cpp
 )
 
