@@ -107,60 +107,7 @@ int main(int argc, char* argv[]){
     //GL_DYNAMIC_DRAW : la donnée est changée et utilisée plusieurs fois
     
 //DEF DES SHADERS
-    //Def de Shader (basique) à travers un C String
-    const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform vec4 u_centroid;\n" // centre autour duquel on scale
-    "uniform float u_scale;  \n" // 1.05 ou 0.95
-    "uniform vec4 offset; \n"    
-    "void main()\n"
-    "{\n"
-    "vec4 centered = vec4(aPos, 1.0) - u_centroid;\n"
-    "vec4 scaled = u_centroid + u_scale * centered;\n"
-    " gl_Position = scaled + offset;\n"
-    "}\0";
-
-
-    const char *vertexShaderSourceGrid = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform vec4 offset;\n"
-    "void main()\n"
-    "{\n"
-    " gl_Position = vec4(aPos + offset.xyz, 1.0);\n"
-    "}\0";
-
-    //création objet Shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER); // -> type de shader
-    unsigned int vertexShaderGrid;
-    vertexShaderGrid = glCreateShader(GL_VERTEX_SHADER);
-
-    //Association de l'objet et de notre shader
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glShaderSource(vertexShaderGrid, 1, &vertexShaderSourceGrid, NULL);
-    //compilation
-    glCompileShader(vertexShader);
-    glCompileShader(vertexShaderGrid);
-
-    //Idem que le vertex shader mais avec la couleur
-    //Def de Shader 
-    const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 color = vec4(1.0f, 0.2f, 0.2f, 1.0f);\n"
-    "void main()\n"
-    "{\n"
-    " FragColor = color;\n"
-    "}\0";
-//vec4(1.0f, 0.2f, 0.2f, 1.0f)
-
-    const char *fragmentShaderSourceGrid = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 color=vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-    "void main()\n"
-    "{\n"
-    " FragColor = color;\n"
-    "}\0";
-
+    //Def de Shader (basique) à travers un C Strings
     const char *vertexShaderSourceCells = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
@@ -170,7 +117,8 @@ int main(int argc, char* argv[]){
     "    vColor = aColor;\n"
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
-
+    
+    //Idem que le vertex shader mais avec la couleur
     const char *fragmentShaderSourceCells = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "uniform vec4 color;\n"
@@ -179,17 +127,19 @@ int main(int argc, char* argv[]){
     "    FragColor = color;\n"
     "}\0";
 
-//création objet Shader
-    unsigned int fragmentShader;
-    unsigned int fragmentShaderGrid;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // -> type de shader
-    fragmentShaderGrid = glCreateShader(GL_FRAGMENT_SHADER);
+    //création objet Shader
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER); // -> type de shader
+
     //Association de l'objet et de notre shader
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glShaderSource(fragmentShaderGrid, 1, &fragmentShaderSourceGrid, NULL);
+    //compilation
+    glCompileShader(vertexShader);
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // -> type de shader
+    //Association de l'objet et de notre shader
+    //glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     //compilation
     glCompileShader(fragmentShader);
-    glCompileShader(fragmentShaderGrid);
     
     // Compile cells shaders
     unsigned int vertexShaderCells;
@@ -204,52 +154,30 @@ int main(int argc, char* argv[]){
     //Creer objet programme
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
-    unsigned int shaderProgramGrid;
-    shaderProgramGrid = glCreateProgram();
     unsigned int shaderProgramCells;
     shaderProgramCells = glCreateProgram();
 
     //attache les objets au programme
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgramGrid, vertexShaderGrid);
-    glAttachShader(shaderProgramGrid, fragmentShaderGrid);
     glAttachShader(shaderProgramCells, vertexShaderCells);
     glAttachShader(shaderProgramCells, fragmentShaderCells);
     glLinkProgram(shaderProgram);
-    glLinkProgram(shaderProgramGrid);
     glLinkProgram(shaderProgramCells);
 
     //appel au programme 
     glUseProgram(shaderProgram);
-    glUseProgram(shaderProgramGrid);
     glUseProgram(shaderProgramCells);
 
     //On supprime les objets après les avoir attaché
     glDeleteShader(vertexShader);
-    glDeleteShader(vertexShaderGrid);
     glDeleteShader(fragmentShader);
-    glDeleteShader(fragmentShaderGrid);
     glDeleteShader(vertexShaderCells);
     glDeleteShader(fragmentShaderCells);
 
     //On précise à OpenGL comment interpréter nos données pour les afficher
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),  (void*)0);
     glEnableVertexAttribArray(0);
-
-    
-//Manipulation d'objet sans structure :
-    // 0. copy our vertices array in a buffer for OpenGL to use
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // 1. then set the vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-    (void*)0);
-    glEnableVertexAttribArray(0);
-    // 2. use our shader program when we want to render an object
-    glUseProgram(shaderProgram);
-    // 3. now draw the object
-    //someOpenGLFunctionThatDrawsOurTriangle();
 
 //Manipulation d'objet avec structure :
     unsigned int VAO;
@@ -268,19 +196,6 @@ int main(int argc, char* argv[]){
     // 4. draw the object
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
-    //someOpenGLFunctionThatDrawsOurTriangle();
-
-    // Initialiser les uniforms du dilate triangle
-    float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
-    float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
-    float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
-    GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
-    GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
-    glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
-    glUniform1f(loc_scale, 1.0f);
-
-    //génère grille ou pas
-    //generate_grid(10, 15);
 
     // Initialize cell grid for Game of Life-like animation
     initCellsGrid(std::stoi(prec), std::stoi(prec));
@@ -318,7 +233,7 @@ int main(int argc, char* argv[]){
 
         // Dessine les cellules
         glUseProgram(shaderProgramCells);
-        for (const Cell& c : cells) {
+        for (const Cell& c : cells.grid) {
             glBindVertexArray(c.VAO1);
             //une des deux fonctions ne marche pas
             setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);

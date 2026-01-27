@@ -20,19 +20,8 @@ int gridVertexCount = 0;
 //dimension de la grille par défaut
 int gridCols = 100;
 int gridRows = 100;
-
-
-//essai avec création de cellule, mise en suspend
-/*
-// Cellule de la grille de simulation
-unsigned int cellsVAO = 0;
-unsigned int cellsVBO = 0;     // positions
-unsigned int cellsCBO = 0;     // colors
-int cellsVertexCount = 0;      // number of vertices (6 * cols * rows)
-*/
-
-std::vector<Cell> cells;      // vecteur des cellules (tableau)
-std::vector<Cell> cellsNext;  // next state
+Grid cells;      // vecteur des cellules (tableau)
+Grid cellsNext;  // next state
 //std::vector<float> cellVertices; // per-vertex positions
 //std::vector<float> cellColors;   // per-vertex colors (rgb)
 bool simRunning = true; // start running by default

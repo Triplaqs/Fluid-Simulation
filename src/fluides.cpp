@@ -69,15 +69,15 @@ Cell createCell(int x, int y, float cellW, float cellH){
 void initCellsGrid(int gridWidth, int gridHeight) {
     float cellWidth = 2.0f / gridWidth;   //2.0f = longueur de la fenêtre (-1 -> 1)
     float cellHeight = 2.0f / gridHeight;   
-    cells.clear();
-    cells.reserve(gridWidth * gridHeight);
+    cells.grid.clear();
+    cells.grid.reserve(gridWidth * gridHeight);
     
     for (int j = 0; j < gridHeight; ++j) {
         for (int i = 0; i < gridWidth; ++i) {     
             // Crée et ajoute la cellule
             Cell cell = createCell(i, j, cellWidth, cellHeight);
-            cells.push_back(cell);
-            cellsNext.push_back(cell);
+            cells.grid.push_back(cell);
+            cellsNext.grid.push_back(cell);
         }
     }
 }
@@ -91,7 +91,7 @@ void randomizeCells(){
         cells[i].temperature = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     }*/
    //nouvelle DA
-   for (Cell& c : cells){
+   for (Cell& c : cells.grid){
     c.temperature = dist(rng);
    }
 /*
@@ -125,19 +125,19 @@ void updateSimulation(unsigned int shaderProgram){
             for(int oy = -1; oy <= 1; ++oy){
                 for(int ox = -1; ox <= 1; ++ox){
                     //if(ox == 0 && oy == 0) continue; //on prend la valeur du milieu aussi
-                    if(cells[idx].bh() && ox == -1) continue;
-                    if(cells[idx].bb() && ox == 1) continue;
-                    if(cells[idx].bg() && oy == -1) continue;
-                    if(cells[idx].bd() && oy == 1) continue;
+                    if(cells.grid[idx].bh() && ox == -1) continue;
+                    if(cells.grid[idx].bb() && ox == 1) continue;
+                    if(cells.grid[idx].bg() && oy == -1) continue;
+                    if(cells.grid[idx].bd() && oy == 1) continue;
                     int nx = x + ox;
                     int ny = y + oy;
-                    mean += cells[nx + ny * gridCols].temperature;
+                    mean += cells.grid[nx + ny * gridCols].temperature;
                 }
             }
             //Ici aux bords on prend de l'autre coté, par soucis de simplicité (on modifira après hein)
-            mean /= cells[idx].nbVoisins()+1; //+1 car ya celle du milieu aussi
+            mean /= cells.grid[idx].nbVoisins()+1; //+1 car ya celle du milieu aussi
             //update
-            cellsNext[idx].temperature = mean; //moyenne de toutes les cases voisines
+            cellsNext.grid[idx].temperature = mean; //moyenne de toutes les cases voisines
             //changement de couleur
             //heatCells(shaderProgram, cells[idx], mean);
         
@@ -145,5 +145,5 @@ void updateSimulation(unsigned int shaderProgram){
         }
     }
     // passe le contenu de CellsNext dans Cells
-    cells.swap(cellsNext);
+    cells.grid.swap(cellsNext.grid);
 }
