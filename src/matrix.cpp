@@ -32,6 +32,7 @@ public:
     int getHeight() const { return height; }
 };
 
+//affiche la matrice dans le terminal 
 void printMatrix(const ImageMatrix& imgMatrix) {
     for (int y = 0; y < imgMatrix.getHeight(); ++y) {
         for (int x = 0; x < imgMatrix.getWidth(); ++x) {
@@ -41,6 +42,8 @@ void printMatrix(const ImageMatrix& imgMatrix) {
     }
 };
 
+
+//Calcul le produit de convolution de input et kernel (varie selon le filtre appliqué) et le renvoie (effet de bord) dans output
 void convolutionMatrix(const ImageMatrix& input, ImageMatrix& output, std::vector<std::vector<float>> kernel) {
     //std::vector<std::vector<float>> kernel = {
         //{1/16,2/16,1/16},
