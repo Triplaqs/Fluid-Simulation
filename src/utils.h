@@ -62,6 +62,7 @@ typedef struct Cell {
         return nb;
     } // nombre de voisins (utile pour les bords)
 
+    //Génération des 2 points d'affichage pour les flèches
     std::tuple<Vec2, Vec2> get_vec_pts(){
         std::tuple<Vec2, Vec2> vec;
         return vec;
@@ -69,6 +70,8 @@ typedef struct Cell {
 } Cell;
 
 typedef struct Grid{
+    int aff_mode = 0;
+    int mode_max = 0;
     std::vector<Cell> grid;
     int taille = 100*100;
 
@@ -85,17 +88,9 @@ extern unsigned int gridVAO;
 extern unsigned int gridVBO;
 extern int gridVertexCount;
 
-//essai avec création de cellule, mise en suspend
-/*
-// Cellule de la grille de simulation
-unsigned int cellsVAO = 0;
-unsigned int cellsVBO = 0;     // positions
-unsigned int cellsCBO = 0;     // colors
-int cellsVertexCount = 0;      // number of vertices (6 * cols * rows)
-*/
 
-extern std::vector<Cell> cells;      // vecteur des cellules (tableau)
-extern std::vector<Cell> cellsNext;  // next state
+extern Grid cells;      // vecteur des cellules (tableau)
+extern Grid cellsNext;  // next state
 //std::vector<float> cellVertices; // per-vertex positions
 //std::vector<float> cellColors;   // per-vertex colors (rgb)
 extern bool simRunning; // start running by default

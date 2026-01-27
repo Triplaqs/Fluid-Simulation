@@ -107,61 +107,8 @@ int main(int argc, char* argv[]){
     //GL_DYNAMIC_DRAW : la donnée est changée et utilisée plusieurs fois
     
 //DEF DES SHADERS
-    //Def de Shader (basique) à travers un C String
-    const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform vec4 u_centroid;\n" // centre autour duquel on scale
-    "uniform float u_scale;  \n" // 1.05 ou 0.95
-    "uniform vec4 offset; \n"    
-    "void main()\n"
-    "{\n"
-    "vec4 centered = vec4(aPos, 1.0) - u_centroid;\n"
-    "vec4 scaled = u_centroid + u_scale * centered;\n"
-    " gl_Position = scaled + offset;\n"
-    "}\0";
-
-
-    const char *vertexShaderSourceGrid = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform vec4 offset;\n"
-    "void main()\n"
-    "{\n"
-    " gl_Position = vec4(aPos + offset.xyz, 1.0);\n"
-    "}\0";
-
-    //création objet Shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER); // -> type de shader
-    unsigned int vertexShaderGrid;
-    vertexShaderGrid = glCreateShader(GL_VERTEX_SHADER);
-
-    //Association de l'objet et de notre shader
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glShaderSource(vertexShaderGrid, 1, &vertexShaderSourceGrid, NULL);
-    //compilation
-    glCompileShader(vertexShader);
-    glCompileShader(vertexShaderGrid);
-
-    //Idem que le vertex shader mais avec la couleur
-    //Def de Shader 
-    const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 color = vec4(1.0f, 0.2f, 0.2f, 1.0f);\n"
-    "void main()\n"
-    "{\n"
-    " FragColor = color;\n"
-    "}\0";
-//vec4(1.0f, 0.2f, 0.2f, 1.0f)
-
-    const char *fragmentShaderSourceGrid = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 color=vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-    "void main()\n"
-    "{\n"
-    " FragColor = color;\n"
-    "}\0";
-
-    const char *vertexShaderSourceCells = "#version 330 core\n"
+    //Def de Shader (basique) à travers un C Strings
+    const char *vertexShaderSourceCellsTemp = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
     "out vec3 vColor;\n"
@@ -170,8 +117,9 @@ int main(int argc, char* argv[]){
     "    vColor = aColor;\n"
     "    gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
-
-    const char *fragmentShaderSourceCells = "#version 330 core\n"
+    
+    //Idem que le vertex shader mais avec la couleur
+    const char *fragmentShaderSourceCellsTemp = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "uniform vec4 color;\n"
     "void main()\n"
@@ -179,77 +127,38 @@ int main(int argc, char* argv[]){
     "    FragColor = color;\n"
     "}\0";
 
-//création objet Shader
-    unsigned int fragmentShader;
-    unsigned int fragmentShaderGrid;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // -> type de shader
-    fragmentShaderGrid = glCreateShader(GL_FRAGMENT_SHADER);
+    //création objet Shader
+    unsigned int vertexShaderCellsTemp;
+    unsigned int fragmentShaderCellsTemp;
+    //Definition du type de Shader
+    vertexShaderCellsTemp = glCreateShader(GL_VERTEX_SHADER);
+    fragmentShaderCellsTemp = glCreateShader(GL_FRAGMENT_SHADER);
     //Association de l'objet et de notre shader
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glShaderSource(fragmentShaderGrid, 1, &fragmentShaderSourceGrid, NULL);
+    glShaderSource(vertexShaderCellsTemp, 1, &vertexShaderSourceCellsTemp, NULL);
+    glShaderSource(fragmentShaderCellsTemp, 1, &fragmentShaderSourceCellsTemp, NULL);
     //compilation
-    glCompileShader(fragmentShader);
-    glCompileShader(fragmentShaderGrid);
-    
-    // Compile cells shaders
-    unsigned int vertexShaderCells;
-    unsigned int fragmentShaderCells;
-    vertexShaderCells = glCreateShader(GL_VERTEX_SHADER);
-    fragmentShaderCells = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(vertexShaderCells, 1, &vertexShaderSourceCells, NULL);
-    glShaderSource(fragmentShaderCells, 1, &fragmentShaderSourceCells, NULL);
-    glCompileShader(vertexShaderCells);
-    glCompileShader(fragmentShaderCells);
+    glCompileShader(vertexShaderCellsTemp);
+    glCompileShader(fragmentShaderCellsTemp);
 
     //Creer objet programme
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    unsigned int shaderProgramGrid;
-    shaderProgramGrid = glCreateProgram();
-    unsigned int shaderProgramCells;
-    shaderProgramCells = glCreateProgram();
+    unsigned int shaderProgramCellsTemp;
+    shaderProgramCellsTemp = glCreateProgram();
 
     //attache les objets au programme
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgramGrid, vertexShaderGrid);
-    glAttachShader(shaderProgramGrid, fragmentShaderGrid);
-    glAttachShader(shaderProgramCells, vertexShaderCells);
-    glAttachShader(shaderProgramCells, fragmentShaderCells);
-    glLinkProgram(shaderProgram);
-    glLinkProgram(shaderProgramGrid);
-    glLinkProgram(shaderProgramCells);
+    glAttachShader(shaderProgramCellsTemp, vertexShaderCellsTemp);
+    glAttachShader(shaderProgramCellsTemp, fragmentShaderCellsTemp);
+    glLinkProgram(shaderProgramCellsTemp);
 
     //appel au programme 
-    glUseProgram(shaderProgram);
-    glUseProgram(shaderProgramGrid);
-    glUseProgram(shaderProgramCells);
+    glUseProgram(shaderProgramCellsTemp);
 
     //On supprime les objets après les avoir attaché
-    glDeleteShader(vertexShader);
-    glDeleteShader(vertexShaderGrid);
-    glDeleteShader(fragmentShader);
-    glDeleteShader(fragmentShaderGrid);
-    glDeleteShader(vertexShaderCells);
-    glDeleteShader(fragmentShaderCells);
+    glDeleteShader(vertexShaderCellsTemp);
+    glDeleteShader(fragmentShaderCellsTemp);
 
     //On précise à OpenGL comment interpréter nos données pour les afficher
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),  (void*)0);
     glEnableVertexAttribArray(0);
-
-    
-//Manipulation d'objet sans structure :
-    // 0. copy our vertices array in a buffer for OpenGL to use
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // 1. then set the vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-    (void*)0);
-    glEnableVertexAttribArray(0);
-    // 2. use our shader program when we want to render an object
-    glUseProgram(shaderProgram);
-    // 3. now draw the object
-    //someOpenGLFunctionThatDrawsOurTriangle();
 
 //Manipulation d'objet avec structure :
     unsigned int VAO;
@@ -266,21 +175,8 @@ int main(int argc, char* argv[]){
     glEnableVertexAttribArray(0);
     // Drawing code (in render loop) :: ..
     // 4. draw the object
-    glUseProgram(shaderProgram);
+    glUseProgram(shaderProgramCellsTemp);
     glBindVertexArray(VAO);
-    //someOpenGLFunctionThatDrawsOurTriangle();
-
-    // Initialiser les uniforms du dilate triangle
-    float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
-    float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
-    float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
-    GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
-    GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
-    glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
-    glUniform1f(loc_scale, 1.0f);
-
-    //génère grille ou pas
-    //generate_grid(10, 15);
 
     // Initialize cell grid for Game of Life-like animation
     initCellsGrid(std::stoi(prec), std::stoi(prec));
@@ -293,12 +189,12 @@ int main(int argc, char* argv[]){
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
     //se divise en 4 parties : nettoyage, input, render puis cloture
     while(!glfwWindowShouldClose(window)){
-    //P1 : nettoyage
+//P1 : nettoyage
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT); // Aussi GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT
         
         
-    //P2 : gestion input clavier
+//P2 : gestion input clavier
         //Basiques
         bool moveRight = false;
         bool moveLeft = false;
@@ -313,47 +209,49 @@ int main(int argc, char* argv[]){
         bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
         bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
 
-    //P3 : gestion du render
+//P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
 
         // Dessine les cellules
-        glUseProgram(shaderProgramCells);
-        for (const Cell& c : cells) {
-            glBindVertexArray(c.VAO1);
-            //une des deux fonctions ne marche pas
-            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
-            //heatTriangle(shaderProgram, c.temperature);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-
-            glBindVertexArray(c.VAO2);
-            setTriangleColor(shaderProgramCells, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
-            //heatTriangle(shaderProgram, c.temperature);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+        //Choisir le shader d'affichage à utiliser grâce à cells.aff
+        if(cells.aff_mode==0){
+            glUseProgram(shaderProgramCellsTemp);
+            for (const Cell& c : cells.grid) {
+                glBindVertexArray(c.VAO1);
+                //une des deux fonctions ne marche pas
+                setTriangleColor(shaderProgramCellsTemp, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+                //heatTriangle(shaderProgram, c.temperature);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+            
+                glBindVertexArray(c.VAO2);
+                setTriangleColor(shaderProgramCellsTemp, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
+                //heatTriangle(shaderProgram, c.temperature);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+            }
+        }
+        else{
+            //définir les autres shadders
         }
         
-        // Accumuler la dilatation et la température
+        
+        // Gestion inputs
         if(moveUp){    
-            currentScale *= 1.01f;  // Augmenter de 1% par frame
-            heatTriangle(shaderProgram, -0.01f);  // Augmenter la température
+            if(cells.aff_mode==cells.mode_max){
+                cells.aff_mode=0;
+            } else{
+                cells.aff_mode+=1;
+            }
         }
         if(moveDown){    
-            currentScale *= 0.99f;  // Diminuer de 1% par frame
-            heatTriangle(shaderProgram, 0.01f);  // Diminuer la température
+            if(cells.aff_mode==0){
+                cells.aff_mode=cells.mode_max;
+            } else{
+                cells.aff_mode-=1;
+            }
         }
         
-        // Réinitialiser les uniforms à chaque frame
-        float cx = (vertices[0] + vertices[3] + vertices[6]) / 3.0f;
-        float cy = (vertices[1] + vertices[4] + vertices[7]) / 3.0f;
-        float cz = (vertices[2] + vertices[5] + vertices[8]) / 3.0f;
-        GLint loc_centroid = glGetUniformLocation(shaderProgram, "u_centroid");
-        GLint loc_scale = glGetUniformLocation(shaderProgram, "u_scale");
-        GLint loc_offset = glGetUniformLocation(shaderProgram, "offset");
-        glUniform4f(loc_centroid, cx, cy, cz, 1.0f);
-        glUniform1f(loc_scale, currentScale);
-        glUniform4f(loc_offset, 0.0f, 0.0f, 0.0f, 0.0f);
         
-        
-    //P4 : fin render loop
+//P4 : fin render loop
         //met les pixels en couleur
         glfwSwapBuffers(window);
         //vérifie si un input a été trigger
@@ -362,7 +260,7 @@ int main(int argc, char* argv[]){
         // Contrôles de la simulation, à editer si besoin
         if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
         if(rPressed && !lastRPressed){ randomizeCells(); }
-        if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCells); }
+        if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCellsTemp); }
         lastSpacePressed = spacePressed;
         lastRPressed = rPressed;
         lastNPressed = nPressed;
@@ -372,7 +270,7 @@ int main(int argc, char* argv[]){
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<float> diff = now - lastStepTime;
             if(diff.count() >= simStepSeconds){
-                updateSimulation(shaderProgramCells);
+                updateSimulation(shaderProgramCellsTemp);
                 lastStepTime = now;
             }
         }
