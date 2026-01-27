@@ -128,50 +128,31 @@ int main(int argc, char* argv[]){
     "}\0";
 
     //création objet Shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER); // -> type de shader
-
-    //Association de l'objet et de notre shader
-    //compilation
-    glCompileShader(vertexShader);
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // -> type de shader
-    //Association de l'objet et de notre shader
-    //glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    //compilation
-    glCompileShader(fragmentShader);
-    
-    // Compile cells shaders
     unsigned int vertexShaderCells;
     unsigned int fragmentShaderCells;
+    //Definition du type de Shader
     vertexShaderCells = glCreateShader(GL_VERTEX_SHADER);
     fragmentShaderCells = glCreateShader(GL_FRAGMENT_SHADER);
+    //Association de l'objet et de notre shader
     glShaderSource(vertexShaderCells, 1, &vertexShaderSourceCells, NULL);
     glShaderSource(fragmentShaderCells, 1, &fragmentShaderSourceCells, NULL);
+    //compilation
     glCompileShader(vertexShaderCells);
     glCompileShader(fragmentShaderCells);
 
     //Creer objet programme
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
     unsigned int shaderProgramCells;
     shaderProgramCells = glCreateProgram();
 
     //attache les objets au programme
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
     glAttachShader(shaderProgramCells, vertexShaderCells);
     glAttachShader(shaderProgramCells, fragmentShaderCells);
-    glLinkProgram(shaderProgram);
     glLinkProgram(shaderProgramCells);
 
     //appel au programme 
-    glUseProgram(shaderProgram);
     glUseProgram(shaderProgramCells);
 
     //On supprime les objets après les avoir attaché
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
     glDeleteShader(vertexShaderCells);
     glDeleteShader(fragmentShaderCells);
 
