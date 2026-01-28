@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "interaction.h"
 #include "fluides.h"
+#include "matrix.h"
 
 
 //créait une cellule dans la grille
