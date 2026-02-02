@@ -68,3 +68,87 @@ void convolutionMatrix(const ImageMatrix& input, ImageMatrix& output, std::vecto
         }
     }
 };
+void afficheTableauDeCellules(const ImageMatrix& imgMatrix) {
+    for (int y = 0; y < imgMatrix.getHeight(); ++y) {
+        for (int x = 0; x < imgMatrix.getWidth(); ++x) {
+            float val = imgMatrix.getPixel(x, y);
+            if (val > 0.5f) {
+                std::cout << "1 ";
+            } else {
+                std::cout << "0 ";
+            }
+        }
+        std::cout << std::endl;
+    }
+};
+// test_couleur.cpp : Seuille une image en niveau de gris
+
+#include <stdio.h>
+#include "image_ppm.h"
+/*
+int main(int argc, char* argv[])
+{
+  char cNomImgLue[250], cNomImgEcrite[250];
+  int nH, nW, nTaille, S;
+  
+  if (argc != 3) 
+     {
+       printf("Usage: ImageIn.pgm ImageOut.pgm \n"); 
+       exit (1) ;
+     }
+   
+   sscanf (argv[1],"%s",cNomImgLue) ;
+   sscanf (argv[2],"%s",cNomImgEcrite);
+
+   OCTET *ImgIn, *ImgOut;
+   
+   lire_nb_lignes_colonnes_image_pgm(cNomImgLue, &nH, &nW);
+   nTaille = nH * nW;
+  
+   allocation_tableau(ImgIn, OCTET, nTaille);
+   lire_image_pgm(cNomImgLue, ImgIn, nH * nW);
+   allocation_tableau(ImgOut, OCTET, nTaille);
+	
+   //   for (int i=0; i < nTaille; i++)
+   // {
+   //  if ( ImgIn[i] < S) ImgOut[i]=0; else ImgOut[i]=255;
+   //  }
+
+    ImageMatrix inputImage(nW, nH);
+    ImageMatrix outputImage(nW, nH);
+    // Appliquer la convolution avec un noyau de flou
+    std::vector<std::vector<float>> blurKernel = {
+        {1/16.0f, 2/16.0f, 1/16.0f},
+        {2/16.0f, 4/16.0f, 2/16.0f},
+        {1/16.0f, 2/16.0f, 1/16.0f}
+    };
+// remplir inputImage depuis ImgIn (OCTET values)
+    for (int y = 0; y < nH; ++y) {
+        for (int x = 0; x < nW; ++x) {
+            int idx = y * nW + x;
+            inputImage.setPixel(x, y, (float)ImgIn[idx]);
+        }
+    }
+
+    // Appliquer la convolution avec le noyau de flou
+    convolutionMatrix(inputImage, outputImage, blurKernel);
+
+    // copier outputImage dans ImgOut (avec clamp 0..255)
+    for (int y = 0; y < nH; ++y) {
+        for (int x = 0; x < nW; ++x) {
+            int idx = y * nW + x;
+            float v = outputImage.getPixel(x, y);
+            if (v < 0.0f) v = 0.0f;
+            if (v > 255.0f) v = 255.0f;
+            ImgOut[idx] = (OCTET)(v + 0.5f);
+        }
+    }
+    printMatrix(inputImage);
+    std::cout << "------------------" << std::endl;
+    printMatrix(outputImage);
+
+   ecrire_image_pgm(cNomImgEcrite, ImgOut,  nH, nW);
+   free(ImgIn); free(ImgOut);
+
+   return 9;
+}*/
