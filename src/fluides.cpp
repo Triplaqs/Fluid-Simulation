@@ -12,6 +12,11 @@
 #include "fluides.h"
 
 
+//initialisation des variables gloables (définies dans le .h), ces variables sont utiles pour l'utilisation du shader fleche dans le main
+float cellWidth = 0.0f;
+float cellHeight = 0.0f;
+
+
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH){
     Cell cell;
@@ -110,6 +115,15 @@ void randomizeCells(){
     glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+}
+
+// Set les vecteurs aléatoirement
+void randomizeVecs(){
+    for(int i = 0; i<cells.taille; i++){
+        double u = 2.0 * rand() / RAND_MAX - 1.0;
+        double v = 2.0 * rand() / RAND_MAX - 1.0;
+        cells.grid[i].vect = {u, v};
+    }
 }
 
 

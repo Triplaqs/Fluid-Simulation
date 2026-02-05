@@ -1,6 +1,10 @@
+#include <stdio.h>
+#include <iostream>
+
 //openGL
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 //utiles
 #include <random>
 #include <ctime>
@@ -11,6 +15,11 @@
 #include "interaction.h"
 #include "fluides.h"
 #include "display.h"
+
+//Variable temps cooldown pression touche
+float start_press = -1; //-1 aucune touche préssée
+float duree_cooldown = 0.3; //cooldown entre de pression 
+float t_press=1;
 
 //Edit de rendering
 // Fonction pour éditer la position du triangle via uniform (exemple avec translation matrix) (z et w set à 0 dans le header)
@@ -87,4 +96,72 @@ void heatCells(unsigned int shaderProgram, Cell cell, float factor){
     // Appliquer la chaleur au deuxième triangle
     glBindVertexArray(cell.VAO2);
     heatTriangle(shaderProgram, factor); 
+}
+
+
+//on vient appliquer les vecteurs sur chaque cellule (pour le moment juste un trait)
+/*void drawArrow1(float x1, float y1, float x2, float y2)
+{
+    std::cout << "drawArrow called\n";
+
+    float vertices[4] = {
+        //x1, y1,
+        //x2, y2
+    };
+
+    glUseProgram(shaderProgramCellsFleche);
+
+    int colorLoc = glGetUniformLocation(shaderProgramCellsFleche, "color");
+    glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f); // noir
+
+    glBindVertexArray(flecheVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, flecheVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+    glDrawArrays(GL_LINES, 0, 2);
+
+    glBindVertexArray(0);
+}*/
+
+void drawArrow(float x1, float y1, float x2, float y2)
+{
+    glUseProgram(shaderProgramCellsFleche);
+    glBindVertexArray(flecheVAO);
+
+    float vertices[4] = {
+        x1, y1,
+        x2,  y2
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, flecheVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+    glDrawArrays(GL_LINES, 0, 2);
+}
+
+
+void affichagefleche(const Cell& c){
+    float x1 = -1.0f + 2.0f * (c.x / (float)gridCols);
+    float y1 = -1.0f + 2.0f * (c.y / (float)gridRows);
+
+    float x2 = -1.0f + 2.0f * ((c.x + 1) / (float)gridCols);
+    float y2 = -1.0f + 2.0f * ((c.y + 1) / (float)gridRows);
+
+    drawArrow(x1, y1, x2, y2);
+
+    // --- pointe de la fleche ---
+
+    // milieu bord droit
+    float x_chd = -1.0f + 2.0f * ((c.x + 1) / (float)gridCols);
+    float y_chd = -1.0f + 2.0f * ((c.y + 0.5f) / (float)gridRows);
+
+    // milieu du bord haut
+    float x_mbh = -1.0f + 2.0f * ((c.x + 0.5f) / (float)gridCols);
+    float y_mbh = -1.0f + 2.0f * ((c.y + 1) / (float)gridRows);
+
+    // deux traits pour la pointe
+    drawArrow(x2, y2, x_chd, y_chd);
+    drawArrow(x2, y2, x_mbh, y_mbh);
+
 }

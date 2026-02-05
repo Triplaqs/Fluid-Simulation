@@ -34,6 +34,12 @@ typedef struct Vec4 {
 typedef struct Vec2{
     double x;
     double y;
+    double getx(){
+        return x;
+    }
+    double gety(){
+        return y;
+    }
 } Vec2;
 
 //nouvelle structure de cellulle
@@ -71,14 +77,16 @@ typedef struct Cell {
 
 typedef struct Grid{
     int aff_mode = 0;
-    int mode_max = 0;
+    int mode_max = 1;
     std::vector<Cell> grid;
     int taille = 100*100;
 
     void set_vec_rand(){
+        
         return;  //à compléter avec la fonction de Gaëlle
     }
 }Grid;
+
 
 
 //Variables globales :
