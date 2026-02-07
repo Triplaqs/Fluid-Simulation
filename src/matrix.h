@@ -40,4 +40,6 @@ void printMatrix(const ImageMatrix& imgMatrix);
 //Calcul le produit de convolution de input et kernel (varie selon le filtre appliqué) et le renvoie (effet de bord) dans output
 void convolutionMatrix(const ImageMatrix& input, ImageMatrix& output, std::vector<std::vector<float>> kernel);
 
+void gradientSobel(const ImageMatrix& input, ImageMatrix& output);
+
 #endif // MATRIX_H

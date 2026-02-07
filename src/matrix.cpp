@@ -2,6 +2,7 @@
 #include <iostream>
 //headers
 #include "matrix.h"
+#include <math.h>
 
 //affiche la matrice dans le terminal 
 void printMatrix(const ImageMatrix& imgMatrix) {
@@ -55,11 +56,40 @@ void afficheTableauDeCellules(const ImageMatrix& imgMatrix) {
         std::cout << std::endl;
     }
 };
-// test_couleur.cpp : Seuille une image en niveau de gris
 
+void gradientSobel(const ImageMatrix& input, ImageMatrix& output) {
+    std::vector<std::vector<float>> sobelX = {
+        {-1, 0, 1},
+        {-2, 0, 2},
+        {-1, 0, 1}
+    };
+    std::vector<std::vector<float>> sobelY = {
+        {1, 2, 1},
+        {0, 0, 0},
+        {-1, -2, -1}
+    };
+
+    ImageMatrix gradX(input.getWidth(), input.getHeight());
+    ImageMatrix gradY(input.getWidth(), input.getHeight());
+
+    convolutionMatrix(input, gradX, sobelX);
+    convolutionMatrix(input, gradY, sobelY);
+
+    for (int y = 0; y < input.getHeight(); ++y) {
+        for (int x = 0; x < input.getWidth(); ++x) {
+            float gx = gradX.getPixel(x, y);
+            float gy = gradY.getPixel(x, y);
+            float magnitude = std::sqrt(gx * gx + gy * gy);
+            output.setPixel(x, y, magnitude);
+        }
+    }
+};
+
+// test_couleur.cpp : Seuille une image en niveau de gris
+/*
 #include <stdio.h>
 #include "image_ppm.h"
-/*
+
 int main(int argc, char* argv[])
 {
   char cNomImgLue[250], cNomImgEcrite[250];
