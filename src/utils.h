@@ -17,6 +17,9 @@
 extern int gridCols;
 extern int gridRows;
 
+extern int winWdt;
+extern int winHgt;
+
 extern float cellHgt; //calcule la hauteur/largeur d'une cellule afin de normaliser les vecteur pour l'affichage du champ vect
 extern float cellWdt;
 

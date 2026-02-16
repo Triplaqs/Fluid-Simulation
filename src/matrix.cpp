@@ -1,37 +1,10 @@
 #include <vector>
 #include <iostream>
+//headers
+#include "matrix.h"
+#include <math.h>
 
-class ImageMatrix {
-private:
-    std::vector<std::vector<float>> matrix;
-    int width, height;
-
-public:
-    ImageMatrix(int w, int h) : width(w), height(h) {
-        matrix.assign(height, std::vector<float>(width, 0.0f));
-    }
-
-    void setPixel(int x, int y, float value) {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            matrix[y][x] = value;
-        }
-    }
-
-    float getPixel(int x, int y) const {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            return matrix[y][x];
-        }
-        return 0.0f;
-    }
-
-    std::vector<std::vector<float>>& getMatrix() {
-        return matrix;
-    }
-
-    int getWidth() const { return width; }
-    int getHeight() const { return height; }
-};
-
+//affiche la matrice dans le terminal 
 void printMatrix(const ImageMatrix& imgMatrix) {
     for (int y = 0; y < imgMatrix.getHeight(); ++y) {
         for (int x = 0; x < imgMatrix.getWidth(); ++x) {
@@ -41,6 +14,8 @@ void printMatrix(const ImageMatrix& imgMatrix) {
     }
 };
 
+
+//Calcul le produit de convolution de input et kernel (varie selon le filtre appliqué) et le renvoie (effet de bord) dans output
 void convolutionMatrix(const ImageMatrix& input, ImageMatrix& output, std::vector<std::vector<float>> kernel) {
     //std::vector<std::vector<float>> kernel = {
         //{1/16,2/16,1/16},
@@ -68,3 +43,116 @@ void convolutionMatrix(const ImageMatrix& input, ImageMatrix& output, std::vecto
         }
     }
 };
+void afficheTableauDeCellules(const ImageMatrix& imgMatrix) {
+    for (int y = 0; y < imgMatrix.getHeight(); ++y) {
+        for (int x = 0; x < imgMatrix.getWidth(); ++x) {
+            float val = imgMatrix.getPixel(x, y);
+            if (val > 0.5f) {
+                std::cout << "1 ";
+            } else {
+                std::cout << "0 ";
+            }
+        }
+        std::cout << std::endl;
+    }
+};
+
+void gradientSobel(const ImageMatrix& input, ImageMatrix& output) {
+    std::vector<std::vector<float>> sobelX = {
+        {-1, 0, 1},
+        {-2, 0, 2},
+        {-1, 0, 1}
+    };
+    std::vector<std::vector<float>> sobelY = {
+        {1, 2, 1},
+        {0, 0, 0},
+        {-1, -2, -1}
+    };
+
+    ImageMatrix gradX(input.getWidth(), input.getHeight());
+    ImageMatrix gradY(input.getWidth(), input.getHeight());
+
+    convolutionMatrix(input, gradX, sobelX);
+    convolutionMatrix(input, gradY, sobelY);
+
+    for (int y = 0; y < input.getHeight(); ++y) {
+        for (int x = 0; x < input.getWidth(); ++x) {
+            float gx = gradX.getPixel(x, y);
+            float gy = gradY.getPixel(x, y);
+            float magnitude = std::sqrt(gx * gx + gy * gy);
+            output.setPixel(x, y, magnitude);
+        }
+    }
+};
+
+// test_couleur.cpp : Seuille une image en niveau de gris
+/*
+#include <stdio.h>
+#include "image_ppm.h"
+
+int main(int argc, char* argv[])
+{
+  char cNomImgLue[250], cNomImgEcrite[250];
+  int nH, nW, nTaille, S;
+  
+  if (argc != 3) 
+     {
+       printf("Usage: ImageIn.pgm ImageOut.pgm \n"); 
+       exit (1) ;
+     }
+   
+   sscanf (argv[1],"%s",cNomImgLue) ;
+   sscanf (argv[2],"%s",cNomImgEcrite);
+
+   OCTET *ImgIn, *ImgOut;
+   
+   lire_nb_lignes_colonnes_image_pgm(cNomImgLue, &nH, &nW);
+   nTaille = nH * nW;
+  
+   allocation_tableau(ImgIn, OCTET, nTaille);
+   lire_image_pgm(cNomImgLue, ImgIn, nH * nW);
+   allocation_tableau(ImgOut, OCTET, nTaille);
+	
+   //   for (int i=0; i < nTaille; i++)
+   // {
+   //  if ( ImgIn[i] < S) ImgOut[i]=0; else ImgOut[i]=255;
+   //  }
+
+    ImageMatrix inputImage(nW, nH);
+    ImageMatrix outputImage(nW, nH);
+    // Appliquer la convolution avec un noyau de flou
+    std::vector<std::vector<float>> blurKernel = {
+        {1/16.0f, 2/16.0f, 1/16.0f},
+        {2/16.0f, 4/16.0f, 2/16.0f},
+        {1/16.0f, 2/16.0f, 1/16.0f}
+    };
+// remplir inputImage depuis ImgIn (OCTET values)
+    for (int y = 0; y < nH; ++y) {
+        for (int x = 0; x < nW; ++x) {
+            int idx = y * nW + x;
+            inputImage.setPixel(x, y, (float)ImgIn[idx]);
+        }
+    }
+
+    // Appliquer la convolution avec le noyau de flou
+    convolutionMatrix(inputImage, outputImage, blurKernel);
+
+    // copier outputImage dans ImgOut (avec clamp 0..255)
+    for (int y = 0; y < nH; ++y) {
+        for (int x = 0; x < nW; ++x) {
+            int idx = y * nW + x;
+            float v = outputImage.getPixel(x, y);
+            if (v < 0.0f) v = 0.0f;
+            if (v > 255.0f) v = 255.0f;
+            ImgOut[idx] = (OCTET)(v + 0.5f);
+        }
+    }
+    printMatrix(inputImage);
+    std::cout << "------------------" << std::endl;
+    printMatrix(outputImage);
+
+   ecrire_image_pgm(cNomImgEcrite, ImgOut,  nH, nW);
+   free(ImgIn); free(ImgOut);
+
+   return 9;
+}*/
