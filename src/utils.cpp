@@ -28,6 +28,20 @@ int winHgt;
 float cellHgt; 
 float cellWdt;
 
+//implémentation stam
+int N = 100; //taille de notre grille
+float dt = 0.1f;
+float diff = 0.0f;
+float visc = 0.0f;
+
+std::vector<float> u;
+std::vector<float> v;
+std::vector<float> u_prev;
+std::vector<float> v_prev;
+
+std::vector<float> dens;
+std::vector<float> dens_prev;
+
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
 //std::vector<float> cellVertices; // per-vertex positions

@@ -48,7 +48,7 @@ std::vector<float> dens, dens_prev;*/
 
 
 //définition de la macro
-#define IX(i,j) ((i) + (N+2) * (j));
+//#define IX(i,j) ((i) + (N+2) * (j))
 
 
 //GESTION FENETRE

@@ -23,6 +23,18 @@ extern int winHgt;
 extern float cellHgt; //calcule la hauteur/largeur d'une cellule afin de normaliser les vecteur pour l'affichage du champ vect
 extern float cellWdt;
 
+
+extern int N;
+extern float dt, diff, visc;
+
+extern std::vector<float> u, v, u_prev, v_prev;
+extern std::vector<float> dens, dens_prev;
+
+
+//définition de la macro
+#define IX(i,j) ((i) + (N+2) * (j))
+
+
 //Structures :
 
 //Structure pour manipuler points

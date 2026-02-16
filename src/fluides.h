@@ -5,8 +5,12 @@
 
 
 
+
 extern float cellWidth;
 extern float cellHeight;
+
+
+
 
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH);
