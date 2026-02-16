@@ -34,10 +34,10 @@ typedef struct Vec4 {
 typedef struct Vec2{
     double x;
     double y;
-    double getx(){
+    double getx() const{ 
         return x;
     }
-    double gety(){
+    double gety() const{
         return y;
     }
 } Vec2;

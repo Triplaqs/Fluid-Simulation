@@ -34,6 +34,23 @@ unsigned int flecheVBO = 0;
 unsigned int shaderProgramCellsFleche = 0;
 
 
+//pour implémentation stam
+int N = 100; 
+float dt = 0.1f;
+float diff = 0.0f;
+float visc = 0.0f;
+
+std::vector<float> u, v, u_prev, v_prev;
+std::vector<float> dens, dens_prev;
+
+
+
+//définition de la macro
+#define IX(i,j) ((i) + (N+2) * (j))
+
+
+
+
 //GESTION FENETRE
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -322,6 +339,9 @@ int main(int argc, char* argv[]){
             }
         }
         else if (cells.aff_mode == 1) {
+            srand(time(nullptr));
+
+            randomizeVecs();
             // Activer le shader flèche
             glUseProgram(shaderProgramCellsFleche);
 
@@ -329,7 +349,8 @@ int main(int argc, char* argv[]){
             glBindVertexArray(flecheVAO);
 
             for (const Cell& c : cells.grid) {
-                affichagefleche(c);
+                //affichagefleche(c);
+                affichagefleche_aleatoire(c);
             }
         }
 
@@ -358,8 +379,10 @@ int main(int argc, char* argv[]){
         if(moveDown && (start_press<0.0f)){    
             start_press = currentTime;
             if(cells.aff_mode==0){
+                //randomizeVecs();
                 cells.aff_mode=cells.mode_max;
             } else{
+                //randomizeVecs();
                 cells.aff_mode-=1;
             }
         }
@@ -376,7 +399,7 @@ int main(int argc, char* argv[]){
         if(rPressed && !lastRPressed){
             start_press = -1;
             randomizeCells(); 
-            randomizeVecs();
+            //randomizeVecs();
         }
         if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCellsTemp); }
         lastSpacePressed = spacePressed;

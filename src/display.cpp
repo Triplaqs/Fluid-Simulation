@@ -165,3 +165,19 @@ void affichagefleche(const Cell& c){
     drawArrow(x2, y2, x_mbh, y_mbh);
 
 }
+
+void affichagefleche_aleatoire(const Cell& c)
+{
+    float x1 = -1.0f + 2.0f * (c.x / (float)gridCols);
+    float y1 = -1.0f + 2.0f * (c.y / (float)gridRows);
+
+    float scale = 0.4f / gridCols;
+
+    float x2 = x1 + c.vect.getx() * scale;
+    float y2 = y1 + c.vect.gety() * scale;
+
+    drawArrow(x1, y1, x2, y2);
+}
+
+
+

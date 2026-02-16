@@ -17,6 +17,35 @@ float cellWidth = 0.0f;
 float cellHeight = 0.0f;
 
 
+//pour implémentation stam
+int N = 100; //taille de notre grille
+float dt = 0.1f;
+float diff = 0.0f;
+float visc = 0.0f;
+
+std::vector<float> u, v, u_prev, v_prev;
+std::vector<float> dens, dens_prev;
+
+
+
+//définition de la macro
+#define IX(i,j) ((i) + (N+2) * (j))
+
+//on initialise le fluide avec des tableaux de 0
+void initFluid()
+{
+    int size = (N+2)*(N+2);
+
+    u.assign(size, 0.0f);
+    v.assign(size, 0.0f);
+    u_prev.assign(size, 0.0f);
+    v_prev.assign(size, 0.0f);
+
+    dens.assign(size, 0.0f);
+    dens_prev.assign(size, 0.0f);
+}
+
+
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH){
     Cell cell;

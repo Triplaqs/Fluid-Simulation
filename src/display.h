@@ -42,6 +42,8 @@ void drawArrow(float x1, float y1, float x2, float y2);
 //on dessine une fleche grace aà drawarrow
 void affichagefleche(const Cell& c);
 
+void affichagefleche_aleatoire(const Cell& c);
+
 //on dessine une fleche grace aà drawarrow
 //void _affichagefleche(const Cell& c, float cellWidth, float cellHeight);
 
