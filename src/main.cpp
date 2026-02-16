@@ -36,13 +36,13 @@ unsigned int shaderProgramCellsFleche = 0;
 
 
 //pour implémentation stam
-int N = 100; 
+/*int N = 100; 
 float dt = 0.1f;
 float diff = 0.0f;
 float visc = 0.0f;
 
 std::vector<float> u, v, u_prev, v_prev;
-std::vector<float> dens, dens_prev;
+std::vector<float> dens, dens_prev;*/
 
 
 
