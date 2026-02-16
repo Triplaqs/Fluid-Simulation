@@ -29,8 +29,7 @@ std::vector<float> dens, dens_prev;
 
 
 
-//définition de la macro
-#define IX(i,j) ((i) + (N+2) * (j))
+// IX macro now defined in fluides.h
 
 //on initialise le fluide avec des tableaux de 0
 void initFluid()

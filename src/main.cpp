@@ -35,23 +35,6 @@ unsigned int flecheVBO = 0;
 unsigned int shaderProgramCellsFleche = 0;
 
 
-//pour implémentation stam
-int N = 100; 
-float dt = 0.1f;
-float diff = 0.0f;
-float visc = 0.0f;
-
-std::vector<float> u, v, u_prev, v_prev;
-std::vector<float> dens, dens_prev;
-
-
-
-//définition de la macro
-#define IX(i,j) ((i) + (N+2) * (j))
-
-
-
-
 //GESTION FENETRE
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
