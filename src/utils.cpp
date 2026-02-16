@@ -20,6 +20,14 @@ int gridVertexCount = 0;
 //dimension de la grille par défaut
 int gridCols = 100;
 int gridRows = 100;
+//Dimensions fenêtre :
+int winWdt;
+int winHgt;
+
+//calcule la hauteur/largeur d'une cellule afin de normaliser les vecteur pour l'affichage du champ vect
+float cellHgt; 
+float cellWdt;
+
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
 //std::vector<float> cellVertices; // per-vertex positions

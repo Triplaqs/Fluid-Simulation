@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "interaction.h"
 #include "fluides.h"
+#include "matrix.h"
 
 
 //initialisation des variables gloables (définies dans le .h), ces variables sont utiles pour l'utilisation du shader fleche dans le main

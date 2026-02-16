@@ -8,6 +8,7 @@
 #include "interaction.h"
 #include "fluides.h"
 #include "display.h"
+#include "matrix.h"
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
@@ -275,6 +276,10 @@ int main(int argc, char* argv[]){
     initCellsGrid(std::stoi(prec), std::stoi(prec));
     gridCols = std::stoi(prec);
     gridRows = std::stoi(prec);
+    //ON essaye de recup les dimensions de la fenêtre
+    GLint m_viewport[4];
+    glGetIntegerv( GL_VIEWPORT, m_viewport );
+    //On set des valeurs au hasard pour la température des cellules
     randomizeCells();
     //lastStepTime = std::chrono::steady_clock::now();
 
