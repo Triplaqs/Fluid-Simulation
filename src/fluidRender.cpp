@@ -31,19 +31,19 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     // on teste ajouter une source de densité 
 
     //on choisit les coordonnées pour l'injection de la densité (en bas à gauche avec 5,5 et milieu N/2,N/2)
-    /*int i = 5;   
-    int j = 5;
+    int i = N/2;   
+    int j = N/2;
     dens_prev[IX(i, j)] = 50.0f;
     u_prev[IX(i, j)] = 50.0f;   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
     v_prev[IX(i, j)] = -50.0f;  //se diffuse vers la droite si valeur positive et vers la gauche si négative
-    */
+    
 
     // le depart est une colonne presque entiere
-    for (int i = 20; i < 80; i++){
+    /*for (int i = 20; i < 80; i++){
         dens_prev[IX(i, 20)] = 30.0f;
-        u_prev[IX(i,20)] = 50.0f;
-        v_prev[IX(i,20)] = -50.0f;
-    }
+        u_prev[IX(N/2,N/2)] = 50.0f;
+        v_prev[IX(N/2,N/2)] = -50.0f;
+    }*/
 
 
 
