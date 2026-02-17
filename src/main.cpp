@@ -9,6 +9,8 @@
 #include "fluides.h"
 #include "display.h"
 #include "matrix.h"
+#include "fluidRender.h"
+#include "fluid_solver.h"
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
@@ -287,7 +289,7 @@ int main(int argc, char* argv[]){
 
     glBindVertexArray(0);
 
-
+    init_fluid_vao_vbo();
     // Initialize cell grid for Game of Life-like animation
     initCellsGrid(std::stoi(prec), std::stoi(prec));
     gridCols = std::stoi(prec);
@@ -299,6 +301,8 @@ int main(int argc, char* argv[]){
     randomizeCells();
     //lastStepTime = std::chrono::steady_clock::now();
 
+    initFluid();
+    
 
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
     //se divise en 4 parties : nettoyage, input, render puis cloture
@@ -308,6 +312,8 @@ int main(int argc, char* argv[]){
 //P1 : nettoyage
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT); // Aussi GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT
+
+        //affichage_nouveau_fluide(shaderProgramCellsTemp);
         
         
 //P2 : gestion input clavier
@@ -330,7 +336,13 @@ int main(int argc, char* argv[]){
 
         // Dessine les cellules
         //Choisir le shader d'affichage à utiliser grâce à cells.aff
-        if(cells.aff_mode==0){
+
+
+
+
+        affichage_nouveau_fluide(shaderProgramCellsTemp);
+        //test affichage
+        /*if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
             for (const Cell& c : cells.grid) {
                 glBindVertexArray(c.VAO1);
@@ -356,7 +368,10 @@ int main(int argc, char* argv[]){
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
             }
-        }
+        }*/
+
+
+
 
         //Gestion de pression des touches :
         if(start_press >= 0.0f){
@@ -391,7 +406,6 @@ int main(int argc, char* argv[]){
             }
         }
         
-        
 //P4 : fin render loop
         //met les pixels en couleur
         glfwSwapBuffers(window);
@@ -405,17 +419,19 @@ int main(int argc, char* argv[]){
             randomizeCells(); 
             //randomizeVecs();
         }
-        if(nPressed && !lastNPressed){ updateSimulation(shaderProgramCellsTemp); }
+        if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
         lastSpacePressed = spacePressed;
         lastRPressed = rPressed;
         lastNPressed = nPressed;
+
+
 
         // Simulation stepping
         if(simRunning){
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<float> diff = now - lastStepTime;
             if(diff.count() >= simStepSeconds){
-                updateSimulation(shaderProgramCellsTemp);
+                updateSimulation_nouveau(shaderProgramCellsTemp);
                 lastStepTime = now;
             }
         }

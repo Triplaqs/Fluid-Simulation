@@ -11,15 +11,19 @@
 #include <vector>
 #include <chrono>
 //headers
-#include "utils.h"
-#include "interaction.h"
 #include "fluides.h"
+#include "utils.h"
 #include "display.h"
+#include "interaction.h"
 
 //Variable temps cooldown pression touche
 float start_press = -1; //-1 aucune touche préssée
 float duree_cooldown = 0.3; //cooldown entre de pression 
 float t_press=1;
+
+//init pour affichage 
+unsigned int cellVAO = 0;
+unsigned int cellVBO = 0;
 
 //Edit de rendering
 // Fonction pour éditer la position du triangle via uniform (exemple avec translation matrix) (z et w set à 0 dans le header)
@@ -96,6 +100,21 @@ void heatCells(unsigned int shaderProgram, Cell cell, float factor){
     // Appliquer la chaleur au deuxième triangle
     glBindVertexArray(cell.VAO2);
     heatTriangle(shaderProgram, factor); 
+}
+
+void init_fluid_vao_vbo()
+{
+    glGenVertexArrays(1, &cellVAO);
+    glGenBuffers(1, &cellVBO);
+
+    glBindVertexArray(cellVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cellVBO);
+
+    // 2 floats par vertex (x,y)
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
 }
 
 
@@ -180,4 +199,46 @@ void affichagefleche_aleatoire(const Cell& c)
 }
 
 
+void affichage_nouveau_fluide(unsigned int shaderProgram)
+{
+    //printf("STEP SIMU\n"); //OKKK ca marche
+    glUseProgram(shaderProgram);
 
+    for(int i = 1; i <= N; i++)
+    {
+        for(int j = 1; j <= N; j++)
+        {
+            float d = dens[IX(i,j)];
+            //float d = (float)i / N;  // juste un dégradé vertical pour tester affichage OKKKK ca marche 
+
+            if (d < 0.0f) d = 0.0f;
+            else if (d > 1.0f) d = 1.0f;
+
+            float r = d;
+            float g = d;
+            float b = d;
+
+            
+            float x1 = -1.0f + 2.0f * ((j-1) / (float)N);
+            float y1 = -1.0f + 2.0f * ((i-1) / (float)N);
+            float x2 = -1.0f + 2.0f * (j / (float)N);
+            float y2 = -1.0f + 2.0f * (i / (float)N);
+
+            float vertices[] = {
+                x1, y1,
+                x2, y1,
+                x2, y2,
+                x1, y2
+            };
+
+            glBindVertexArray(cellVAO);
+            glBindBuffer(GL_ARRAY_BUFFER, cellVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+            int colorLoc = glGetUniformLocation(shaderProgram, "color");
+            glUniform4f(colorLoc, r, g, b, 1.0f);
+
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        }
+    }
+}

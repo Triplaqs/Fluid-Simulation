@@ -13,13 +13,12 @@
 #include "matrix.h"
 
 
+
+
 //initialisation des variables gloables (définies dans le .h), ces variables sont utiles pour l'utilisation du shader fleche dans le main
 float cellWidth = 0.0f;
 float cellHeight = 0.0f;
 
-
-//définition de la macro
-//#define IX(i,j) ((i) + (N+2) * (j))
 
 //on initialise le fluide avec des tableaux de 0
 void initFluid()

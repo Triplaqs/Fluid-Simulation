@@ -18,6 +18,8 @@ add_executable(out
     src/display.cpp
     src/matrix.cpp
     src/main.cpp
+    src/fluidRender.cpp
+    src/fluid_solver.cpp
 )
 
 # Include headers from src/

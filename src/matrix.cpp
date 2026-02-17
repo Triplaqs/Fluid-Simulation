@@ -4,6 +4,7 @@
 #include "matrix.h"
 #include <math.h>
 
+
 //affiche la matrice dans le terminal 
 void printMatrix(const ImageMatrix& imgMatrix) {
     for (int y = 0; y < imgMatrix.getHeight(); ++y) {

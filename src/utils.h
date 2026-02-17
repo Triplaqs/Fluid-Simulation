@@ -13,6 +13,10 @@
 
 //Variables globales nécessaires pour structures:
 
+//pour le nouvel affichage du fluide
+extern unsigned int cellVAO;
+extern unsigned int cellVBO;
+
 //dimension de la grille par défaut
 extern int gridCols;
 extern int gridRows;
@@ -33,6 +37,7 @@ extern std::vector<float> dens, dens_prev;
 
 //définition de la macro
 #define IX(i,j) ((i) + (N+2) * (j))
+#define SWAP(x0,x) {float *tmp=x0; x0=x; x=tmp;}
 
 
 //Structures :

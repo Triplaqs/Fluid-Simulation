@@ -1,5 +1,8 @@
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
+
+#include "utils.h"
 
 
 extern unsigned int flecheVAO;
@@ -43,6 +46,10 @@ void drawArrow(float x1, float y1, float x2, float y2);
 void affichagefleche(const Cell& c);
 
 void affichagefleche_aleatoire(const Cell& c);
+
+void affichage_nouveau_fluide(unsigned int shaderProgram);
+
+void init_fluid_vao_vbo();
 
 //on dessine une fleche grace aà drawarrow
 //void _affichagefleche(const Cell& c, float cellWidth, float cellHeight);

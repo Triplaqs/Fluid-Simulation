@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "fluides.h"
 #include "matrix.h"
+#include "utils.h"
+
+
 
 void add_source ( int N, float * x, float * s, float dt )
 {
