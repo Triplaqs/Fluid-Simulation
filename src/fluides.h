@@ -15,6 +15,9 @@ extern float cellHeight;
 //créait une cellule dans la grille
 Cell createCell(int x, int y, float cellW, float cellH);
 
+// Initialise les tableaux du solveur de fluide
+void initFluid();
+
 //Initialise la grille de cellules de simulation
 void initCellsGrid(int gridWidth=100, int gridHeight=100);
 
