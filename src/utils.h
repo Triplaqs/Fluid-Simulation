@@ -79,6 +79,8 @@ typedef struct Cell {
 } Cell;
 
 typedef struct Grid{
+    int cols = gridCols;
+    int rows = gridRows;
     int aff_mode = 0;
     int mode_max = 1;
     std::vector<Cell> grid;
