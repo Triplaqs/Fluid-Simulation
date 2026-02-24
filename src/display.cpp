@@ -215,7 +215,7 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
             else if (d > 1.0f) d = 1.0f;
 
             float r = 0.0f;
-            float g = 0.0f;
+            float g = d ;
             float b = d;
 
             

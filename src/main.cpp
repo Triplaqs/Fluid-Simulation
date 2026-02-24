@@ -338,8 +338,6 @@ int main(int argc, char* argv[]){
         //Choisir le shader d'affichage à utiliser grâce à cells.aff
 
 
-
-
         affichage_nouveau_fluide(shaderProgramCellsTemp);
         //test affichage
         /*if(cells.aff_mode==0){
