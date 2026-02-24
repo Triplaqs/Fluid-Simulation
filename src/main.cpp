@@ -11,6 +11,10 @@
 #include "matrix.h"
 #include "fluidRender.h"
 #include "fluid_solver.h"
+//Includes ImgUi
+#include "imgui.h"
+#include "../Imgui/imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
