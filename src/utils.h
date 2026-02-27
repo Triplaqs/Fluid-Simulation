@@ -9,7 +9,7 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
-//#include <tuple>
+#include <tuple>
 
 //Variables globales nécessaires pour structures:
 
