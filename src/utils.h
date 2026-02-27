@@ -13,6 +13,13 @@
 
 //Variables globales nécessaires pour structures:
 
+//variable de récup pour la fenêtre ImgUI (saisie de texte, string)
+extern char inputBuffer[256];
+//variable test récup par la fenêtre ImgUI, float entre 0 et 1
+extern float glob;
+//variable qui stoque si la data a été envoyée -> update la simulation
+extern bool sent;
+
 //pour le nouvel affichage du fluide
 extern unsigned int cellVAO;
 extern unsigned int cellVBO;

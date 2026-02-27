@@ -13,7 +13,7 @@
 #include "fluid_solver.h"
 //Includes ImgUi
 #include "imgui.h"
-#include "../Imgui/imgui_impl_glfw.h"
+#include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 //outils pour la géométrie c++
 #include <vector>
@@ -135,6 +135,16 @@ int main(int argc, char* argv[]){
     //GL_STREAM_DRAW : La donnée est fixée une seule fois et peu utilisée par le GPU
     //GL_STATIC_DRAW : La donnée est fixée une seule fois et utilisée plusieurs fois
     //GL_DYNAMIC_DRAW : la donnée est changée et utilisée plusieurs fois
+
+    //SETUP IMGUI (lib fenêtre)
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
     
 //DEF DES SHADERS
     //Def de Shader (basique) à travers un C Strings
@@ -407,6 +417,59 @@ int main(int argc, char* argv[]){
                 cells.aff_mode-=1;
             }
         }
+//P3.5 : IMGUI
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // -- Positionnement de la fenêtre (Point 1) --
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 work_pos = viewport->Pos;
+        ImVec2 work_size = viewport->Size;
+        ImVec2 window_pos, window_pos_pivot;
+        
+        // On centre horizontalement (x = 0.5) et on ancre en bas (y = 1.0)
+        window_pos.x = work_pos.x + work_size.x * 0.5f;
+        window_pos.y = work_pos.y + work_size.y - 50.0f; // 50px de marge en bas
+        window_pos_pivot.x = 0.5f;
+        window_pos_pivot.y = 1.0f;
+        
+        ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+        ImGui::SetNextWindowSize(ImVec2(400, 100)); // Taille fixe pour être joli
+
+        // -- Contenu de la fenêtre --
+        ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue
+
+        ImGui::Text("Enter a strentgh for the stream (0.0 to 1.0):");
+
+        // Point 2 : Input Text
+        // "##Input" cache le label à gauche, on utilise Text() au dessus à la place
+        // ImGui_InputTextFlags_EnterReturnsTrue permet de valider avec la touche ENTRÉE aussi
+        bool enterPressed = ImGui::InputText("##Input", inputBuffer, IM_ARRAYSIZE(inputBuffer), ImGuiInputTextFlags_EnterReturnsTrue);
+        
+        // Point 3 : Bouton qui remplace le terminal
+        ImGui::SameLine(); // Met le bouton à droite du champ texte
+        if (ImGui::Button("Simulate") || enterPressed) {
+            // Convertit le char* en string c++
+            std::string sentence0(inputBuffer);
+            glob = std::stof(sentence0); // Convertit la string en float et stocke dans glob
+            sent = true;
+            
+            // Appelle ta fonction de traitement (à adapter selon ton code)
+            // C'est ici que tu remplaces la logique de ask_string()
+            // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+            printf("Paramètre reçu : %f\n", glob); 
+            
+            // Remettre le focus sur l'input après clic (optionnel)
+            ImGui::SetKeyboardFocusHere(-1); 
+        }
+
+        ImGui::End();
+
+        // Rendu ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         
 //P4 : fin render loop
         //met les pixels en couleur

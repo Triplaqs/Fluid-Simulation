@@ -12,6 +12,12 @@
 
 
 //Variables globales :
+//variable de récup pour la fenêtre ImgUI (saisie de texte, string)
+char inputBuffer[256] = "1.0"; //valeur par défaut
+//variable test récup par la fenêtre ImgUI, float entre 0 et 1
+float glob=1.0f;
+//variable qui stoque si la data a été envoyée -> update la simulation
+bool sent = false;
 
 // Ajout : handles pour la grille
 unsigned int gridVAO = 0;
