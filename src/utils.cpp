@@ -57,6 +57,9 @@ bool simRunning = true; // start running by default
 float simStepSeconds = 0.1f;
 std::chrono::steady_clock::time_point lastStepTime;
 
+//Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
+bool show_ui = false;
+
 // Vertices du triangle (global)
 float vertices[] = {
     -0.75f, -0.5f, 0.0f,

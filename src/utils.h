@@ -134,6 +134,9 @@ extern bool simRunning; // start running by default
 extern float simStepSeconds;
 extern std::chrono::steady_clock::time_point lastStepTime;
 
+//Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
+extern bool show_ui;
+
 // Vertices du triangle (global)
 extern float vertices[9];
 
