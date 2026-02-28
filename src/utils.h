@@ -14,7 +14,10 @@
 //Variables globales nécessaires pour structures:
 
 //variable de récup pour la fenêtre ImgUI (saisie de texte, string)
-extern char inputBuffer[256];
+extern char inputBuffer0[256];
+extern char inputBuffer1[256];
+//Direction du flux
+extern float angle;
 //variable test récup par la fenêtre ImgUI, float entre 0 et 1
 extern float glob;
 //variable qui stoque si la data a été envoyée -> update la simulation

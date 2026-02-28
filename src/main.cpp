@@ -448,25 +448,30 @@ int main(int argc, char* argv[]){
             // -- Contenu de la fenêtre --
             ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue
 
-            ImGui::Text("Enter a strentgh for the stream (0.0 to 1.0):");
 
             // Point 2 : Input Text
             // "##Input" cache le label à gauche, on utilise Text() au dessus à la place
             // ImGui_InputTextFlags_EnterReturnsTrue permet de valider avec la touche ENTRÉE aussi
-            bool enterPressed = ImGui::InputText("##Input", inputBuffer, IM_ARRAYSIZE(inputBuffer), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::Text("Enter a strentgh for the stream (0.0 to 1.0):");
+            bool enterPressed = ImGui::InputText("##Input", inputBuffer0, IM_ARRAYSIZE(inputBuffer0), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
+            bool enterPressed1 = ImGui::InputText("##Input1", inputBuffer1, IM_ARRAYSIZE(inputBuffer1), ImGuiInputTextFlags_EnterReturnsTrue);
 
             // Point 3 : Bouton qui remplace le terminal
             ImGui::SameLine(); // Met le bouton à droite du champ texte
             if (ImGui::Button("Simulate") || enterPressed) {
                 // Convertit le char* en string c++
-                std::string sentence0(inputBuffer);
+                std::string sentence0(inputBuffer0);
                 glob = std::stof(sentence0); // Convertit la string en float et stocke dans glob
+                std::string sentence1(inputBuffer1);
+                angle = std::stof(sentence1); // Convertit la string en float et stocke dans angle
                 sent = true;
 
                 // Appelle ta fonction de traitement (à adapter selon ton code)
                 // C'est ici que tu remplaces la logique de ask_string()
                 // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
-                printf("Paramètre reçu : %f\n", glob); 
+                printf("Paramètre reçu : %f\n", glob);
+                printf("Direction reçue : %f\n", angle);
 
                 // Remettre le focus sur l'input après clic (optionnel)
                 ImGui::SetKeyboardFocusHere(-1); 

@@ -13,9 +13,14 @@
 
 //Variables globales :
 //variable de récup pour la fenêtre ImgUI (saisie de texte, string)
-char inputBuffer[256] = "1.0"; //valeur par défaut
-//variable test récup par la fenêtre ImgUI, float entre 0 et 1
+//densité du flux (entre 0 et 1)
+char inputBuffer0[256] = "1.0"; //valeur par défaut
 float glob=1.0f;
+//direction du flux (sur 360°)
+char inputBuffer1[256] = "135.0"; //valeur par défaut
+float angle=135.0f;
+
+
 //variable qui stoque si la data a été envoyée -> update la simulation
 bool sent = false;
 
