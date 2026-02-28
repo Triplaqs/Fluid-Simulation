@@ -357,7 +357,7 @@ int main(int argc, char* argv[]){
         //test affichage
         /*if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
-            for (const Cell& c : cells.grid) {
+            for (const Cell& c : cells.grid){
                 glBindVertexArray(c.VAO1);
                 setTriangleColor(shaderProgramCellsTemp, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
                 glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -380,8 +380,8 @@ int main(int argc, char* argv[]){
             for (const Cell& c : cells.grid) {
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
-            }
-        }*/
+            }false
+        }false*/
 
 
 
