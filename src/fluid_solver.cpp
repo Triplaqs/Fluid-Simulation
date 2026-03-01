@@ -2,6 +2,7 @@
 #include "fluides.h"
 #include "matrix.h"
 #include "utils.h"
+#include "fluidRender.h"  // for obstacle test
 
 
 
@@ -13,17 +14,30 @@ void add_source ( int N, float * x, float * s, float dt )
 
 void set_bnd ( int N, int b, float * x )
 {
-    int i;
-    for ( i=1 ; i<=N ; i++ ) {
-    x[IX(0 ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
-    x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
-    x[IX(i,0 )] = b==2 ? -x[IX(i,1)] : x[IX(i,1)];
-    x[IX(i,N+1)] = b==2 ? -x[IX(i,N)] : x[IX(i,N)];
+    int i, j;
+
+    // standard border conditions
+    for ( i = 1 ; i <= N ; i++ ) {
+        x[IX(0 ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
+        x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
+        x[IX(i,0 )] = b==2 ? -x[IX(i,1)] : x[IX(i,1)];
+        x[IX(i,N+1)] = b==2 ? -x[IX(i,N)] : x[IX(i,N)];
     }
-    x[IX(0 ,0 )] = 0.5*(x[IX(1,0 )]+x[IX(0 ,1)]);
-    x[IX(0 ,N+1)] = 0.5*(x[IX(1,N+1)]+x[IX(0 ,N )]);
-    x[IX(N+1,0 )] = 0.5*(x[IX(N,0 )]+x[IX(N+1,1)]);
-    x[IX(N+1,N+1)] = 0.5*(x[IX(N,N+1)]+x[IX(N+1,N )]);
+    x[IX(0 ,0 )] = 0.5f*(x[IX(1,0 )]+x[IX(0 ,1)]);
+    x[IX(0 ,N+1)] = 0.5f*(x[IX(1,N+1)]+x[IX(0 ,N )]);
+    x[IX(N+1,0 )] = 0.5f*(x[IX(N,0 )]+x[IX(N+1,1)]);
+    x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N )]);
+
+    // enforce obstacle: zero value inside any defined circular obstacle
+    if (isObstacleCell) {
+        for ( i = 1; i <= N; ++i ) {
+            for ( j = 1; j <= N; ++j ) {
+                if (isObstacleCell(i,j)) {
+                    x[IX(i,j)] = 0.0f;
+                }
+            }
+        }
+    }
 }
 
 void diffuse ( int N, int b, float * x, float * x0, float diff, float dt )
@@ -107,3 +121,4 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
     advect ( N, 1, u, u0, u0, v0, dt ); advect ( N, 2, v, v0, u0, v0, dt );
     project ( N, u, v, u0, v0 );
 }
+

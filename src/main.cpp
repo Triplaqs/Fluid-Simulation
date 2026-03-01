@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
+
 //autre
 #include <random>
 #include <cstdlib>
@@ -212,7 +213,6 @@ int main(int argc, char* argv[]){
 
 
     //-----------------------------------------début shader fleche--------------------------------
-
     //création objet Shader
     unsigned int vertexShaderCellsFleche;
     unsigned int fragmentShaderCellsFleche;
@@ -302,6 +302,18 @@ int main(int argc, char* argv[]){
     //lastStepTime = std::chrono::steady_clock::now();
 
     initFluid();
+    // initialise le renderer de l'obstacle (shader + VAO)
+    initObstacleRenderer();
+
+    // créer un obstacle circulaire (boule) et conserver ses paramètres
+    // paramètres en coordonnées de cellule (1..N)
+    int ob_ci = N/2;
+    int ob_cj = N/4;
+    int ob_r = N/8;
+    bouled(ob_ci, ob_cj, ob_r);
+    // mouse interaction state
+    bool draggingObstacle = false;
+    bool lastLeftPressed = false;
     
 
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
@@ -341,6 +353,13 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
+        // dessiner la boule (obstacle) en NDC
+        {
+            float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
+            float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
+            float r = 2.0f * ((float)ob_r / (float)N);
+            drawObstacleNDC(cx, cy, r);
+        }
         //test affichage
         /*if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
@@ -424,6 +443,48 @@ int main(int argc, char* argv[]){
         lastRPressed = rPressed;
         lastNPressed = nPressed;
 
+        // --- mouse interaction for obstacle ---
+        int leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+        bool leftPressed = (leftState == GLFW_PRESS);
+
+        // on mouse press start: check if click is inside obstacle
+        if (leftPressed && !lastLeftPressed) {
+            double mx, my;
+            glfwGetCursorPos(window, &mx, &my);
+            int ww, wh;
+            glfwGetFramebufferSize(window, &ww, &wh);
+            float xndc = (float)(mx / ww) * 2.0f - 1.0f;
+            float yndc = 1.0f - (float)(my / wh) * 2.0f;
+            int cj = (int)((xndc + 1.0f) * 0.5f * N + 0.5f);
+            int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
+            if (ci < 1) ci = 1; if (ci > N) ci = N;
+            if (cj < 1) cj = 1; if (cj > N) cj = N;
+            if (isObstacleCell(ci, cj)) {
+                draggingObstacle = true;
+            }
+        }
+
+        // while dragging, update obstacle center to cursor
+        if (leftPressed && draggingObstacle) {
+            double mx, my;
+            glfwGetCursorPos(window, &mx, &my);
+            int ww, wh;
+            glfwGetFramebufferSize(window, &ww, &wh);
+            float xndc = (float)(mx / ww) * 2.0f - 1.0f;
+            float yndc = 1.0f - (float)(my / wh) * 2.0f;
+            int cj = (int)((xndc + 1.0f) * 0.5f * N + 0.5f);
+            int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
+            if (ci < 1) ci = 1; if (ci > N) ci = N;
+            if (cj < 1) cj = 1; if (cj > N) cj = N;
+            ob_ci = ci; ob_cj = cj;
+            bouled(ob_ci, ob_cj, ob_r);
+        }
+
+        // on mouse release stop dragging
+        if (!leftPressed && lastLeftPressed) {
+            draggingObstacle = false;
+        }
+        lastLeftPressed = leftPressed;
 
 
         // Simulation stepping
@@ -436,6 +497,8 @@ int main(int argc, char* argv[]){
             }
         }
     }
+
+
 
     printf("fenêtre de fluides fermée\n");
     glfwTerminate();

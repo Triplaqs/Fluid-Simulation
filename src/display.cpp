@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "display.h"
 #include "interaction.h"
+#include "fluidRender.h"  // for obstacle helper and bouled
 
 //Variable temps cooldown pression touche
 float start_press = -1; //-1 aucune touche préssée
@@ -24,6 +25,11 @@ float t_press=1;
 //init pour affichage 
 unsigned int cellVAO = 0;
 unsigned int cellVBO = 0;
+
+// Obstacle renderer globals
+unsigned int obstacleVAO = 0;
+unsigned int obstacleVBO = 0;
+unsigned int obstacleProgram = 0;
 
 //Edit de rendering
 // Fonction pour éditer la position du triangle via uniform (exemple avec translation matrix) (z et w set à 0 dans le header)
@@ -118,6 +124,99 @@ void init_fluid_vao_vbo()
 }
 
 
+// ---------- obstacle renderer ----------
+static unsigned int compileShader(const char* src, unsigned int type)
+{
+    unsigned int id = glCreateShader(type);
+    glShaderSource(id, 1, &src, NULL);
+    glCompileShader(id);
+    return id;
+}
+
+void initObstacleRenderer()
+{
+    // simple pass-through vertex shader
+    const char* vertSrc = "#version 330 core\n"
+    "layout(location=0) in vec2 aPos;\n"
+    "out vec2 v_pos;\n"
+    "void main(){ v_pos = aPos; gl_Position = vec4(aPos,0.0,1.0); }\n";
+
+    const char* fragSrc = "#version 330 core\n"
+    "in vec2 v_pos;\n"
+    "out vec4 FragColor;\n"
+    "uniform vec2 u_center;\n"
+    "uniform float u_radius;\n"
+    "uniform float u_edge;\n"
+    "void main(){\n"
+    "  float d = distance(v_pos, u_center);\n"
+    "  float alpha = 1.0 - smoothstep(u_radius - u_edge, u_radius + u_edge, d);\n"
+    "  if (alpha <= 0.001) discard;\n"
+    "  vec3 inner = vec3(1.0, 0.75, 0.80);" // centre rose clair
+    "  vec3 outer = vec3(0.70, 0.30, 0.50);" // bord rose foncé
+    "  float t = clamp(d / u_radius, 0.0, 1.0);\n"
+    "  vec3 col = mix(inner, outer, t);\n"
+    "  FragColor = vec4(col, alpha);\n"
+    "}\n";
+
+    unsigned int vs = compileShader(vertSrc, GL_VERTEX_SHADER);
+    unsigned int fs = compileShader(fragSrc, GL_FRAGMENT_SHADER);
+    obstacleProgram = glCreateProgram();
+    glAttachShader(obstacleProgram, vs);
+    glAttachShader(obstacleProgram, fs);
+    glLinkProgram(obstacleProgram);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+    glGenVertexArrays(1, &obstacleVAO);
+    glGenBuffers(1, &obstacleVBO);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+}
+
+// draw a smooth circle by uploading a triangle fan in NDC
+void drawObstacleNDC(float cx, float cy, float radius)
+{
+    const int SEG = 64;
+    std::vector<float> verts;
+    verts.reserve((SEG+2)*2);
+    verts.push_back(cx);
+    verts.push_back(cy);
+    for (int s=0; s<=SEG; ++s) {
+        float a = (float)s / (float)SEG * 2.0f * 3.14159265f;
+        float x = cx + cosf(a) * radius;
+        float y = cy + sinf(a) * radius;
+        verts.push_back(x);
+        verts.push_back(y);
+    }
+
+    glUseProgram(obstacleProgram);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+
+    // set uniforms
+    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
+    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
+    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
+    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
+    if (loc_r >= 0) glUniform1f(loc_r, radius);
+    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
+    if (loc_e >= 0) glUniform1f(loc_e, edge);
+
+    // smooth alpha via blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
+
+    glDisable(GL_BLEND);
+    glBindVertexArray(0);
+}
+
+
 //on vient appliquer les vecteurs sur chaque cellule (pour le moment juste un trait)
 /*void drawArrow1(float x1, float y1, float x2, float y2)
 {
@@ -208,15 +307,18 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
     {
         for(int j = 1; j <= N; j++)
         {
-            float d = dens[IX(i,j)];
-            //float d = (float)i / N;  // juste un dégradé vertical pour tester affichage OKKKK ca marche 
-
-            if (d < 0.0f) d = 0.0f;
-            else if (d > 1.0f) d = 1.0f;
-
-            float r = 0.0f;
-            float g = 0.0f;
-            float b = d;
+            float r, g, b;
+            if (isObstacleCell(i, j)) {
+                // obstacle colour (dark gray)
+                r = g = b = 0.2f;
+            } else {
+                float d = dens[IX(i,j)];
+                if (d < 0.0f) d = 0.0f;
+                else if (d > 1.0f) d = 1.0f;
+                r = 0.0f;
+                g = 0.0f;
+                b = d;
+            }
 
             
             float x1 = -1.0f + 2.0f * ((j-1) / (float)N);

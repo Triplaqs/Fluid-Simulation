@@ -12,6 +12,32 @@
 #include "fluid_solver.h"
 #include "fluides.h"
 
+// -----------------------------------------------------------------------------
+// obstacle (boule) support
+// -----------------------------------------------------------------------------
+// obstacle parameters are stored in grid coordinates (1..N)
+static int obs_ci = -1;
+static int obs_cj = -1;
+static int obs_radius = 0;
+
+// helper to test whether a grid cell lies inside the circular obstacle
+bool isObstacleCell(int i, int j)
+{
+    if (obs_radius <= 0) return false;           // no obstacle defined
+    float dx = (float)i - (float)obs_ci;
+    float dy = (float)j - (float)obs_cj;
+    return (dx*dx + dy*dy) <= (float)obs_radius * (float)obs_radius;
+}
+
+// public API used by main.cpp
+void bouled(int ci, int cj, int radius)
+{
+    obs_ci = ci;
+    obs_cj = cj;
+    obs_radius = radius;
+}
+
+
 
 void addDensity(int i, int j, float qt)
 {
@@ -62,4 +88,20 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     std::fill(u_prev.begin(), u_prev.end(), 0.0f);
     std::fill(v_prev.begin(), v_prev.end(), 0.0f);
     std::fill(dens_prev.begin(), dens_prev.end(), 0.0f);
+
+    // appliquer l'obstacle : annuler vitesse/densité à l'intérieur du cercle
+    if (obs_radius > 0) {
+        for (int ii = 1; ii <= N; ++ii) {
+            for (int jj = 1; jj <= N; ++jj) {
+                if (isObstacleCell(ii, jj)) {
+                    u[IX(ii,jj)] = 0.0f;
+                    v[IX(ii,jj)] = 0.0f;
+                    dens[IX(ii,jj)] = 0.0f;
+                    u_prev[IX(ii,jj)] = 0.0f;
+                    v_prev[IX(ii,jj)] = 0.0f;
+                    dens_prev[IX(ii,jj)] = 0.0f;
+                }
+            }
+        }
+    }
 }
