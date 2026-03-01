@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 //utiles
+#include <cmath>
+#include <math.h>
 #include <random>
 #include <ctime>
 #include <vector>
@@ -214,7 +216,8 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
             if (d < 0.0f) d = 0.0f;
             else if (d > 1.0f) d = 1.0f;
 
-            float r = 0.0f;
+            //float r = 0.0f; //on modulote la couleur de la composante rouge entrée par l'user à 255
+            float r = d*fmod(col, 256)/(30.0f); //on modulote la couleur de la composante rouge entrée par l'user à 255
             float g = d ;
             float b = d;
 

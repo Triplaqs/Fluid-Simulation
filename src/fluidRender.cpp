@@ -35,8 +35,8 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     int i = N/2;   
     int j = N/2;
     dens_prev[IX(i, j)] = glob*50.0f;
-    u_prev[IX(i, j)] = cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
-    v_prev[IX(i, j)] = sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
+    u_prev[IX(i, j)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
+    v_prev[IX(i, j)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
     
 
     // le depart est une colonne presque entiere

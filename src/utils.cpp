@@ -19,6 +19,12 @@ float glob=1.0f;
 //direction du flux (sur 360°)
 char inputBuffer1[256] = "135.0"; //valeur par défaut
 float angle=135.0f;
+//couleur du fluide (composante rouge)
+char inputBuffer2[256] = "0.0"; //valeur par défaut
+float col=0.0f;
+//couleur du fluide (composante rouge)
+char inputBuffer3[256] = "1.0"; //valeur par défaut
+float force=1.0f;
 
 
 //variable qui stoque si la data a été envoyée -> update la simulation

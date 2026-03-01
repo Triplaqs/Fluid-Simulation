@@ -452,26 +452,62 @@ int main(int argc, char* argv[]){
             // Point 2 : Input Text
             // "##Input" cache le label à gauche, on utilise Text() au dessus à la place
             // ImGui_InputTextFlags_EnterReturnsTrue permet de valider avec la touche ENTRÉE aussi
-            ImGui::Text("Enter a strentgh for the stream (0.0 to 1.0):");
+            ImGui::Text("Enter a density for the stream (0.0 to 10.0):");
             bool enterPressed = ImGui::InputText("##Input", inputBuffer0, IM_ARRAYSIZE(inputBuffer0), ImGuiInputTextFlags_EnterReturnsTrue);
-            ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
-            bool enterPressed1 = ImGui::InputText("##Input1", inputBuffer1, IM_ARRAYSIZE(inputBuffer1), ImGuiInputTextFlags_EnterReturnsTrue);
-
-            // Point 3 : Bouton qui remplace le terminal
-            ImGui::SameLine(); // Met le bouton à droite du champ texte
-            if (ImGui::Button("Simulate") || enterPressed) {
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Density") || enterPressed) {
                 // Convertit le char* en string c++
                 std::string sentence0(inputBuffer0);
                 glob = std::stof(sentence0); // Convertit la string en float et stocke dans glob
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de densité reçu : %f\n", glob);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
+            bool enterPressed1 = ImGui::InputText("##Input1", inputBuffer1, IM_ARRAYSIZE(inputBuffer1), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Direction") || enterPressed1) {
                 std::string sentence1(inputBuffer1);
                 angle = std::stof(sentence1); // Convertit la string en float et stocke dans angle
                 sent = true;
 
-                // Appelle ta fonction de traitement (à adapter selon ton code)
-                // C'est ici que tu remplaces la logique de ask_string()
                 // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
-                printf("Paramètre reçu : %f\n", glob);
-                printf("Direction reçue : %f\n", angle);
+                printf("Paramètre de direction reçu : %f\n", angle);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a color for the stream (0.0 to 255.0):");
+            bool enterPressed2 = ImGui::InputText("##Input2", inputBuffer2, IM_ARRAYSIZE(inputBuffer2), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Color") || enterPressed2) {
+                std::string sentence2(inputBuffer2);
+                col = std::stof(sentence2); // Convertit la string en float et stocke dans col
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de couleur reçu : %f\n", col);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a force for the stream (0.0 to 10.0):");
+            bool enterPressed3 = ImGui::InputText("##Input3", inputBuffer3, IM_ARRAYSIZE(inputBuffer3), ImGuiInputTextFlags_EnterReturnsTrue);
+            // Point 3 : Bouton qui remplace le terminal
+            ImGui::SameLine(); // Met le bouton à droite du champ texte
+            if (ImGui::Button("Simulate Force") || enterPressed3) {
+                 std::string sentence3(inputBuffer3);
+                force = std::stof(sentence3); // Convertit la string en float et stocke dans col
+                sent = true;
+                printf("Paramètre de force reçu : %f\n", force);
+            
 
                 // Remettre le focus sur l'input après clic (optionnel)
                 ImGui::SetKeyboardFocusHere(-1); 

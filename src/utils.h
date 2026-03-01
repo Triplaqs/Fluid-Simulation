@@ -16,10 +16,16 @@
 //variable de récup pour la fenêtre ImgUI (saisie de texte, string)
 extern char inputBuffer0[256];
 extern char inputBuffer1[256];
+extern char inputBuffer2[256];
+extern char inputBuffer3[256];
 //Direction du flux
 extern float angle;
 //variable test récup par la fenêtre ImgUI, float entre 0 et 1
 extern float glob;
+//force du stream
+extern float force;
+//variable de couleur pour le fluide (composante rouge)
+extern float col;
 //variable qui stoque si la data a été envoyée -> update la simulation
 extern bool sent;
 
