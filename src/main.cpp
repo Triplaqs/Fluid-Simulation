@@ -443,7 +443,7 @@ int main(int argc, char* argv[]){
             window_pos_pivot.y = 1.0f;
 
             ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-            ImGui::SetNextWindowSize(ImVec2(400, 100)); // Taille fixe pour être joli
+            ImGui::SetNextWindowSize(ImVec2(500, 120)); // Taille fixe pour être joli
 
             // -- Contenu de la fenêtre --
             ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue
