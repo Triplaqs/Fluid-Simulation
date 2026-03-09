@@ -324,7 +324,14 @@ int main(int argc, char* argv[]){
     int ob_ci = N/2;
     int ob_cj = N/4;
     int ob_r = N/8;
+    int ob_r_saved = ob_r; // conserve le rayon pour pouvoir restaurer l'obstacle
     bouled(ob_ci, ob_cj, ob_r);
+    // show/hide obstacle (boule or heart)
+    bool showObstacle = true;
+    // nombre d'obstacles actuellement affichés (0 ou 1)
+    int obstacleCount = 1;
+    // obstacle shape: 0 = circle, 1 = heart
+    int obstacleShape = 0;
     // mouse interaction state
     bool draggingObstacle = false;
     bool lastLeftPressed = false;
@@ -353,9 +360,11 @@ int main(int argc, char* argv[]){
         static bool lastSpacePressed = false;
         static bool lastRPressed = false;
         static bool lastNPressed = false;
+        static bool lastOPressed = false;
         bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
         bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
         bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
+        bool oPressed = glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS;
         bool hPressed = glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS;
 
 //P3 : gestion du render
@@ -366,12 +375,16 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
-        // dessiner la boule (obstacle) en NDC
-        {
-            float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
-            float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
-            float r = 2.0f * ((float)ob_r / (float)N);
-            drawObstacleNDC(cx, cy, r);
+        // dessiner l'obstacle en NDC (toggleable) : cercle ou coeur
+        float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
+        float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
+        float r = 2.0f * ((float)ob_r / (float)N);
+        if (showObstacle) {
+            if (obstacleShape == 0) {
+                drawObstacleNDC(cx, cy, r);
+            } else {
+                drawHeartNDC(cx, cy, r);
+            }
         }
         //test affichage
         /*if(cells.aff_mode==0){
@@ -455,14 +468,16 @@ int main(int argc, char* argv[]){
             ImVec2 work_size = viewport->Size;
             ImVec2 window_pos, window_pos_pivot;
 
-            // On centre horizontalement (x = 0.5) et on ancre en bas (y = 1.0)
-            window_pos.x = work_pos.x + work_size.x * 0.5f;
-            window_pos.y = work_pos.y + work_size.y - 50.0f; // 50px de marge en bas
-            window_pos_pivot.x = 0.5f;
-            window_pos_pivot.y = 1.0f;
+            // On place la fenêtre dans la marge de droite (alignée en haut)
+            float rightMargin = 10.0f;
+            float topMargin = 10.0f;
+            window_pos.x = work_pos.x + work_size.x - rightMargin;
+            window_pos.y = work_pos.y + topMargin;
+            window_pos_pivot.x = 1.0f;
+            window_pos_pivot.y = 0.0f;
 
             ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-            ImGui::SetNextWindowSize(ImVec2(400, 100)); // Taille fixe pour être joli
+            ImGui::SetNextWindowSize(ImVec2(420, 220)); // Taille fixe pour être joli (suffisamment grand pour voir tous les widgets)
 
             // -- Contenu de la fenêtre --
             ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue
@@ -532,6 +547,24 @@ int main(int argc, char* argv[]){
                 ImGui::SetKeyboardFocusHere(-1); 
             }
 
+            // Bouton ON/OFF pour l'obstacle (affichage + simulation)
+            // (Le shape est choisi ci-dessous)
+            if (ImGui::Button(showObstacle ? "Obstacle ON" : "Obstacle OFF")) {
+                showObstacle = !showObstacle;
+                obstacleCount = showObstacle ? 1 : 0;
+                if (showObstacle) {
+                    bouled(ob_ci, ob_cj, ob_r_saved);
+                } else {
+                    bouled(ob_ci, ob_cj, 0);
+                }
+            }
+            ImGui::Text("Obstacle count: %d", obstacleCount);
+
+            // Bouton pour changer la forme de l'obstacle
+            if (ImGui::Button(obstacleShape == 0 ? "Shape: Circle" : "Shape: Heart")) {
+                obstacleShape = 1 - obstacleShape;
+            }
+
             ImGui::End();
 
             // Rendu ImGui
@@ -553,16 +586,22 @@ int main(int argc, char* argv[]){
             //randomizeVecs();
         }
         if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
+        if(oPressed && !lastOPressed){
+            showObstacle = !showObstacle;
+            if (showObstacle) bouled(ob_ci, ob_cj, ob_r_saved);
+            else bouled(ob_ci, ob_cj, 0);
+        }
         lastSpacePressed = spacePressed;
         lastRPressed = rPressed;
         lastNPressed = nPressed;
+        lastOPressed = oPressed;
 
         // --- mouse interaction for obstacle ---
         int leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
         bool leftPressed = (leftState == GLFW_PRESS);
 
         // on mouse press start: check if click is inside obstacle
-        if (leftPressed && !lastLeftPressed) {
+        if (showObstacle && leftPressed && !lastLeftPressed) {
             double mx, my;
             glfwGetCursorPos(window, &mx, &my);
             int ww, wh;
@@ -579,7 +618,7 @@ int main(int argc, char* argv[]){
         }
 
         // while dragging, update obstacle center to cursor
-        if (leftPressed && draggingObstacle) {
+        if (showObstacle && leftPressed && draggingObstacle) {
             double mx, my;
             glfwGetCursorPos(window, &mx, &my);
             int ww, wh;

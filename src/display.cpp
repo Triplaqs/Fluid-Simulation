@@ -218,6 +218,51 @@ void drawObstacleNDC(float cx, float cy, float radius)
     glBindVertexArray(0);
 }
 
+// dessine un forme de coeur centré en NDC
+void drawHeartNDC(float cx, float cy, float radius)
+{
+    const int SEG = 128;
+    std::vector<float> verts;
+    verts.reserve((SEG+2)*2);
+    verts.push_back(cx);
+    verts.push_back(cy);
+
+    for (int s = 0; s <= SEG; ++s) {
+        float t = (float)s / (float)SEG * 2.0f * 3.14159265f;
+        float xt = 16.0f * powf(sinf(t), 3);
+        float yt = 13.0f * cosf(t) - 5.0f * cosf(2.0f*t) - 2.0f * cosf(3.0f*t) - cosf(4.0f*t);
+        // normaliser vers [-1,1]
+        float nx = xt / 17.0f; // x in [-16,16]
+        float ny = yt / 17.0f; // y in [-17,13]
+        float x = cx + nx * radius;
+        float y = cy + ny * radius;
+        verts.push_back(x);
+        verts.push_back(y);
+    }
+
+    glUseProgram(obstacleProgram);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+
+    // set uniforms (reuse same shader so smoothing still works)
+    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
+    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
+    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
+    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
+    if (loc_r >= 0) glUniform1f(loc_r, radius);
+    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
+    if (loc_e >= 0) glUniform1f(loc_e, edge);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
+
+    glDisable(GL_BLEND);
+    glBindVertexArray(0);
+}
+
 
 //on vient appliquer les vecteurs sur chaque cellule (pour le moment juste un trait)
 /*void drawArrow1(float x1, float y1, float x2, float y2)
