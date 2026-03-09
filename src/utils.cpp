@@ -12,6 +12,23 @@
 
 
 //Variables globales :
+//variable de récup pour la fenêtre ImgUI (saisie de texte, string)
+//densité du flux (entre 0 et 1)
+char inputBuffer0[256] = "1.0"; //valeur par défaut
+float glob=1.0f;
+//direction du flux (sur 360°)
+char inputBuffer1[256] = "135.0"; //valeur par défaut
+float angle=135.0f;
+//couleur du fluide (composante rouge)
+char inputBuffer2[256] = "0.0"; //valeur par défaut
+float col=0.0f;
+//couleur du fluide (composante rouge)
+char inputBuffer3[256] = "1.0"; //valeur par défaut
+float force=1.0f;
+
+
+//variable qui stoque si la data a été envoyée -> update la simulation
+bool sent = false;
 
 // Ajout : handles pour la grille
 unsigned int gridVAO = 0;
@@ -50,6 +67,9 @@ Grid cellsNext;  // next state
 bool simRunning = true; // start running by default
 float simStepSeconds = 0.1f;
 std::chrono::steady_clock::time_point lastStepTime;
+
+//Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
+bool show_ui = true;
 
 // Vertices du triangle (global)
 float vertices[] = {

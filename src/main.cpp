@@ -11,6 +11,10 @@
 #include "matrix.h"
 #include "fluidRender.h"
 #include "fluid_solver.h"
+//Includes ImgUi
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 //outils pour la géométrie c++
 #include <vector>
 #include <iostream>
@@ -132,6 +136,16 @@ int main(int argc, char* argv[]){
     //GL_STREAM_DRAW : La donnée est fixée une seule fois et peu utilisée par le GPU
     //GL_STATIC_DRAW : La donnée est fixée une seule fois et utilisée plusieurs fois
     //GL_DYNAMIC_DRAW : la donnée est changée et utilisée plusieurs fois
+
+    //SETUP IMGUI (lib fenêtre)
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
     
 //DEF DES SHADERS
     //Def de Shader (basique) à travers un C Strings
@@ -342,14 +356,13 @@ int main(int argc, char* argv[]){
         bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
         bool rPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
         bool nPressed = glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS;
+        bool hPressed = glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS;
 
 //P3 : gestion du render
         //Attention : au choix du programme Shader utilisé
 
         // Dessine les cellules
         //Choisir le shader d'affichage à utiliser grâce à cells.aff
-
-
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
@@ -363,7 +376,7 @@ int main(int argc, char* argv[]){
         //test affichage
         /*if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
-            for (const Cell& c : cells.grid) {
+            for (const Cell& c : cells.grid){
                 glBindVertexArray(c.VAO1);
                 setTriangleColor(shaderProgramCellsTemp, c.temperature, 0.0f, 1.0f - c.temperature, 1.0f);
                 glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -386,8 +399,8 @@ int main(int argc, char* argv[]){
             for (const Cell& c : cells.grid) {
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
-            }
-        }*/
+            }false
+        }false*/
 
 
 
@@ -423,6 +436,107 @@ int main(int argc, char* argv[]){
                 //randomizeVecs();
                 cells.aff_mode-=1;
             }
+        }
+
+        //pour cacher/afficher la fenêtre IMGUI 
+        if (hPressed&& (start_press<0.0f)){    
+            start_press = currentTime;
+            show_ui = !show_ui; // 'H' pour Hide
+        }
+//P3.5 : IMGUI
+        if (show_ui) {
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            // -- Positionnement de la fenêtre (Point 1) --
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImVec2 work_pos = viewport->Pos;
+            ImVec2 work_size = viewport->Size;
+            ImVec2 window_pos, window_pos_pivot;
+
+            // On centre horizontalement (x = 0.5) et on ancre en bas (y = 1.0)
+            window_pos.x = work_pos.x + work_size.x * 0.5f;
+            window_pos.y = work_pos.y + work_size.y - 50.0f; // 50px de marge en bas
+            window_pos_pivot.x = 0.5f;
+            window_pos_pivot.y = 1.0f;
+
+            ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+            ImGui::SetNextWindowSize(ImVec2(400, 100)); // Taille fixe pour être joli
+
+            // -- Contenu de la fenêtre --
+            ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue
+
+
+            // Point 2 : Input Text
+            // "##Input" cache le label à gauche, on utilise Text() au dessus à la place
+            // ImGui_InputTextFlags_EnterReturnsTrue permet de valider avec la touche ENTRÉE aussi
+            ImGui::Text("Enter a density for the stream (0.0 to 10.0):");
+            bool enterPressed = ImGui::InputText("##Input", inputBuffer0, IM_ARRAYSIZE(inputBuffer0), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Density") || enterPressed) {
+                // Convertit le char* en string c++
+                std::string sentence0(inputBuffer0);
+                glob = std::stof(sentence0); // Convertit la string en float et stocke dans glob
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de densité reçu : %f\n", glob);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
+            bool enterPressed1 = ImGui::InputText("##Input1", inputBuffer1, IM_ARRAYSIZE(inputBuffer1), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Direction") || enterPressed1) {
+                std::string sentence1(inputBuffer1);
+                angle = std::stof(sentence1); // Convertit la string en float et stocke dans angle
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de direction reçu : %f\n", angle);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a color for the stream (0.0 to 255.0):");
+            bool enterPressed2 = ImGui::InputText("##Input2", inputBuffer2, IM_ARRAYSIZE(inputBuffer2), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Color") || enterPressed2) {
+                std::string sentence2(inputBuffer2);
+                col = std::stof(sentence2); // Convertit la string en float et stocke dans col
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de couleur reçu : %f\n", col);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+            
+            ImGui::Text("Enter a force for the stream (0.0 to 10.0):");
+            bool enterPressed3 = ImGui::InputText("##Input3", inputBuffer3, IM_ARRAYSIZE(inputBuffer3), ImGuiInputTextFlags_EnterReturnsTrue);
+            // Point 3 : Bouton qui remplace le terminal
+            ImGui::SameLine(); // Met le bouton à droite du champ texte
+            if (ImGui::Button("Simulate Force") || enterPressed3) {
+                 std::string sentence3(inputBuffer3);
+                force = std::stof(sentence3); // Convertit la string en float et stocke dans col
+                sent = true;
+                printf("Paramètre de force reçu : %f\n", force);
+            
+
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            ImGui::End();
+
+            // Rendu ImGui
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
         
 //P4 : fin render loop

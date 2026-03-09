@@ -9,9 +9,25 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
-//#include <tuple>
+#include <tuple>
 
 //Variables globales nécessaires pour structures:
+
+//variable de récup pour la fenêtre ImgUI (saisie de texte, string)
+extern char inputBuffer0[256];
+extern char inputBuffer1[256];
+extern char inputBuffer2[256];
+extern char inputBuffer3[256];
+//Direction du flux
+extern float angle;
+//variable test récup par la fenêtre ImgUI, float entre 0 et 1
+extern float glob;
+//force du stream
+extern float force;
+//variable de couleur pour le fluide (composante rouge)
+extern float col;
+//variable qui stoque si la data a été envoyée -> update la simulation
+extern bool sent;
 
 //pour le nouvel affichage du fluide
 extern unsigned int cellVAO;
@@ -96,6 +112,8 @@ typedef struct Cell {
 } Cell;
 
 typedef struct Grid{
+    int cols = gridCols;
+    int rows = gridRows;
     int aff_mode = 0;
     int mode_max = 1;
     std::vector<Cell> grid;
@@ -124,6 +142,9 @@ extern Grid cellsNext;  // next state
 extern bool simRunning; // start running by default
 extern float simStepSeconds;
 extern std::chrono::steady_clock::time_point lastStepTime;
+
+//Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
+extern bool show_ui;
 
 // Vertices du triangle (global)
 extern float vertices[9];

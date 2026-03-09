@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 //utiles
+#include <cmath>
+#include <math.h>
 #include <random>
 #include <ctime>
 #include <vector>
@@ -307,18 +309,15 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
     {
         for(int j = 1; j <= N; j++)
         {
-            float r, g, b;
-            if (isObstacleCell(i, j)) {
-                // obstacle colour (dark gray)
-                r = g = b = 0.2f;
-            } else {
-                float d = dens[IX(i,j)];
-                if (d < 0.0f) d = 0.0f;
-                else if (d > 1.0f) d = 1.0f;
-                r = 0.0f;
-                g = 0.0f;
-                b = d;
-            }
+            float d = dens[IX(i,j)];
+            //float d = (float)i / N;  // juste un dégradé vertical pour tester affichage OKKKK ca marche 
+
+            if (d < 0.0f) d = 0.0f;
+            else if (d > 1.0f) d = 1.0f;
+
+            float r = 0.0f;
+            float g = 0.0f;
+            float b = d;
 
             
             float x1 = -1.0f + 2.0f * ((j-1) / (float)N);
