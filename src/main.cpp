@@ -578,11 +578,14 @@ int main(int argc, char* argv[]){
         glfwPollEvents();
 
         // Contrôles de la simulation, à editer si besoin
-        if(spacePressed && !lastSpacePressed){ simRunning = !simRunning; }
+        if(spacePressed && !lastSpacePressed){
+            simRunning = !simRunning;
+        }
         if(rPressed && !lastRPressed){
             start_press = -1;
             randomizeCells(); 
             //randomizeVecs();
+            //Ajouter fonction de vide fluide et reset settings !!
         }
         if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
         if(oPressed && !lastOPressed){
