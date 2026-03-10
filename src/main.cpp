@@ -585,7 +585,7 @@ int main(int argc, char* argv[]){
             start_press = -1;
             randomizeCells(); 
             //randomizeVecs();
-            //Ajouter fonction de vide fluide et reset settings !!
+            //Ajouter fonction de vide fluide et reset settings !! ====================================================
         }
         if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
         if(oPressed && !lastOPressed){
