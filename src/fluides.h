@@ -30,4 +30,5 @@ void randomizeVecs();
 //Met à jour la simulation (diffusion)
 void updateSimulation(unsigned int shaderProgram);
 
+
 #endif 
