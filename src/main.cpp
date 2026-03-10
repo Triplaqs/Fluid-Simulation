@@ -469,15 +469,19 @@ int main(int argc, char* argv[]){
             ImVec2 window_pos, window_pos_pivot;
 
             // On place la fenêtre dans la marge de droite (alignée en haut)
-            float rightMargin = 10.0f;
-            float topMargin = 10.0f;
+            /*float rightMargin = 10.0f;
+            //float topMargin = 10.0f;
+            float rightMargin = 0.0f;
+            float topMargin = 0.0f;
             window_pos.x = work_pos.x + work_size.x - rightMargin;
-            window_pos.y = work_pos.y + topMargin;
+            window_pos.y = work_pos.y + topMargin;*/
+            window_pos.x = work_pos.x + work_size.x;
+            window_pos.y = work_pos.y;
             window_pos_pivot.x = 1.0f;
             window_pos_pivot.y = 0.0f;
 
             ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-            ImGui::SetNextWindowSize(ImVec2(420, 220)); // Taille fixe pour être joli (suffisamment grand pour voir tous les widgets)
+            ImGui::SetNextWindowSize(ImVec2(550,300)); // Taille fixe pour être joli
 
             // -- Contenu de la fenêtre --
             ImGui::Begin("Input Panel", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove); // NoDecoration retire la barre de titre bleue

@@ -29,7 +29,7 @@ void set_bnd ( int N, int b, float * x )
     x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N )]);
 
     // enforce obstacle: zero value inside any defined circular obstacle
-    if (isObstacleCell) {
+    if (&isObstacleCell) {
         for ( i = 1; i <= N; ++i ) {
             for ( j = 1; j <= N; ++j ) {
                 if (isObstacleCell(i,j)) {
