@@ -19,6 +19,8 @@
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
+//bluetooth
+#include "../serial/serialib.h" 
 
 //autre
 #include <random>
@@ -335,6 +337,13 @@ int main(int argc, char* argv[]){
     // mouse interaction state
     bool draggingObstacle = false;
     bool lastLeftPressed = false;
+
+    //tentative connexion bluetooth initiale
+    std::cout << "Tentative de connexion..." << std::endl;
+    if (serialPort.openDevice("\\\\.\\COM4", 115200) == 1) {
+        isBluetoothConnected = true;
+        std::cout << "Connecte !" << std::endl;
+    }
     
 
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
@@ -347,6 +356,21 @@ int main(int argc, char* argv[]){
         glClear(GL_COLOR_BUFFER_BIT); // Aussi GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT
 
         //affichage_nouveau_fluide(shaderProgramCellsTemp);
+
+        //On se connecte au Bluetooth (si on le veut et que c'est pas encore fait)
+        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
+            std::cout << "Tentative de connexion..." << std::endl;
+            if (serialPort.openDevice("\\\\.\\COM4", 115200) == 1) {
+                isBluetoothConnected = true;
+                std::cout << "Connecte !" << std::endl;
+            }
+        }
+
+        // --- 2. LECTURE DES DONNÉES ---
+        // On ne lit le Bluetooth que si la connexion est active
+        if (isBluetoothConnected) {
+            updateBluetooth();
+        }
         
         
 //P2 : gestion input clavier

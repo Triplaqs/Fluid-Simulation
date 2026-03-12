@@ -8,4 +8,9 @@
 02 : Direction
 */
 
+//tente de se connecter au Bluetooth
+void initBluetooth(const char* portCOM);
+//mets à jour les données bluetooth
+void updateBluetooth();
+
 #endif 
