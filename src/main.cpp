@@ -358,11 +358,24 @@ int main(int argc, char* argv[]){
         //affichage_nouveau_fluide(shaderProgramCellsTemp);
 
         //On se connecte au Bluetooth (si on le veut et que c'est pas encore fait)
-        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
+        /*if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
             std::cout << "Tentative de connexion..." << std::endl;
-            if (serialPort.openDevice("\\\\.\\COM4", 115200) == 1) {
+            //if (serialPort.openDevice("\\\\.\\COM4", 115200) == 1) { //Windows
+            if (serialPort.openDevice("/dev/rfcomm0", 115200) == 1) { 
                 isBluetoothConnected = true;
                 std::cout << "Connecte !" << std::endl;
+            }
+        }*/
+        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
+            std::cout << "Tentative de connexion sur Linux..." << std::endl;
+        // On essaie d'ouvrir le fichier créé par rfcomm watch
+        if (serialPort.openDevice("/dev/rfcomm0", 115200) == 1) { 
+            isBluetoothConnected = true;
+            // IMPORTANT : Donner les droits de lecture au fichier
+            system("sudo chmod 666 /dev/rfcomm0"); 
+            std::cout << "Connecte avec succes !" << std::endl;
+        }else {
+                std::cout << "Echec : /dev/rfcomm0 n'est pas encore prêt. Connecte l'appli d'abord !" << std::endl;
             }
         }
 

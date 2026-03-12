@@ -16,7 +16,7 @@
 #include "../serial/serialib.h" 
 
 
-// On ouvre la connexion À appeler une seule fois avant ta boucle OpenGL (ex: dans ton main)
+// On ouvre la connexion 
 void initBluetooth(const char* portCOM) {
     // Tente d'ouvrir le port à 115200 bauds
     if (serialPort.openDevice(portCOM, 115200) != 1) {
@@ -38,7 +38,6 @@ void updateBluetooth() {
             try {
                 float value = std::stof(msg.substr(sep + 1));
 
-                // --- TU MODIFIES TES GLOBALES DIRECTEMENT ICI ---
                 if (id == "01") {
                     glob = value;  // Met à jour la densité
                 }
