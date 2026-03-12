@@ -32,7 +32,7 @@ add_executable(out
     src/fluidRender.cpp
     src/fluid_solver.cpp
     ${IMGUI_SOURCES}
-    serial/seriallib.c
+    serial/seriallib.cpp
 )
 
 # Include headers from src/
