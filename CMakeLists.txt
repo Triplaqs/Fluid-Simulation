@@ -20,6 +20,7 @@ set(IMGUI_SOURCES
     Imgui/imgui_impl_opengl3.cpp
 )
 
+
 # ---- Compile your executable
 add_executable(out
     src/utils.cpp
@@ -31,6 +32,7 @@ add_executable(out
     src/fluidRender.cpp
     src/fluid_solver.cpp
     ${IMGUI_SOURCES}
+    serial/serialib.cpp
 )
 
 # Include headers from src/
