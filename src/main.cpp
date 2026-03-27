@@ -42,6 +42,9 @@
 unsigned int flecheVAO = 0;
 unsigned int flecheVBO = 0;
 unsigned int shaderProgramCellsFleche = 0;
+unsigned int shaderProgramCellsTemp = 0;
+unsigned int VAO = 0;
+unsigned int VBO = 0;
 
 
 
@@ -126,7 +129,6 @@ int main(int argc, char* argv[]){
     //création 3 points :
 
     //Genère un buffer et créé son l'ID
-    unsigned int VBO;
     glGenBuffers(1, &VBO);
 
     //associe le buffer à la carte graphique 
@@ -206,7 +208,6 @@ int main(int argc, char* argv[]){
     glCompileShader(fragmentShaderCellsTemp);
 
     //Creer objet programme
-    unsigned int shaderProgramCellsTemp;
     shaderProgramCellsTemp = glCreateProgram();
 
     //attache les objets au programme
@@ -269,7 +270,6 @@ int main(int argc, char* argv[]){
 
 
 //Manipulation d'objet avec structure :
-    unsigned int VAO;
     glGenVertexArrays(1, &VAO);
 
     // 1. bind Vertex Array Object
@@ -326,16 +326,55 @@ int main(int argc, char* argv[]){
     int ob_ci = N/2;
     int ob_cj = N/4;
     int ob_r = N/8;
+    int obstacleShape = 0; // 0 = circle, 1 = heart, 2 = hexagram (visuel)
     int ob_r_saved = ob_r; // conserve le rayon pour pouvoir restaurer l'obstacle
-    bouled(ob_ci, ob_cj, ob_r);
-    // show/hide obstacle (boule or heart)
-    bool showObstacle = true;
-    // nombre d'obstacles actuellement affichés (0 ou 1)
-    int obstacleCount = 1;
-    // obstacle shape: 0 = circle, 1 = heart
-    int obstacleShape = 0;
+
+    // hexagramme indépendant
+    int hex_ci = N*3/4;
+    int hex_cj = N/2;
+    int hex_r = N/8;
+    int hex_r_saved = hex_r;
+
+    // cœur indépendant
+    int heart_ci = N/4;
+    int heart_cj = N*3/4;
+    int heart_r = N/8;
+    int heart_r_saved = heart_r;
+
+    int showCircle = 0;
+    int showHexagram = 0;
+    int showHeart = 0;
+    int obstacleCountCircle = 0;
+    int obstacleCountHexagram = 0;
+    int obstacleCountHeart = 0;
+
+    auto refreshObstacles = [&]() {
+        clearObstacles();
+
+        // 🔵 CERCLES
+        for (int i = 0; i < obstacleCountCircle; i++) {
+            int offset = i * 3;
+            addObstacle(ob_ci + offset, ob_cj + offset, ob_r, OBSTACLE_CIRCLE);
+        }
+
+        // ⭐ HEXAGRAMMES
+        for (int i = 0; i < obstacleCountHexagram; i++) {
+            int offset = i * 3;
+            addObstacle(hex_ci + offset, hex_cj + offset, hex_r, OBSTACLE_HEXAGRAM);
+        }
+
+        // ❤️ COEURS
+        for (int i = 0; i < obstacleCountHeart; i++) {
+            int offset = i * 3;
+            addObstacle(heart_ci + offset, heart_cj + offset, heart_r, OBSTACLE_HEART);
+        }
+    };
+
+    refreshObstacles();
+
     // mouse interaction state
     bool draggingObstacle = false;
+    int draggingObstacleTarget = 0; // 0 = none, 1 = main obstacle, 2 = independent hexagram
     bool lastLeftPressed = false;
 
     //tentative connexion bluetooth initiale
@@ -412,16 +451,34 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
-        // dessiner l'obstacle en NDC (toggleable) : cercle ou coeur
+        // dessiner l'obstacle en NDC (toggleable) : cercle/coeur
         float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
         float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
         float r = 2.0f * ((float)ob_r / (float)N);
-        if (showObstacle) {
-            if (obstacleShape == 0) {
-                drawObstacleNDC(cx, cy, r);
-            } else {
-                drawHeartNDC(cx, cy, r);
-            }
+        for (int i = 0 ; i < obstacleCountCircle; i++) {
+            int offset = i * 3;
+
+            float cx_i = -1.0f + 2.0f * (((ob_cj + offset) - 0.5f) / (float)N);
+            float cy_i = -1.0f + 2.0f * (((ob_ci + offset) - 0.5f) / (float)N);
+            float r_i  = 2.0f * ((float)ob_r / (float)N);
+
+            drawObstacleNDC(cx_i, cy_i, r_i);
+        }
+
+        // dessiner l'hexagramme indépendant
+        if (showHexagram) {
+            float hx = -1.0f + 2.0f * ((hex_cj - 0.5f) / (float)N);
+            float hy = -1.0f + 2.0f * ((hex_ci - 0.5f) / (float)N);
+            float hr = 2.0f * ((float)hex_r / (float)N);
+            drawHexagramNDC(hx, hy, hr);
+        }
+
+        // dessiner le cœur indépendant
+        if (showHeart) {
+            float hrx = -1.0f + 2.0f * ((heart_cj - 0.5f) / (float)N);
+            float hry = -1.0f + 2.0f * ((heart_ci - 0.5f) / (float)N);
+            float hrr = 2.0f * ((float)heart_r / (float)N);
+            drawHeartNDC(hrx, hry, hrr);
         }
         //test affichage
         /*if(cells.aff_mode==0){
@@ -583,22 +640,66 @@ int main(int argc, char* argv[]){
                 ImGui::SetKeyboardFocusHere(-1); 
             }
 
-            // Bouton ON/OFF pour l'obstacle (affichage + simulation)
-            // (Le shape est choisi ci-dessous)
-            if (ImGui::Button(showObstacle ? "Obstacle ON" : "Obstacle OFF")) {
-                showObstacle = !showObstacle;
-                obstacleCount = showObstacle ? 1 : 0;
-                if (showObstacle) {
-                    bouled(ob_ci, ob_cj, ob_r_saved);
-                } else {
-                    bouled(ob_ci, ob_cj, 0);
+
+            ImGui::Text("Circle: %d", obstacleCountCircle);
+
+            if (ImGui::Button("Circle -")) {
+                if (obstacleCountCircle > 0) {
+                    obstacleCountCircle--;
+                    refreshObstacles();
                 }
             }
-            ImGui::Text("Obstacle count: %d", obstacleCount);
 
-            // Bouton pour changer la forme de l'obstacle
-            if (ImGui::Button(obstacleShape == 0 ? "Shape: Circle" : "Shape: Heart")) {
-                obstacleShape = 1 - obstacleShape;
+            ImGui::SameLine();
+
+            if (ImGui::Button("Circle +")) {
+                obstacleCountCircle++;
+                refreshObstacles();
+            }
+
+            // ⭐ HEXAGRAM
+            ImGui::Text("Hexagram: %d", obstacleCountHexagram);
+
+            if (ImGui::Button("Hexagram -")) {
+                if (obstacleCountHexagram > 0) {
+                    obstacleCountHexagram--;
+                    refreshObstacles();
+                }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Hexagram +")) {
+                obstacleCountHexagram++;
+                refreshObstacles();
+            }
+
+            // ❤️ HEART
+            ImGui::Text("Heart: %d", obstacleCountHeart);
+
+            if (ImGui::Button("Heart -")) {
+                if (obstacleCountHeart > 0) {
+                    obstacleCountHeart--;
+                    refreshObstacles();
+                }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Heart +")) {
+                obstacleCountHeart++;
+                refreshObstacles();
+            }
+
+            ImGui::Text("Obstacle count Circle: %d", obstacleCountCircle);
+            ImGui::Text("Obstacle count Hexagram: %d", obstacleCountHexagram);
+            ImGui::Text("Obstacle count Heart: %d", obstacleCountHeart);
+
+            // Bouton pour changer la forme du premier obstacle (main)
+            const char* shapeLabels[3] = { "Shape: Circle", "Shape: Heart", "Shape: Hexagram" };
+            if (ImGui::Button(shapeLabels[obstacleShape])) {
+                obstacleShape = (obstacleShape + 1) % 3;
+                refreshObstacles();
             }
 
             ImGui::End();
@@ -626,9 +727,12 @@ int main(int argc, char* argv[]){
         }
         if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
         if(oPressed && !lastOPressed){
-            showObstacle = !showObstacle;
-            if (showObstacle) bouled(ob_ci, ob_cj, ob_r_saved);
-            else bouled(ob_ci, ob_cj, 0);
+            if (obstacleCountCircle == 0){
+                obstacleCountCircle = 1;
+            } else {
+                obstacleCountCircle = 0;
+            }
+            refreshObstacles();
         }
         lastSpacePressed = spacePressed;
         lastRPressed = rPressed;
@@ -640,7 +744,7 @@ int main(int argc, char* argv[]){
         bool leftPressed = (leftState == GLFW_PRESS);
 
         // on mouse press start: check if click is inside obstacle
-        if (showObstacle && leftPressed && !lastLeftPressed) {
+        if (leftPressed && !lastLeftPressed) {
             double mx, my;
             glfwGetCursorPos(window, &mx, &my);
             int ww, wh;
@@ -651,13 +755,16 @@ int main(int argc, char* argv[]){
             int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
             if (ci < 1) ci = 1; if (ci > N) ci = N;
             if (cj < 1) cj = 1; if (cj > N) cj = N;
-            if (isObstacleCell(ci, cj)) {
+
+            int obstacleIndex = findObstacleIndex(ci, cj);
+            if (obstacleIndex >= 0) {
                 draggingObstacle = true;
+                draggingObstacleTarget = obstacleIndex + 1; // 1-based: 1 main, 2 independent star
             }
         }
 
         // while dragging, update obstacle center to cursor
-        if (showObstacle && leftPressed && draggingObstacle) {
+        if (leftPressed && draggingObstacle) {
             double mx, my;
             glfwGetCursorPos(window, &mx, &my);
             int ww, wh;
@@ -668,17 +775,29 @@ int main(int argc, char* argv[]){
             int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
             if (ci < 1) ci = 1; if (ci > N) ci = N;
             if (cj < 1) cj = 1; if (cj > N) cj = N;
-            ob_ci = ci; ob_cj = cj;
-            bouled(ob_ci, ob_cj, ob_r);
+
+            if (draggingObstacleTarget == 1) {
+                ob_ci = ci;
+                ob_cj = cj;
+            } else if (draggingObstacleTarget == 2) {
+                hex_ci = ci;
+                hex_cj = cj;
+            } else if (draggingObstacleTarget == 3) {
+                heart_ci = ci;
+                heart_cj = cj;
+            }
+            refreshObstacles();
         }
 
         // on mouse release stop dragging
         if (!leftPressed && lastLeftPressed) {
             draggingObstacle = false;
+            draggingObstacleTarget = 0;
         }
         lastLeftPressed = leftPressed;
 
 
+        
         // Simulation stepping
         if(simRunning){
             auto now = std::chrono::steady_clock::now();

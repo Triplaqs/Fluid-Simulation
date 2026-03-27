@@ -8,6 +8,9 @@
 extern unsigned int flecheVAO;
 extern unsigned int flecheVBO;
 extern unsigned int shaderProgramCellsFleche;
+extern unsigned int shaderProgramCellsTemp;
+extern unsigned int VAO;
+extern unsigned int VBO;
 
 // variable de temps de cooldown de pression de touche
 extern float start_press; //-1 si aucune touche préssée
@@ -57,6 +60,7 @@ void initObstacleRenderer();
 // dessine une boule lissée en coordonnées NDC (x,y) centre et radius
 void drawObstacleNDC(float cx, float cy, float radius);
 void drawHeartNDC(float cx, float cy, float radius);
+void drawHexagramNDC(float cx, float cy, float radius);
 
 //on dessine une fleche grace aà drawarrow
 //void _affichagefleche(const Cell& c, float cellWidth, float cellHeight);

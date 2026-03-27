@@ -221,7 +221,7 @@ void drawObstacleNDC(float cx, float cy, float radius)
 // dessine un forme de coeur centré en NDC
 void drawHeartNDC(float cx, float cy, float radius)
 {
-    const int SEG = 128;
+    const int SEG = 256;  // Increased precision for smoother heart shape
     std::vector<float> verts;
     verts.reserve((SEG+2)*2);
     verts.push_back(cx);
@@ -240,26 +240,84 @@ void drawHeartNDC(float cx, float cy, float radius)
         verts.push_back(y);
     }
 
-    glUseProgram(obstacleProgram);
-    glBindVertexArray(obstacleVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glUseProgram(shaderProgramCellsTemp);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
 
-    // set uniforms (reuse same shader so smoothing still works)
-    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
-    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
-    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
-    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
-    if (loc_r >= 0) glUniform1f(loc_r, radius);
-    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
-    if (loc_e >= 0) glUniform1f(loc_e, edge);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Set color to pink
+    setTriangleColor(shaderProgramCellsTemp, 1.0f, 0.0f, 1.0f, 1.0f); // pink
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
 
-    glDisable(GL_BLEND);
+    glBindVertexArray(0);
+}
+
+// signed distance to centerd hexagram in XY plane (works for NDC shape generation)
+static float sdHexagram(float x, float y, float radius)
+{
+    // Inigo Quilez formula adapted
+    float kx = -0.5f;
+    float ky = 0.8660254038f;
+
+    float px = fabsf(x);
+    float py = fabsf(y);
+
+    float dot_kp = px * kx + py * ky;
+    if (dot_kp < 0.0f) {
+        px -= 2.0f * dot_kp * kx;
+        py -= 2.0f * dot_kp * ky;
+    }
+
+    float dot_kp2 = px * ky + py * kx;
+    if (dot_kp2 < 0.0f) {
+        px -= 2.0f * dot_kp2 * ky;
+        py -= 2.0f * dot_kp2 * kx;
+    }
+
+    float clampedX = fmaxf(-radius, fminf(px, radius));
+    float dx = px - clampedX;
+    float dy = py - radius;
+
+    return sqrtf(dx*dx + dy*dy) * (py > radius ? 1.0f : -1.0f);
+}
+
+void drawHexagramNDC(float cx, float cy, float radius)
+{
+    // Draw a filled 6-pointed star as two overlapping equilateral triangles.
+    const float h = radius * 0.8660254038f; // sin(60)
+
+    float p1x = cx;
+    float p1y = cy + radius;
+    float p2x = cx - h;
+    float p2y = cy - radius * 0.5f;
+    float p3x = cx + h;
+    float p3y = cy - radius * 0.5f;
+
+    float q1x = cx;
+    float q1y = cy - radius;
+    float q2x = cx - h;
+    float q2y = cy + radius * 0.5f;
+    float q3x = cx + h;
+    float q3y = cy + radius * 0.5f;
+
+    // Vertices for two triangles
+    float verts[12] = {
+        p1x, p1y, p2x, p2y, p3x, p3y,
+        q1x, q1y, q2x, q2y, q3x, q3y
+    };
+
+    glUseProgram(shaderProgramCellsTemp);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
+
+    // Set color for the star (e.g., yellow)
+    setTriangleColor(shaderProgramCellsTemp, 1.0f, 1.0f, 0.0f, 1.0f); // yellow
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 3, 3);
+
     glBindVertexArray(0);
 }
 

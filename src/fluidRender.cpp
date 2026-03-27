@@ -24,13 +24,89 @@ static std::vector<Obstacle> obstacles;
 // previous frame obstacle positions (used to compute obstacle velocity)
 static std::vector<Obstacle> prevObstacles;
 
-// helper to test whether a grid cell lies inside any circular obstacle
+// signed distance function for hexagram, in grid units and centered at (0,0)
+static float sdHexagramGrid(float x, float y, float r)
+{
+    // Usage : r = radius of star
+    // Implementation directly from the provided shader code
+    float kx = -0.5f;
+    float ky = 0.8660254038f;
+    float kz = 0.5773502692f;
+    float kw = 1.7320508076f;
+
+    float px = fabsf(x);
+    float py = fabsf(y);
+
+    float dot1 = px * kx + py * ky;
+    if (dot1 < 0.0f) {
+        px -= 2.0f * dot1 * kx;
+        py -= 2.0f * dot1 * ky;
+    }
+
+    float dot2 = px * ky + py * kx;
+    if (dot2 < 0.0f) {
+        px -= 2.0f * dot2 * ky;
+        py -= 2.0f * dot2 * kx;
+    }
+
+    float clamp_x = fmaxf(r * kz, fminf(px, r * kw));
+    px -= clamp_x;
+    py -= r;
+
+    float len = sqrtf(px * px + py * py);
+    return len * (py > 0.0f ? 1.0f : -1.0f);
+}
+
+// signed distance function for heart, in grid units and centered at (0,0)
+static float sdHeartGrid(float x, float y, float r)
+{
+    // Normalize by radius
+    float px = x / r;
+    float py = y / r;
+
+    // Heart SDF formula
+    px = fabsf(px);
+    if (py + px > 1.0f) {
+        float dx = px - 0.25f;
+        float dy = py - 0.75f;
+        return sqrtf(dx*dx + dy*dy) - 0.3535533906f; // sqrt(2)/4
+    } else {
+        float a = fmaxf(px + py, 0.0f) * 0.5f;
+        float dx1 = px - 0.0f;
+        float dy1 = py - 1.0f;
+        float d1 = dx1*dx1 + dy1*dy1;
+        float dx2 = px - a;
+        float dy2 = py - a;
+        float d2 = dx2*dx2 + dy2*dy2;
+        return sqrtf(fminf(d1, d2)) - 0.7071067812f; // 1/sqrt(2)
+    }
+}
+
+// helper to test whether a grid cell lies inside obstacle shape
 bool isObstacleCell(int i, int j){
     for (const Obstacle& o : obstacles) {
         if (o.radius <= 0) continue;
         float dx = (float)i - (float)o.ci;
         float dy = (float)j - (float)o.cj;
-        if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
+        switch (o.shape) {
+            case OBSTACLE_CIRCLE: {
+                if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
+                break;
+            }
+            case OBSTACLE_HEART: {
+                // approximate by circle habit for simplicity in solver context
+                if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
+                break;
+            }
+            case OBSTACLE_HEXAGRAM: {
+                float d = sdHexagramGrid(dx, dy, (float)o.radius);
+                if (d <= 0.0f) return true;
+                break;
+            }
+            default:
+                if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
+                break;
+        }
     }
     return false;
 }
@@ -40,9 +116,9 @@ void clearObstacles()
     obstacles.clear();
 }
 
-void addObstacle(int ci, int cj, int radius)
+void addObstacle(int ci, int cj, int radius, ObstacleShape shape)
 {
-    obstacles.push_back({ci, cj, radius});
+    obstacles.push_back({ci, cj, radius, shape});
 }
 
 int getObstacleCount()
@@ -50,14 +126,27 @@ int getObstacleCount()
     return (int)obstacles.size();
 }
 
+static bool isPointInObstacle(const Obstacle& o, int i, int j)
+{
+    if (o.radius <= 0) return false;
+    float dx = (float)i - (float)o.ci;
+    float dy = (float)j - (float)o.cj;
+    switch (o.shape) {
+        case OBSTACLE_CIRCLE:
+            return (dx*dx + dy*dy) <= (float)o.radius * (float)o.radius;
+        case OBSTACLE_HEART:
+            return sdHeartGrid(dx, dy, (float)o.radius) <= 0.0f;
+        case OBSTACLE_HEXAGRAM:
+            return sdHexagramGrid(dx, dy, (float)o.radius) <= 0.0f;
+        default:
+            return (dx*dx + dy*dy) <= (float)o.radius * (float)o.radius;
+    }
+}
+
 int findObstacleIndex(int i, int j)
 {
     for (int idx = 0; idx < (int)obstacles.size(); ++idx) {
-        const Obstacle& o = obstacles[idx];
-        if (o.radius <= 0) continue;
-        float dx = (float)i - (float)o.ci;
-        float dy = (float)j - (float)o.cj;
-        if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return idx;
+        if (isPointInObstacle(obstacles[idx], i, j)) return idx;
     }
     return -1;
 }
@@ -75,10 +164,15 @@ const std::vector<Obstacle>& getObstacles()
 }
 
 // public API used by main.cpp
-void bouled(int ci, int cj, int radius)
+void bouled(int ci, int cj, int radius, ObstacleShape shape)
 {
     clearObstacles();
-    if (radius > 0) addObstacle(ci, cj, radius);
+    if (radius > 0) addObstacle(ci, cj, radius, shape);
+}
+
+void bouled(int ci, int cj, int radius)
+{
+    bouled(ci, cj, radius, OBSTACLE_CIRCLE);
 }
 
 
