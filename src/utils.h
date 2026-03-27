@@ -51,6 +51,7 @@ extern std::vector<float> u, v, u_prev, v_prev;
 extern std::vector<float> dens, dens_prev;
 
 
+
 //définition de la macro
 #define IX(i,j) ((i) + (N+2) * (j))
 #define SWAP(x0,x) {float *tmp=x0; x0=x; x=tmp;}

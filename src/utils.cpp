@@ -60,6 +60,12 @@ std::vector<float> v_prev;
 std::vector<float> dens;
 std::vector<float> dens_prev;
 
+std::vector<float> dens_red;
+std::vector<float> dens_red_prev;
+
+std::vector<float> dens_blue;
+std::vector<float> dens_blue_prev;
+
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
 //std::vector<float> cellVertices; // per-vertex positions

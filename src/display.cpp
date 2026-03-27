@@ -217,9 +217,23 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
             else if (d > 1.0f) d = 1.0f;
 
             //float r = 0.0f; //on modulote la couleur de la composante rouge entrée par l'user à 255
-            float r = d*fmod(col, 256)/(30.0f); //on modulote la couleur de la composante rouge entrée par l'user à 255
-            float g = d ;
-            float b = d;
+            //float r = d*fmod(col, 256)/(30.0f); //on modulote la couleur de la composante rouge entrée par l'user à 255
+            //float g = d ;
+            //float b = d;
+
+            // Couleur basée sur la position : rouge à gauche, bleu à droite
+            float r, g, b;
+            if (j < N/2) {
+                // Rouge pour la gauche
+                r = d;
+                g = 0.0f;
+                b = 0.0f;
+            } else {
+                // Bleu pour la droite
+                r = 0.0f;
+                g = 0.0f;
+                b = d;
+            }
 
             
             float x1 = -1.0f + 2.0f * ((j-1) / (float)N);
