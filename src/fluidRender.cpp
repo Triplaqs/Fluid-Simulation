@@ -31,12 +31,19 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
 {
     // on teste ajouter une source de densité 
 
-    //on choisit les coordonnées pour l'injection de la densité (en bas à gauche avec 5,5 et milieu N/2,N/2)
-    int i = N/2;   
-    int j = N/2;
-    dens_prev[IX(i, j)] = glob*50.0f;
-    u_prev[IX(i, j)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
-    v_prev[IX(i, j)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
+    // Source gauche
+    int i_gauche = N/2;   
+    int j_gauche = N/4;
+    dens_prev[IX(i_gauche, j_gauche)] = glob*50.0f;
+    u_prev[IX(i_gauche, j_gauche)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
+    v_prev[IX(i_gauche, j_gauche)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
+
+    // Source droite
+    int i_droite = N/2;   
+    int j_droite = 3*N/4;
+    dens_prev[IX(i_droite, j_droite)] = glob*50.0f;
+    u_prev[IX(i_droite, j_droite)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   
+    v_prev[IX(i_droite, j_droite)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  
     
 
     // le depart est une colonne presque entiere
