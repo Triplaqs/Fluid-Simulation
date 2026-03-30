@@ -537,6 +537,59 @@ int main(int argc, char* argv[]){
                 // Remettre le focus sur l'input après clic (optionnel)
                 ImGui::SetKeyboardFocusHere(-1); 
             }
+
+            ImGui::Text("Enter a X position for the stream source (0 to 100) ");
+            bool enterPressed4 = ImGui::InputText("##Input4", inputBuffer4, IM_ARRAYSIZE(inputBuffer4), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Position x") || enterPressed4) {
+                std::string sentence4(inputBuffer4);
+                x = std::stof(sentence4); // Convertit la string en float et stocke dans x
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de de position x reçu : %f\n", x);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            ImGui::Text("Enter a Y position for the stream source (0 to 100) ");
+            bool enterPressed5 = ImGui::InputText("##Input5", inputBuffer5, IM_ARRAYSIZE(inputBuffer5), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Position y") || enterPressed5) {
+                std::string sentence5(inputBuffer5);
+                y = std::stof(sentence5); // Convertit la string en float et stocke dans y
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de position y reçu : %f\n", y);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            //si on est en version injection du fluide en ligne, il faut un x2 et y2
+            if (fluid_start == 1) {
+                ImGui::Text("Enter X2 position for the line (0 to 100)");
+                bool enterPressed6 = ImGui::InputText("##Input6", inputBuffer6, IM_ARRAYSIZE(inputBuffer6), ImGuiInputTextFlags_EnterReturnsTrue);
+                ImGui::SameLine();
+                if (ImGui::Button("Simulate X2") || enterPressed6) {
+                    std::string sentence6(inputBuffer6);
+                    x2 = std::stof(sentence6);
+                    printf("Paramètre X2 reçu : %f\n", x2);
+                    ImGui::SetKeyboardFocusHere(-1);
+                }
+
+                ImGui::Text("Enter Y2 position for the line (0 to 100)");
+                bool enterPressed7 = ImGui::InputText("##Input7", inputBuffer7, IM_ARRAYSIZE(inputBuffer7), ImGuiInputTextFlags_EnterReturnsTrue);
+                ImGui::SameLine();
+                if (ImGui::Button("Simulate Y2") || enterPressed7) {
+                    std::string sentence7(inputBuffer7);
+                    y2 = std::stof(sentence7);
+                    printf("Paramètre Y2 reçu : %f\n", y2);
+                    ImGui::SetKeyboardFocusHere(-1);
+                }
+            }
             
             ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
             bool enterPressed1 = ImGui::InputText("##Input1", inputBuffer1, IM_ARRAYSIZE(inputBuffer1), ImGuiInputTextFlags_EnterReturnsTrue);
@@ -599,6 +652,11 @@ int main(int argc, char* argv[]){
             // Bouton pour changer la forme de l'obstacle
             if (ImGui::Button(obstacleShape == 0 ? "Shape: Circle" : "Shape: Heart")) {
                 obstacleShape = 1 - obstacleShape;
+            }
+
+            // Bouton pour choisir la forme du point d'injection du fluide (un point ou un trait )
+            if (ImGui::Button(fluid_start == 0 ? "Shape fluid start: point" : "Shape fluid start: line")) {
+                fluid_start = 1 - fluid_start;
             }
 
             ImGui::End();
