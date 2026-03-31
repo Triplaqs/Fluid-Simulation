@@ -10,6 +10,8 @@
 #include <vector>
 #include <chrono>
 #include <tuple>
+//pour le bluetooth
+#include "../serial/serialib.h" 
 
 //Variables globales nécessaires pour structures:
 
@@ -28,6 +30,10 @@ extern float force;
 extern float col;
 //variable qui stoque si la data a été envoyée -> update la simulation
 extern bool sent;
+
+//pour le bluetooth :
+extern bool isBluetoothConnected;
+extern serialib serialPort; // objet de la classe serialib pour gérer la connexion Bluetooth
 
 //pour le nouvel affichage du fluide
 extern unsigned int cellVAO;

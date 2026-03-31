@@ -8,6 +8,8 @@
 #include <chrono>
 //headers
 #include "utils.h"
+//Pour le Bluetooth
+#include "../serial/serialib.h"
 
 
 
@@ -26,6 +28,9 @@ float col=0.0f;
 char inputBuffer3[256] = "1.0"; //valeur par défaut
 float force=1.0f;
 
+//pour le bluetooth :
+bool isBluetoothConnected;
+serialib serialPort;
 
 //variable qui stoque si la data a été envoyée -> update la simulation
 bool sent = false;
