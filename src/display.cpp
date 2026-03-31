@@ -149,14 +149,14 @@ void initObstacleRenderer()
     "uniform vec2 u_center;\n"
     "uniform float u_radius;\n"
     "uniform float u_edge;\n"
+    "uniform vec3 u_innerColor;\n"
+    "uniform vec3 u_outerColor;\n"
     "void main(){\n"
     "  float d = distance(v_pos, u_center);\n"
     "  float alpha = 1.0 - smoothstep(u_radius - u_edge, u_radius + u_edge, d);\n"
     "  if (alpha <= 0.001) discard;\n"
-    "  vec3 inner = vec3(1.0, 0.75, 0.80);" // centre rose clair
-    "  vec3 outer = vec3(0.70, 0.30, 0.50);" // bord rose foncé
     "  float t = clamp(d / u_radius, 0.0, 1.0);\n"
-    "  vec3 col = mix(inner, outer, t);\n"
+    "  vec3 col = mix(u_innerColor, u_outerColor, t);\n"
     "  FragColor = vec4(col, alpha);\n"
     "}\n";
 
@@ -208,6 +208,11 @@ void drawObstacleNDC(float cx, float cy, float radius)
     float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
     if (loc_e >= 0) glUniform1f(loc_e, edge);
 
+    GLint loc_inner = glGetUniformLocation(obstacleProgram, "u_innerColor");
+    GLint loc_outer = glGetUniformLocation(obstacleProgram, "u_outerColor");
+    if (loc_inner >= 0) glUniform3f(loc_inner, 1.0f, 0.75f, 0.80f);
+    if (loc_outer >= 0) glUniform3f(loc_outer, 0.70f, 0.30f, 0.50f);
+
     // smooth alpha via blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -250,38 +255,56 @@ void drawHeartNDC(float cx, float cy, float radius)
     glBindVertexArray(0);
 }
 
-// signed distance to centerd hexagram in XY plane (works for NDC shape generation)
-static float sdHexagram(float x, float y, float radius)
-{
-    // Inigo Quilez formula adapted
-    float kx = -0.5f;
-    float ky = 0.8660254038f;
-
-    float px = fabsf(x);
-    float py = fabsf(y);
-
-    float dot_kp = px * kx + py * ky;
-    if (dot_kp < 0.0f) {
-        px -= 2.0f * dot_kp * kx;
-        py -= 2.0f * dot_kp * ky;
-    }
-
-    float dot_kp2 = px * ky + py * kx;
-    if (dot_kp2 < 0.0f) {
-        px -= 2.0f * dot_kp2 * ky;
-        py -= 2.0f * dot_kp2 * kx;
-    }
-
-    float clampedX = fmaxf(-radius, fminf(px, radius));
-    float dx = px - clampedX;
-    float dy = py - radius;
-
-    return sqrtf(dx*dx + dy*dy) * (py > radius ? 1.0f : -1.0f);
-}
 
 void drawHexagramNDC(float cx, float cy, float radius)
 {
-    drawObstacleNDC(cx, cy, radius);
+    // hexagramme comme l'union de deux triangles équilatéraux.
+    const float PI = 3.14159265358979323846f;
+    const float angleUp = PI * 0.5f;
+    const float angleDown = -PI * 0.5f;
+
+    std::vector<float> verts;
+    verts.reserve(12);
+
+    // triangle pointant vers le haut
+    for (int k = 0; k < 3; ++k) {
+        float a = angleUp + k * 2.0f * PI / 3.0f;
+        verts.push_back(cx + cosf(a) * radius);
+        verts.push_back(cy + sinf(a) * radius);
+    }
+
+    // triangle pointant vers le bas
+    for (int k = 0; k < 3; ++k) {
+        float a = angleDown + k * 2.0f * PI / 3.0f;
+        verts.push_back(cx + cosf(a) * radius);
+        verts.push_back(cy + sinf(a) * radius);
+    }
+
+    glUseProgram(obstacleProgram);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+
+    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
+    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
+    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
+    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
+    if (loc_r >= 0) glUniform1f(loc_r, radius);
+    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
+    if (loc_e >= 0) glUniform1f(loc_e, edge);
+
+    GLint loc_inner = glGetUniformLocation(obstacleProgram, "u_innerColor");
+    GLint loc_outer = glGetUniformLocation(obstacleProgram, "u_outerColor");
+    if (loc_inner >= 0) glUniform3f(loc_inner, 0.880000f, 0.220000f, 0.650000f); //#AB0258  rose cerise
+    if (loc_outer >= 0) glUniform3f(loc_outer, 0.670588f, 0.007843f, 0.345098f); // dégradé plus clair
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glDisable(GL_BLEND);
+    glBindVertexArray(0);
 }
 
 

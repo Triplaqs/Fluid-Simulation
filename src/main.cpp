@@ -353,22 +353,13 @@ int main(int argc, char* argv[]){
     auto refreshObstacles = [&]() {
         clearObstacles();
 
-        // 🔵 CERCLES stockés dans obstacles
+        // stockés toutes les formes d'obstacles dans la liste "obstacles" et les dessiner à chaque frame
         for (const Obstacle& o : obstacles) {
             addObstacle(o.ci, o.cj, o.radius, o.shape);
         }
 
-        // ❤️ COEURS indépendants depuis les variables heart_ci/heart_cj/heart_r
-        for (int i = 0; i < obstacleCountHeart; i++) {
-            int offset = i * 3;
-            addObstacle(heart_ci + offset, heart_cj + offset, heart_r, OBSTACLE_HEART);
-        }
-
-        // ⭐ HEXAGRAMMES
-        for (int i = 0; i < obstacleCountHexagram; i++) {
-            int offset = i * 3;
-            addObstacle(hex_ci + offset, hex_cj + offset, hex_r, OBSTACLE_HEXAGRAM);
-        }
+        // Les obstacles sont déjà stockés dans la liste "obstacles".
+        // Ne pas ré-ajouter des formes indépendantes ici pour éviter les doublons.
     };
 
     auto removeLastObstacleOfType = [&](ObstacleShape shape) {
@@ -382,6 +373,16 @@ int main(int argc, char* argv[]){
     };
 
     auto removeLastObstacleOfTypeHeart = [&](ObstacleShape shape) {
+        for (int i = (int)obstacles.size() - 1; i >= 0; --i) {
+            if (obstacles[i].shape == shape) {
+                obstacles.erase(obstacles.begin() + i);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    auto removeLastObstacleOfTypeHexagram = [&](ObstacleShape shape) {
         for (int i = (int)obstacles.size() - 1; i >= 0; --i) {
             if (obstacles[i].shape == shape) {
                 obstacles.erase(obstacles.begin() + i);
@@ -488,7 +489,7 @@ int main(int argc, char* argv[]){
             }
         }
 
-        // dessiner l'hexagramme indépendant
+        // dessiner l'hexagramme indépendant  inutile???
         if (showHexagram) {
             float hx = -1.0f + 2.0f * ((hex_cj - 0.5f) / (float)N);
             float hy = -1.0f + 2.0f * ((hex_ci - 0.5f) / (float)N);
@@ -496,7 +497,7 @@ int main(int argc, char* argv[]){
             drawHexagramNDC(hx, hy, hr);
         }
 
-        // dessiner le cœur indépendant
+        // dessiner le cœur indépendant inutile???
         if (showHeart) {
             float hrx = -1.0f + 2.0f * ((heart_cj - 0.5f) / (float)N);
             float hry = -1.0f + 2.0f * ((heart_ci - 0.5f) / (float)N);
@@ -690,15 +691,20 @@ int main(int argc, char* argv[]){
             ImGui::Text("Hexagram: %d", obstacleCountHexagram);
 
             if (ImGui::Button("Hexagram -")) {
-                if (obstacleCountHexagram > 0) {
+                if (obstacleCountHexagram > 0 && removeLastObstacleOfType(OBSTACLE_HEXAGRAM)) {
                     obstacleCountHexagram--;
                     refreshObstacles();
                 }
             }
 
             ImGui::SameLine();
-
             if (ImGui::Button("Hexagram +")) {
+                Obstacle o;
+                o.ci = rand() % N;
+                o.cj = rand() % N;
+                o.radius  = ob_r;
+                o.shape = OBSTACLE_HEXAGRAM;
+                obstacles.push_back(o);
                 obstacleCountHexagram++;
                 refreshObstacles();
             }
@@ -725,16 +731,14 @@ int main(int argc, char* argv[]){
                 refreshObstacles();
             }
 
-            ImGui::Text("Obstacle count Circle: %d", obstacleCountCircle);
-            ImGui::Text("Obstacle count Hexagram: %d", obstacleCountHexagram);
-            ImGui::Text("Obstacle count Heart: %d", obstacleCountHeart);
+
 
             // Bouton pour changer la forme du premier obstacle (main)
-            const char* shapeLabels[3] = { "Shape: Circle", "Shape: Heart", "Shape: Hexagram" };
-            if (ImGui::Button(shapeLabels[obstacleShape])) {
-                obstacleShape = (obstacleShape + 1) % 3;
-                refreshObstacles();
-            }
+            // const char* shapeLabels[3] = { "Shape: Circle", "Shape: Heart", "Shape: Hexagram" };
+            // if (ImGui::Button(shapeLabels[obstacleShape])) {
+            //     obstacleShape = (obstacleShape + 1) % 3;
+            //     refreshObstacles();
+            // }
 
             ImGui::End();
 
