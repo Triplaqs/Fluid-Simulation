@@ -20,6 +20,10 @@ extern char inputBuffer0[256];
 extern char inputBuffer1[256];
 extern char inputBuffer2[256];
 extern char inputBuffer3[256];
+extern char inputBuffer4[256];
+extern char inputBuffer5[256];
+extern char inputBuffer6[256];
+extern char inputBuffer7[256];
 //Direction du flux
 extern float angle;
 //variable test récup par la fenêtre ImgUI, float entre 0 et 1
@@ -30,6 +34,12 @@ extern float force;
 extern float col;
 //variable qui stoque si la data a été envoyée -> update la simulation
 extern bool sent;
+//variable qui stocke pour ImgUI la position x et y du départ du fluide (et si on est en version ligne on a besoin de x2 et y2)
+extern float x;
+extern float y;
+
+extern float x2;
+extern float y2;
 
 //pour le bluetooth :
 extern bool isBluetoothConnected;
@@ -160,6 +170,9 @@ extern float vertices[9];
 extern float currentScale;
 // État de la température (accumulation)
 extern float currentHeat;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
+
+
+extern int fluid_start;
 
 
 #endif

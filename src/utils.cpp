@@ -27,6 +27,19 @@ float col=0.0f;
 //couleur du fluide (composante rouge)
 char inputBuffer3[256] = "1.0"; //valeur par défaut
 float force=1.0f;
+//position x du point de départ du fluide 
+char inputBuffer4[256] = "50";
+float x = 50.0f;
+//position y du point de départ du fluide
+char inputBuffer5[256] = "50";
+float y = 50.0f;
+//position de x2 (point 2 pour la ligne)
+char inputBuffer6[256];
+float x2 = 50.0f;
+//position de y2 (point 2 pour la ligne)
+char inputBuffer7[256];
+float y2 = 50.0f;
+
 
 //pour le bluetooth :
 bool isBluetoothConnected;
@@ -93,3 +106,6 @@ float vertices[] = {
 float currentScale = 1.0f;
 // État de la température (accumulation)
 float currentHeat = 0.0f;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
+
+
+int fluid_start =0;
