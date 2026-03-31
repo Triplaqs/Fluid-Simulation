@@ -636,6 +636,12 @@ int main(int argc, char* argv[]){
                 ImGui::SetKeyboardFocusHere(-1); 
             }
 
+            if (ImGui::Button("Chaud/Froid")) {
+                nextFluidIsHot = !nextFluidIsHot;
+            }
+            ImGui::SameLine();
+            ImGui::Text("Couleur active : %s", nextFluidIsHot ? "Rouge" : "Bleu");
+
             // Bouton ON/OFF pour l'obstacle (affichage + simulation)
             // (Le shape est choisi ci-dessous)
             if (ImGui::Button(showObstacle ? "Obstacle ON" : "Obstacle OFF")) {

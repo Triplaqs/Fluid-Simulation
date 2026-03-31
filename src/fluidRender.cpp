@@ -8,12 +8,14 @@
 #include <cmath>
 #include <cfloat>
 #include <chrono>
+#include <algorithm>
 #include <math.h>
 //headers
 #include "utils.h"
 #include "interaction.h"
 #include "fluid_solver.h"
 #include "fluides.h"
+#include "matrix.h"
 #include "fluidRender.h"
 
 // -----------------------------------------------------------------------------
@@ -94,41 +96,72 @@ void addForce(int i, int j, float fx, float fy)
     u_prev[IX(i,j)] += fx;
     v_prev[IX(i,j)] += fy;
 }
+//gros test : on ajoute une source de densité et de force à chaque frame pour voir le résultat
+static void applyConvolutionToDensity(std::vector<float>& density)
+{
+    ImageMatrix input(N+2, N+2);
+    ImageMatrix output(N+2, N+2);
+
+    for (int j = 0; j <= N+1; ++j) {
+        for (int i = 0; i <= N+1; ++i) {
+            input.setPixel(i, j, density[IX(i,j)]);
+        }
+    }
+
+    std::vector<std::vector<float>> kernel = {
+        {1.0f/9.0f, 1.0f/9.0f, 1.0f/9.0f},
+        {1.0f/9.0f, 1.0f/9.0f, 1.0f/9.0f},
+        {1.0f/9.0f, 1.0f/9.0f, 1.0f/9.0f}
+    };
+
+    convolutionMatrix(input, output, kernel);
+
+    for (int j = 0; j <= N+1; ++j) {
+        for (int i = 0; i <= N+1; ++i) {
+            density[IX(i,j)] = output.getPixel(i,j);
+        }
+    }
+}
 
 
 void updateSimulation_nouveau(unsigned int shaderProgram)
 {
     // on teste ajouter une source de densité 
 
-    //on choisit les coordonnées pour l'injection de la densité (en bas à gauche avec 5,5 et milieu N/2,N/2)
-    if (fluid_start == 0){
-        int i = x; 
-        int j = y;
-        dens_prev[IX(i, j)] = glob*50.0f;
-        u_prev[IX(i, j)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
-        v_prev[IX(i, j)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
-    }
+    auto clampGrid = [&](float value) { // debut de mes tests ici
+        int iv = (int)(value + 0.5f);
+        if (iv < 1) iv = 1;
+        if (iv > N) iv = N;
+        return iv;
+    };
 
-    // le depart est une colonne presque entiere
-    else if (fluid_start == 1){
-        int steps = 100; // nombre de points sur la ligne
+    auto& activePrev = nextFluidIsHot ? dens_red_prev : dens_blue_prev;
 
-        for (int k = 0; k < steps; k++){
-            float t = float(k) / float(steps - 1);
-
-            int i = x  + t * (x2 - x);
-            int j = y  + t * (y2 - y);
-
-            dens_prev[IX(i, j)] = glob * 50.0f;
-
-            u_prev[IX(i, j)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
-            v_prev[IX(i, j)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * -50.0f;
-        }   
-    }
-    
-
-
-
+    if (fluid_start == 0) {
+        int i_source = clampGrid(x);
+        int j_source = clampGrid(y);
+        activePrev[IX(i_source, j_source)] = glob * 50.0f;
+        u_prev[IX(i_source, j_source)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
+        v_prev[IX(i_source, j_source)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * (-50.0f);
+    } else {
+        int i0 = clampGrid(x);
+        int j0 = clampGrid(y);
+        int i1 = clampGrid(x2);
+        int j1 = clampGrid(y2);
+        int steps = std::max(std::abs(i1 - i0), std::abs(j1 - j0)) + 1;
+        for (int k = 0; k < steps; ++k) {
+            float t = steps > 1 ? (float)k / (float)(steps - 1) : 0.0f;
+            int i_src = i0 + (int)roundf(t * (i1 - i0));
+            int j_src = j0 + (int)roundf(t * (j1 - j0));
+            if (i_src < 1) i_src = 1;
+            if (i_src > N) i_src = N;
+            if (j_src < 1) j_src = 1;
+            if (j_src > N) j_src = N;
+            activePrev[IX(i_src, j_src)] = glob * 50.0f;
+            u_prev[IX(i_src, j_src)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
+            v_prev[IX(i_src, j_src)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * (-50.0f);
+        }
+    } // fin de mes tests ici
 
     //test des valeurs
     diff = 0.00001f; //au plus la valeur est petite au plus ca se diffuse vite
@@ -137,12 +170,28 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     // Mise à jour vitesse
     vel_step(N, u.data(), v.data(), u_prev.data(), v_prev.data(), visc, dt);
 
-    // Mise à jour densité
-    dens_step(N, dens.data(), dens_prev.data(), u.data(), v.data(), diff, dt);
+    
+    // Mise à jour densité séparée par couleur pour que le fluide déjà présent garde sa teinte (encore mes tests)
+    dens_step(N, dens_red.data(), dens_red_prev.data(), u.data(), v.data(), diff, dt);
+    dens_step(N, dens_blue.data(), dens_blue_prev.data(), u.data(), v.data(), diff, dt);
 
-    // Reset des forces pour la prochaine frame
+    // Homogénéisation par convolution à chaque étape
+    applyConvolutionToDensity(dens_red);
+    applyConvolutionToDensity(dens_blue);
+
+    // Mettre à jour la densité totale si besoin
+    int size = (N+2) * (N+2);
+    for (int idx = 0; idx < size; ++idx) {
+        dens[idx] = dens_red[idx] + dens_blue[idx];
+    } // jusqu'ici 
+
+    // Reset des forces et des injections pour la prochaine frame
     std::fill(u_prev.begin(), u_prev.end(), 0.0f);
     std::fill(v_prev.begin(), v_prev.end(), 0.0f);
+    // mes tests encore
+    std::fill(dens_red_prev.begin(), dens_red_prev.end(), 0.0f);
+    std::fill(dens_blue_prev.begin(), dens_blue_prev.end(), 0.0f);
+    //fin des tests
     std::fill(dens_prev.begin(), dens_prev.end(), 0.0f);
 
     // appliquer les obstacles : rendre la zone solide et repousser le fluide

@@ -32,6 +32,10 @@ void initFluid()
 
     dens.assign(size, 0.0f);
     dens_prev.assign(size, 0.0f);
+    dens_red.assign(size, 0.0f);
+    dens_red_prev.assign(size, 0.0f);
+    dens_blue.assign(size, 0.0f);
+    dens_blue_prev.assign(size, 0.0f);
 }
 
 
