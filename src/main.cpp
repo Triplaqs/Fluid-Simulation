@@ -347,14 +347,21 @@ int main(int argc, char* argv[]){
     int obstacleCountCircle = 0;
     int obstacleCountHexagram = 0;
     int obstacleCountHeart = 0;
+    std::vector<Obstacle> obstacles;
+
 
     auto refreshObstacles = [&]() {
         clearObstacles();
 
-        // 🔵 CERCLES
-        for (int i = 0; i < obstacleCountCircle; i++) {
+        // 🔵 CERCLES stockés dans obstacles
+        for (const Obstacle& o : obstacles) {
+            addObstacle(o.ci, o.cj, o.radius, o.shape);
+        }
+
+        // ❤️ COEURS indépendants depuis les variables heart_ci/heart_cj/heart_r
+        for (int i = 0; i < obstacleCountHeart; i++) {
             int offset = i * 3;
-            addObstacle(ob_ci + offset, ob_cj + offset, ob_r, OBSTACLE_CIRCLE);
+            addObstacle(heart_ci + offset, heart_cj + offset, heart_r, OBSTACLE_HEART);
         }
 
         // ⭐ HEXAGRAMMES
@@ -362,15 +369,27 @@ int main(int argc, char* argv[]){
             int offset = i * 3;
             addObstacle(hex_ci + offset, hex_cj + offset, hex_r, OBSTACLE_HEXAGRAM);
         }
-
-        // ❤️ COEURS
-        for (int i = 0; i < obstacleCountHeart; i++) {
-            int offset = i * 3;
-            addObstacle(heart_ci + offset, heart_cj + offset, heart_r, OBSTACLE_HEART);
-        }
     };
 
-    refreshObstacles();
+    auto removeLastObstacleOfType = [&](ObstacleShape shape) {
+        for (int i = (int)obstacles.size() - 1; i >= 0; --i) {
+            if (obstacles[i].shape == shape) {
+                obstacles.erase(obstacles.begin() + i);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    auto removeLastObstacleOfTypeHeart = [&](ObstacleShape shape) {
+        for (int i = (int)obstacles.size() - 1; i >= 0; --i) {
+            if (obstacles[i].shape == shape) {
+                obstacles.erase(obstacles.begin() + i);
+                return true;
+            }
+        }
+        return false;
+    };
 
     // mouse interaction state
     bool draggingObstacle = false;
@@ -386,6 +405,7 @@ int main(int argc, char* argv[]){
     
 
 //render loop (maintient la fenêtre ouverte, une loop = une frame)
+    int selectedObstacle = -1;
     //se divise en 4 parties : nettoyage, input, render puis cloture
     while(!glfwWindowShouldClose(window)){
         //mesure du temps
@@ -451,18 +471,21 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
-        // dessiner l'obstacle en NDC (toggleable) : cercle/coeur
-        float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
-        float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
-        float r = 2.0f * ((float)ob_r / (float)N);
-        for (int i = 0 ; i < obstacleCountCircle; i++) {
-            int offset = i * 3;
+        // dessiner tous les obstacles enregistrés dans le renderer
+        for (const Obstacle& o : getObstacles()) {
+            float cx = -1.0f + 2.0f * ((o.cj - 0.5f) / (float)N);
+            float cy = -1.0f + 2.0f * ((o.ci - 0.5f) / (float)N);
+            float r  = 2.0f * ((float)o.radius / (float)N);
 
-            float cx_i = -1.0f + 2.0f * (((ob_cj + offset) - 0.5f) / (float)N);
-            float cy_i = -1.0f + 2.0f * (((ob_ci + offset) - 0.5f) / (float)N);
-            float r_i  = 2.0f * ((float)ob_r / (float)N);
-
-            drawObstacleNDC(cx_i, cy_i, r_i);
+            if (o.shape == OBSTACLE_CIRCLE) {
+                drawObstacleNDC(cx, cy, r);
+            }
+            else if (o.shape == OBSTACLE_HEART) {
+                drawHeartNDC(cx, cy, r);
+            }
+            else if (o.shape == OBSTACLE_HEXAGRAM) {
+                drawHexagramNDC(cx, cy, r);
+            }
         }
 
         // dessiner l'hexagramme indépendant
@@ -644,18 +667,24 @@ int main(int argc, char* argv[]){
             ImGui::Text("Circle: %d", obstacleCountCircle);
 
             if (ImGui::Button("Circle -")) {
-                if (obstacleCountCircle > 0) {
+                if (obstacleCountCircle > 0 && removeLastObstacleOfType(OBSTACLE_CIRCLE)) {
                     obstacleCountCircle--;
                     refreshObstacles();
                 }
             }
 
             ImGui::SameLine();
-
             if (ImGui::Button("Circle +")) {
+                Obstacle o;
+                o.ci = rand() % N;
+                o.cj = rand() % N;
+                o.radius  = ob_r;
+                o.shape = OBSTACLE_CIRCLE;
+                obstacles.push_back(o);
                 obstacleCountCircle++;
                 refreshObstacles();
             }
+            
 
             // ⭐ HEXAGRAM
             ImGui::Text("Hexagram: %d", obstacleCountHexagram);
@@ -678,15 +707,20 @@ int main(int argc, char* argv[]){
             ImGui::Text("Heart: %d", obstacleCountHeart);
 
             if (ImGui::Button("Heart -")) {
-                if (obstacleCountHeart > 0) {
+                if (obstacleCountHeart > 0 && removeLastObstacleOfType(OBSTACLE_HEART)) {
                     obstacleCountHeart--;
                     refreshObstacles();
                 }
             }
 
             ImGui::SameLine();
-
             if (ImGui::Button("Heart +")) {
+                Obstacle o;
+                o.ci = rand() % N;
+                o.cj = rand() % N;
+                o.radius  = ob_r;
+                o.shape = OBSTACLE_HEART;
+                obstacles.push_back(o);
                 obstacleCountHeart++;
                 refreshObstacles();
             }
@@ -725,77 +759,47 @@ int main(int argc, char* argv[]){
             //randomizeVecs();
             //Ajouter fonction de vide fluide et reset settings !! ====================================================
         }
-        if(nPressed && !lastNPressed){ updateSimulation_nouveau(shaderProgramCellsTemp); }
-        if(oPressed && !lastOPressed){
-            if (obstacleCountCircle == 0){
-                obstacleCountCircle = 1;
-            } else {
-                obstacleCountCircle = 0;
-            }
-            refreshObstacles();
-        }
-        lastSpacePressed = spacePressed;
-        lastRPressed = rPressed;
-        lastNPressed = nPressed;
-        lastOPressed = oPressed;
 
-        // --- mouse interaction for obstacle ---
-        int leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-        bool leftPressed = (leftState == GLFW_PRESS);
+        //sourie pour obstacle
 
-        // on mouse press start: check if click is inside obstacle
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        // conversion en coordonnées grille
+        int gridX = (mouseX / width) * N;
+        int gridY = ((height - mouseY) / height) * N;
+
+        bool leftPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+
         if (leftPressed && !lastLeftPressed) {
-            double mx, my;
-            glfwGetCursorPos(window, &mx, &my);
-            int ww, wh;
-            glfwGetFramebufferSize(window, &ww, &wh);
-            float xndc = (float)(mx / ww) * 2.0f - 1.0f;
-            float yndc = 1.0f - (float)(my / wh) * 2.0f;
-            int cj = (int)((xndc + 1.0f) * 0.5f * N + 0.5f);
-            int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
-            if (ci < 1) ci = 1; if (ci > N) ci = N;
-            if (cj < 1) cj = 1; if (cj > N) cj = N;
+            selectedObstacle = -1;
 
-            int obstacleIndex = findObstacleIndex(ci, cj);
-            if (obstacleIndex >= 0) {
-                draggingObstacle = true;
-                draggingObstacleTarget = obstacleIndex + 1; // 1-based: 1 main, 2 independent star
+            for (int i = 0; i < obstacles.size(); i++) {
+                Obstacle& o = obstacles[i];
+
+                int dx = gridY - o.ci;
+                int dy = gridX - o.cj;
+
+                if (dx*dx + dy*dy < o.radius * o.radius) {
+                    selectedObstacle = i;
+                    break;
+                }
             }
         }
 
-        // while dragging, update obstacle center to cursor
-        if (leftPressed && draggingObstacle) {
-            double mx, my;
-            glfwGetCursorPos(window, &mx, &my);
-            int ww, wh;
-            glfwGetFramebufferSize(window, &ww, &wh);
-            float xndc = (float)(mx / ww) * 2.0f - 1.0f;
-            float yndc = 1.0f - (float)(my / wh) * 2.0f;
-            int cj = (int)((xndc + 1.0f) * 0.5f * N + 0.5f);
-            int ci = (int)((yndc + 1.0f) * 0.5f * N + 0.5f);
-            if (ci < 1) ci = 1; if (ci > N) ci = N;
-            if (cj < 1) cj = 1; if (cj > N) cj = N;
-
-            if (draggingObstacleTarget == 1) {
-                ob_ci = ci;
-                ob_cj = cj;
-            } else if (draggingObstacleTarget == 2) {
-                hex_ci = ci;
-                hex_cj = cj;
-            } else if (draggingObstacleTarget == 3) {
-                heart_ci = ci;
-                heart_cj = cj;
-            }
-            refreshObstacles();
+        if (leftPressed && selectedObstacle != -1) {
+            obstacles[selectedObstacle].ci = gridY;
+            obstacles[selectedObstacle].cj = gridX;
+            moveObstacle(selectedObstacle, gridY, gridX);
+        }
+        if (!leftPressed) {
+            selectedObstacle = -1;
         }
 
-        // on mouse release stop dragging
-        if (!leftPressed && lastLeftPressed) {
-            draggingObstacle = false;
-            draggingObstacleTarget = 0;
-        }
         lastLeftPressed = leftPressed;
-
 
         
         // Simulation stepping

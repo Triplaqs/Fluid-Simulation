@@ -221,19 +221,18 @@ void drawObstacleNDC(float cx, float cy, float radius)
 // dessine un forme de coeur centré en NDC
 void drawHeartNDC(float cx, float cy, float radius)
 {
-    const int SEG = 256;  // Increased precision for smoother heart shape
+    const int SEG = 128;
     std::vector<float> verts;
-    verts.reserve((SEG+2)*2);
+    verts.reserve((SEG + 2) * 2);
     verts.push_back(cx);
     verts.push_back(cy);
 
     for (int s = 0; s <= SEG; ++s) {
         float t = (float)s / (float)SEG * 2.0f * 3.14159265f;
         float xt = 16.0f * powf(sinf(t), 3);
-        float yt = 13.0f * cosf(t) - 5.0f * cosf(2.0f*t) - 2.0f * cosf(3.0f*t) - cosf(4.0f*t);
-        // normaliser vers [-1,1]
-        float nx = xt / 17.0f; // x in [-16,16]
-        float ny = yt / 17.0f; // y in [-17,13]
+        float yt = 13.0f * cosf(t) - 5.0f * cosf(2.0f * t) - 2.0f * cosf(3.0f * t) - cosf(4.0f * t);
+        float nx = xt / 17.0f;
+        float ny = yt / 17.0f;
         float x = cx + nx * radius;
         float y = cy + ny * radius;
         verts.push_back(x);
@@ -243,12 +242,10 @@ void drawHeartNDC(float cx, float cy, float radius)
     glUseProgram(shaderProgramCellsTemp);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
 
-    // Set color to pink
-    setTriangleColor(shaderProgramCellsTemp, 1.0f, 0.0f, 1.0f, 1.0f); // pink
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
+    setTriangleColor(shaderProgramCellsTemp, 1.0f, 0.0f, 1.0f, 1.0f);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG + 2);
 
     glBindVertexArray(0);
 }
@@ -284,41 +281,7 @@ static float sdHexagram(float x, float y, float radius)
 
 void drawHexagramNDC(float cx, float cy, float radius)
 {
-    // Draw a filled 6-pointed star as two overlapping equilateral triangles.
-    const float h = radius * 0.8660254038f; // sin(60)
-
-    float p1x = cx;
-    float p1y = cy + radius;
-    float p2x = cx - h;
-    float p2y = cy - radius * 0.5f;
-    float p3x = cx + h;
-    float p3y = cy - radius * 0.5f;
-
-    float q1x = cx;
-    float q1y = cy - radius;
-    float q2x = cx - h;
-    float q2y = cy + radius * 0.5f;
-    float q3x = cx + h;
-    float q3y = cy + radius * 0.5f;
-
-    // Vertices for two triangles
-    float verts[12] = {
-        p1x, p1y, p2x, p2y, p3x, p3y,
-        q1x, q1y, q2x, q2y, q3x, q3y
-    };
-
-    glUseProgram(shaderProgramCellsTemp);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
-
-    // Set color for the star (e.g., yellow)
-    setTriangleColor(shaderProgramCellsTemp, 1.0f, 1.0f, 0.0f, 1.0f); // yellow
-
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawArrays(GL_TRIANGLES, 3, 3);
-
-    glBindVertexArray(0);
+    drawObstacleNDC(cx, cy, radius);
 }
 
 
