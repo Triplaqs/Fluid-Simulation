@@ -96,7 +96,7 @@ void addForce(int i, int j, float fx, float fy)
     u_prev[IX(i,j)] += fx;
     v_prev[IX(i,j)] += fy;
 }
-//gros test : on ajoute une source de densité et de force à chaque frame pour voir le résultat
+//gros test : on ajoute une source de densité à chaque frame pour voir le résultat
 static void applyConvolutionToDensity(std::vector<float>& density)
 {
     ImageMatrix input(N+2, N+2);
@@ -183,15 +183,15 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     int size = (N+2) * (N+2);
     for (int idx = 0; idx < size; ++idx) {
         dens[idx] = dens_red[idx] + dens_blue[idx];
-    } // jusqu'ici 
+    }
 
-    // Reset des forces et des injections pour la prochaine frame
+    // Reset des forces et des densités pour la prochaine frame
     std::fill(u_prev.begin(), u_prev.end(), 0.0f);
     std::fill(v_prev.begin(), v_prev.end(), 0.0f);
-    // mes tests encore
+    
     std::fill(dens_red_prev.begin(), dens_red_prev.end(), 0.0f);
     std::fill(dens_blue_prev.begin(), dens_blue_prev.end(), 0.0f);
-    //fin des tests
+    
     std::fill(dens_prev.begin(), dens_prev.end(), 0.0f);
 
     // appliquer les obstacles : rendre la zone solide et repousser le fluide

@@ -636,6 +636,7 @@ int main(int argc, char* argv[]){
                 ImGui::SetKeyboardFocusHere(-1); 
             }
 
+            // Bouton pour basculer entre fluide chaud et froid
             if (ImGui::Button("Chaud/Froid")) {
                 nextFluidIsHot = !nextFluidIsHot;
             }
