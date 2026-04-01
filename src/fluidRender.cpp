@@ -128,27 +128,32 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
 {
     // on teste ajouter une source de densité 
 
-    auto clampGrid = [&](float value) { // debut de mes tests ici
+     //ramène une coordonnée à l'intervalle [1, N] et la convertie en entier de grille
+    auto clampGrid = [&](float value) {
         int iv = (int)(value + 0.5f);
         if (iv < 1) iv = 1;
         if (iv > N) iv = N;
         return iv;
     };
+    
+    // on choisit la bonne paire de densité précédente selon la position du bouton Chaud/Froid
+    auto& activePrev = nextFluidIsHot ? dens_red_prev : dens_blue_prev; 
 
-    auto& activePrev = nextFluidIsHot ? dens_red_prev : dens_blue_prev;
-
+    // on ajoute une source de densité et de force à la position choisie (point ou ligne)
     if (fluid_start == 0) {
-        int i_source = clampGrid(x);
+        int i_source = clampGrid(x); // convertit la position x en indice de grille
         int j_source = clampGrid(y);
-        activePrev[IX(i_source, j_source)] = glob * 50.0f;
+        activePrev[IX(i_source, j_source)] = glob * 50.0f; // ajoute la densité à la source
+
         u_prev[IX(i_source, j_source)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
         v_prev[IX(i_source, j_source)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * (-50.0f);
+    
     } else {
         int i0 = clampGrid(x);
         int j0 = clampGrid(y);
         int i1 = clampGrid(x2);
         int j1 = clampGrid(y2);
-        int steps = std::max(std::abs(i1 - i0), std::abs(j1 - j0)) + 1;
+        int steps = std::max(std::abs(i1 - i0), std::abs(j1 - j0)) + 1; 
         for (int k = 0; k < steps; ++k) {
             float t = steps > 1 ? (float)k / (float)(steps - 1) : 0.0f;
             int i_src = i0 + (int)roundf(t * (i1 - i0));
@@ -161,7 +166,7 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
             u_prev[IX(i_src, j_src)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
             v_prev[IX(i_src, j_src)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * (-50.0f);
         }
-    } // fin de mes tests ici
+    } 
 
     //test des valeurs
     diff = 0.00001f; //au plus la valeur est petite au plus ca se diffuse vite
@@ -170,7 +175,6 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     // Mise à jour vitesse
     vel_step(N, u.data(), v.data(), u_prev.data(), v_prev.data(), visc, dt);
 
-    
     // Mise à jour densité séparée par couleur pour que le fluide déjà présent garde sa teinte (encore mes tests)
     dens_step(N, dens_red.data(), dens_red_prev.data(), u.data(), v.data(), diff, dt);
     dens_step(N, dens_blue.data(), dens_blue_prev.data(), u.data(), v.data(), diff, dt);
