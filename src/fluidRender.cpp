@@ -16,9 +16,11 @@
 #include "fluides.h"
 #include "fluidRender.h"
 
-// -----------------------------------------------------------------------------
-// obstacle support (multiple obstacles)
-// -----------------------------------------------------------------------------
+// signed distance function for obstacles
+static float obstacleSignedDistance(const Obstacle& o, float x, float y);
+
+// compute normal at a point near obstacle boundary
+static void obstacleNormal(const Obstacle& o, float x, float y, float& nx, float& ny);
 // obstacles stored in grid coordinates (1..N)
 static std::vector<Obstacle> obstacles;
 // previous frame obstacle positions (used to compute obstacle velocity)
@@ -28,7 +30,8 @@ static std::vector<Obstacle> prevObstacles;
 static float sdHexagramGrid(float x, float y, float r)
 {
     // Usage : r = radius of star
-    // Implementation directly from the provided shader code
+    // implementation du truc du prof pour faire une étoile à 6 branches (hexagramme) en utilisant des produits scalaires pour faire les symétries et des fonctions de distance pour faire les formes de base
+    //ne marche pas je crois (bord en carre et non etoile)
     float kx = -0.5f;
     float ky = 0.8660254038f;
     float kz = 0.5773502692f;
@@ -94,7 +97,7 @@ bool isObstacleCell(int i, int j){
                 break;
             }
             case OBSTACLE_HEART: {
-                // approximate by circle habit for simplicity in solver context
+                // approx
                 if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
                 break;
             }
@@ -256,50 +259,68 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
         for (int ii = 1; ii <= N; ++ii) {
             for (int jj = 1; jj <= N; ++jj) {
                 if (isObstacleCell(ii, jj)) continue;
-                bool adjacent = false;
+                // trouver l'obstacle le plus proche
                 Obstacle closest;
-                float closestDist2 = FLT_MAX;
-
-                // déterminer l'obstacle le plus proche parmi les voisins
+                float minDist = FLT_MAX;
                 for (const Obstacle& o : obstacles) {
-                    // vérifier l'adjacence au bord de cet obstacle
-                    bool adj = false;
-                    if (ii-1 >= 1 && ( (ii-1 - o.ci)*(ii-1 - o.ci) + (jj - o.cj)*(jj - o.cj) <= o.radius*o.radius )) adj = true;
-                    if (ii+1 <= N && ( (ii+1 - o.ci)*(ii+1 - o.ci) + (jj - o.cj)*(jj - o.cj) <= o.radius*o.radius )) adj = true;
-                    if (jj-1 >= 1 && ( (ii - o.ci)*(ii - o.ci) + (jj-1 - o.cj)*(jj-1 - o.cj) <= o.radius*o.radius )) adj = true;
-                    if (jj+1 <= N && ( (ii - o.ci)*(ii - o.ci) + (jj+1 - o.cj)*(jj+1 - o.cj) <= o.radius*o.radius )) adj = true;
-                    if (!adj) continue;
-                    adjacent = true;
-
-                    float dx = (float)ii - (float)o.ci;
-                    float dy = (float)jj - (float)o.cj;
-                    float d2 = dx*dx + dy*dy;
-                    if (d2 < closestDist2) {
-                        closestDist2 = d2;
+                    float d = obstacleSignedDistance(o, (float)ii, (float)jj);
+                    if (d < minDist) {
+                        minDist = d;
                         closest = o;
                     }
                 }
-
-                if (!adjacent) continue;
-
-                float nx = (float)ii - (float)closest.ci;
-                float ny = (float)jj - (float)closest.cj;
-                float nlen = sqrtf(nx*nx + ny*ny);
-                if (nlen < 1e-6f) continue;
-                nx /= nlen; ny /= nlen;
-
-                float uu = u[IX(ii,jj)];
-                float vv = v[IX(ii,jj)];
-                float vn = uu*nx + vv*ny;
-                float new_vn = -restitution * vn;
-                float ut = uu - vn*nx;
-                float vt = vv - vn*ny;
-                u[IX(ii,jj)] = ut + new_vn*nx;
-                v[IX(ii,jj)] = vt + new_vn*ny;
+                if (minDist > 0 && minDist < 0.02f) {  // adjacent au bord
+                    float nx, ny;
+                    obstacleNormal(closest, (float)ii, (float)jj, nx, ny);
+                    // réflexion
+                    float uu = u[IX(ii,jj)];
+                    float vv = v[IX(ii,jj)];
+                    float vn = uu*nx + vv*ny;
+                    if (vn < 0) {  // seulement si entrant
+                        float new_vn = -restitution * vn;
+                        float ut = uu - vn*nx;
+                        float vt = vv - vn*ny;
+                        u[IX(ii,jj)] = ut + new_vn*nx;
+                        v[IX(ii,jj)] = vt + new_vn*ny;
+                    }
+                }
             }
         }
     }
 
     // Mettre à jour l'état précédent des obstacles pour la prochaine frame
     prevObstacles = obstacles;
+}
+
+// signed distance function for obstacles
+static float obstacleSignedDistance(const Obstacle& o, float x, float y) {
+    if (o.radius <= 0) return FLT_MAX;
+    float dx = x - (float)o.ci;
+    float dy = y - (float)o.cj;
+    switch (o.shape) {
+        case OBSTACLE_CIRCLE:
+            return sqrtf(dx*dx + dy*dy) - (float)o.radius;
+        case OBSTACLE_HEART:
+            return sdHeartGrid(dx, dy, (float)o.radius);
+        case OBSTACLE_HEXAGRAM:
+            return sdHexagramGrid(dx, dy, (float)o.radius * 0.02f);  // Réduire la taille pour que les bords ne dépassent pas l'hexagramme affiché
+        default:
+            return sqrtf(dx*dx + dy*dy) - (float)o.radius;
+    }
+}
+
+// compute normal at a point near obstacle boundary
+static void obstacleNormal(const Obstacle& o, float x, float y, float& nx, float& ny) {
+    const float eps = 1e-3f;
+    float d0 = obstacleSignedDistance(o, x, y);
+    float dx = obstacleSignedDistance(o, x + eps, y) - d0;
+    float dy = obstacleSignedDistance(o, x, y + eps) - d0;
+    float len = sqrtf(dx*dx + dy*dy);
+    if (len > 1e-6f) {
+        nx = dx / len;
+        ny = dy / len;
+    } else {
+        nx = 0.0f;
+        ny = 0.0f;
+    }
 }

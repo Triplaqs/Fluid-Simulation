@@ -491,9 +491,18 @@ int main(int argc, char* argv[]){
 
         // dessiner l'hexagramme indépendant  inutile???
         if (showHexagram) {
+            // Limiter le centre pour que l'hexagramme ne dépasse pas la grille
+            hex_ci = std::max(hex_r, std::min(N - hex_r, hex_ci));
+            hex_cj = std::max(hex_r, std::min(N - hex_r, hex_cj));
+
+            // Conversion en coordonnées NDC (-1.0 à 1.0)
             float hx = -1.0f + 2.0f * ((hex_cj - 0.5f) / (float)N);
             float hy = -1.0f + 2.0f * ((hex_ci - 0.5f) / (float)N);
-            float hr = 2.0f * ((float)hex_r / (float)N);
+
+            // Ajuster légèrement le rayon pour que les sommets restent dans les bords
+            float hr = 1.8f * ((float)hex_r / (float)N); // testez 1.7 ou 1.9 si nécessaire
+
+            // Appel à la fonction de dessin
             drawHexagramNDC(hx, hy, hr);
         }
 
