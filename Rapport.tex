@@ -10,7 +10,7 @@
 \usepackage[T1]{fontenc}      % Police contenant les caractères français
 \usepackage[francais]{babel}  
 \usepackage{fullpage}
-
+\usepackage{xcolor}
 
 
 \usepackage{graphicx}  % pour inclure des images
@@ -59,14 +59,29 @@ interface permet à l'utilisateur d'intéragir en modifiant les paramètres de l
 afin d'observer l'évolution du fluide. Ce projet s'inscrit dans le cadre de notre licence en 
 informatique avec l'UE Projet De Programmation 2 pour laquelle nous avons pu choisir un sujet 
 parmi une liste donnée, et nous avons choisi celui-ci : la simulation de fluides en 2D.
+
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde 
-de l'informatique : Etant tous les quatres des étudiants en double licence maths-info, lors du 
+de l'informatique : 
+
+Etant tous les quatres des étudiants en double licence maths-info, lors du 
 choix du projet, celui-ci nous a paru le plus intéressant et le plus adapté à nos compétences.
 Dans le monde de l'informatique, la simulation de fluides est présente dans de nombreux domaines,
 notamment dans les jeux vidéos, la météorologie, l'environnement, la medecine, etc. 
+
 \item	Présenter les différentes approches possibles pour la résolution du problème, et en 
-particulier celle choisie : ......
-\item Donner le cahier des charges détaillé : ......
+particulier celle choisie : 
+{\color {red} A REDIGER
+
+2 approches sont possibles : ce qu'on a fait, ou alors faire le truc des particules.
+On aurait pu faire la simulation avec le truc des particules pour de meilleurs performances
+et une physique plus proche de la rélité, mais on a commencé par faire la simulation avec une 
+grille. On a discuté vers la fin du projet de passer aux particules mais on a finalement réussi 
+à obtenir un résultat plutot satisfaisant en restant sur la grille (meme si le résultat ne colle 
+donc pas parfaitement à la réalité).}
+
+\item Donner le cahier des charges détaillé : 
+
+......
 
 
 \end{itemize}
@@ -75,13 +90,34 @@ particulier celle choisie : ......
 \section{Développements Logiciel : Conception, Modélisation, Implémentation} 
 \emph{8 à 15 pages}
 
-Il se peut que la conception du logiciel (3) et l'analyse algorithmique (4) aient un poids différent dans votre projet. Les points décrits ci-dessous seront ainsi plus ou moins développés en fonction du travail réalisé en accord avec l'encadrant. 
+Il se peut que la conception du logiciel (3) et l'analyse algorithmique (4) aient un poids 
+différent dans votre projet. Les points décrits ci-dessous seront ainsi plus ou moins développés 
+en fonction du travail réalisé en accord avec l'encadrant. 
 \begin{enumerate}%pour faire une liste numérotée
-\item Présenter les développements logiciel réalisés dans le cadre du projet.
-\item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
-\item Décrire les fonctionnalités de l'interface graphique implémentée (si votre logiciel dispose d'une interface graphique).
-\item Décrire le format des données en entrée ou encore les conventions utilisées pour les entrées de vos programmes. Décrire les procédures de lecture et validation des entrées.
-\item Statistiques : nombre de modules/composantes/classes/scripts développés. Nombre de lignes de code.
+\item Présenter les développements logiciel réalisés dans le cadre du projet :
+
+\item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser 
+le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme 
+des classes :
+
+\item  Décrire les fonctionnalités de l'interface graphique implémentée (si votre logiciel 
+dispose d'une interface graphique) :
+{\color{red}A REDIGER
+
+Notre interface graphique permet à l'utilisateur de vosualiser la simulation de fluides en 2D. 
+L'interface permet de modifier les paramètres graphiques du fluide, tels que la densité, la vitesse, 
+la direction, etc, mais aussi la position du fluide ainsi que le/les obstables présents et le mode 
+de simulation choisi (point ou ligne).
+}
+
+\item Décrire le format des données en entrée ou encore les conventions utilisées pour les entrées 
+de vos programmes. Décrire les procédures de lecture et validation des entrées :
+
+\item Statistiques : nombre de modules/composantes/classes/scripts développés. Nombre de lignes 
+de code :
+
+
+
 \end{enumerate}
 
 \section{Algorithmes et Structures de Données}
