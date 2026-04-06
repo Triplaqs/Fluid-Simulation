@@ -77,6 +77,10 @@ std::vector<float> v_prev;
 
 std::vector<float> dens;
 std::vector<float> dens_prev;
+std::vector<float> dens_red;
+std::vector<float> dens_red_prev;
+std::vector<float> dens_blue;
+std::vector<float> dens_blue_prev;
 
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
@@ -88,6 +92,7 @@ std::chrono::steady_clock::time_point lastStepTime;
 
 //Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
 bool show_ui = true;
+bool nextFluidIsHot = false;
 
 // Vertices du triangle (global)
 float vertices[] = {
