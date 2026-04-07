@@ -412,6 +412,7 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
+
         // dessiner l'obstacle en NDC (toggleable) : cercle ou coeur
         float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
         float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
@@ -424,7 +425,8 @@ int main(int argc, char* argv[]){
             }
         }
         //test affichage
-        /*if(cells.aff_mode==0){
+        /*
+        if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
             for (const Cell& c : cells.grid){
                 glBindVertexArray(c.VAO1);
@@ -449,8 +451,8 @@ int main(int argc, char* argv[]){
             for (const Cell& c : cells.grid) {
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
-            }false
-        }false*/
+            }
+        }*/
 
 
 
