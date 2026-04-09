@@ -117,22 +117,6 @@ void randomizeCells(){
    for (Cell& c : cells.grid){
     c.temperature = dist(rng);
    }
-/*
-    // mise à couleur de l'initialisation random
-    for(int i = 0; i < gridCols * gridRows; ++i){
-        int base = i * 6 * 3;
-        float r = cells[i].temperature; 
-        float g = cells[i].temperature;
-        float b = cells[i].temperature;
-        for(int v = 0; v < 6; ++v){
-            cellColors[base + v*3 + 0] = r;
-            cellColors[base + v*3 + 1] = g;
-            cellColors[base + v*3 + 2] = b;
-        }
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, cellsCBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, cellColors.size() * sizeof(float), cellColors.data());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
 
 // Set les vecteurs aléatoirement

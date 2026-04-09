@@ -58,8 +58,5 @@ void initObstacleRenderer();
 void drawObstacleNDC(float cx, float cy, float radius);
 void drawHeartNDC(float cx, float cy, float radius);
 
-//on dessine une fleche grace aà drawarrow
-//void _affichagefleche(const Cell& c, float cellWidth, float cellHeight);
-
 
 #endif
