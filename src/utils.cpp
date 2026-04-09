@@ -27,6 +27,27 @@ float col=0.0f;
 //couleur du fluide (composante rouge)
 char inputBuffer3[256] = "1.0"; //valeur par défaut
 float force=1.0f;
+//position x du point de départ du fluide 
+char inputBuffer4[256] = "50";
+float x = 50.0f;
+//position y du point de départ du fluide
+char inputBuffer5[256] = "50";
+float y = 50.0f;
+//position de x2 (point 2 pour la ligne)
+char inputBuffer6[256];
+float x2 = 50.0f;
+//position de y2 (point 2 pour la ligne)
+char inputBuffer7[256];
+float y2 = 50.0f;
+
+char inputBuffer8[256] = "100"; //valeur par défaut
+float part_posx = 50.0f;
+char inputBuffer9[256] = "50"; //valeur par défaut
+float part_posy = 50.0f;
+char inputBuffer10[256] = "5.0"; //valeur par défaut
+float part_vitx = 0.0f;
+char inputBuffer11[256] = "0.0"; //valeur par défaut 
+float part_vity = 0.0f;
 
 //pour le bluetooth :
 bool isBluetoothConnected;
@@ -67,6 +88,10 @@ std::vector<float> dens_prev;
 
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
+
+Parts particules; // vecteur des particules (tableau)
+Simu simulation; // structure globale de la simulation
+
 //std::vector<float> cellVertices; // per-vertex positions
 //std::vector<float> cellColors;   // per-vertex colors (rgb)
 bool simRunning = true; // start running by default
@@ -87,3 +112,6 @@ float vertices[] = {
 float currentScale = 1.0f;
 // État de la température (accumulation)
 float currentHeat = 0.0f;  // -1.0 (bleu froid) à +1.0 (rouge chaud)
+
+
+int fluid_start =0;

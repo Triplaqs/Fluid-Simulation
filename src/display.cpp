@@ -309,29 +309,6 @@ void drawHexagramNDC(float cx, float cy, float radius)
 
 
 //on vient appliquer les vecteurs sur chaque cellule (pour le moment juste un trait)
-/*void drawArrow1(float x1, float y1, float x2, float y2)
-{
-    std::cout << "drawArrow called\n";
-
-    float vertices[4] = {
-        //x1, y1,
-        //x2, y2
-    };
-
-    glUseProgram(shaderProgramCellsFleche);
-
-    int colorLoc = glGetUniformLocation(shaderProgramCellsFleche, "color");
-    glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f); // noir
-
-    glBindVertexArray(flecheVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, flecheVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-    glDrawArrays(GL_LINES, 0, 2);
-
-    glBindVertexArray(0);
-}*/
 
 void drawArrow(float x1, float y1, float x2, float y2)
 {
