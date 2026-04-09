@@ -40,6 +40,14 @@ float x2 = 50.0f;
 char inputBuffer7[256];
 float y2 = 50.0f;
 
+char inputBuffer8[256] = "100"; //valeur par défaut
+float part_posx = 50.0f;
+char inputBuffer9[256] = "50"; //valeur par défaut
+float part_posy = 50.0f;
+char inputBuffer10[256] = "5.0"; //valeur par défaut
+float part_vitx = 0.0f;
+char inputBuffer11[256] = "0.0"; //valeur par défaut 
+float part_vity = 0.0f;
 
 //pour le bluetooth :
 bool isBluetoothConnected;
@@ -84,6 +92,10 @@ std::vector<float> dens_blue_prev;
 
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
+
+Parts particules; // vecteur des particules (tableau)
+Simu simulation; // structure globale de la simulation
+
 //std::vector<float> cellVertices; // per-vertex positions
 //std::vector<float> cellColors;   // per-vertex colors (rgb)
 bool simRunning = true; // start running by default

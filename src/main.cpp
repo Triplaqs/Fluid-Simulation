@@ -28,6 +28,12 @@
 #include <ctime>
 #include <chrono>
 
+//gestin audio
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <cmath>
+
+
 //ligne pour générer un aléatoire :
 //float entre 0 et 1 :
 //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -412,6 +418,7 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
+
         // dessiner l'obstacle en NDC (toggleable) : cercle ou coeur
         float cx = -1.0f + 2.0f * ((ob_cj - 0.5f) / (float)N);
         float cy = -1.0f + 2.0f * ((ob_ci - 0.5f) / (float)N);
@@ -424,7 +431,8 @@ int main(int argc, char* argv[]){
             }
         }
         //test affichage
-        /*if(cells.aff_mode==0){
+        /*
+        if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
             for (const Cell& c : cells.grid){
                 glBindVertexArray(c.VAO1);
@@ -449,8 +457,8 @@ int main(int argc, char* argv[]){
             for (const Cell& c : cells.grid) {
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
-            }false
-        }false*/
+            }
+        }*/
 
 
 
@@ -494,7 +502,9 @@ int main(int argc, char* argv[]){
             show_ui = !show_ui; // 'H' pour Hide
         }
 //P3.5 : IMGUI
-        if (show_ui) {
+        if (show_ui) {//gestion de la musique avec SDL (voir site internet dans sources pour la base du code)
+    
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -671,6 +681,8 @@ int main(int argc, char* argv[]){
             // Rendu ImGui
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            
         }
         
 //P4 : fin render loop
@@ -754,6 +766,8 @@ int main(int argc, char* argv[]){
             }
         }
     }
+
+
 
 
 

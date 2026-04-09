@@ -24,6 +24,10 @@ extern char inputBuffer4[256];
 extern char inputBuffer5[256];
 extern char inputBuffer6[256];
 extern char inputBuffer7[256];
+extern char inputBuffer8[256];
+extern char inputBuffer9[256];
+extern char inputBuffer10[256];
+extern char inputBuffer11[256];
 //Direction du flux
 extern float angle;
 //variable test récup par la fenêtre ImgUI, float entre 0 et 1
@@ -37,9 +41,14 @@ extern bool sent;
 //variable qui stocke pour ImgUI la position x et y du départ du fluide (et si on est en version ligne on a besoin de x2 et y2)
 extern float x;
 extern float y;
-
+//pour la version ligne
 extern float x2;
 extern float y2;
+//Positions de départ pour les particules (semi-Lagrangiennes)
+extern float part_posx;
+extern float part_posy;
+extern float part_vitx;
+extern float part_vity;
 
 //pour le bluetooth :
 extern bool isBluetoothConnected;
@@ -130,6 +139,38 @@ typedef struct Cell {
     }
 } Cell;
 
+typedef struct Part{
+    float posx;
+    float posy;
+    float vitx;
+    float vity;
+
+    void reset(){
+        posx = part_posx;
+        posy = part_posy;
+        vitx = part_vitx;
+        vity = part_vity;
+    }
+    void update(){
+        return;
+    }
+}Part;
+
+typedef struct Parts{
+    int nb_parts = 100;
+    std::vector<Part> parts;
+
+    void reset(){
+        for(Part& p : parts){
+            p.reset();
+        }
+    }
+
+    void update(){
+        return;
+    }
+}Parts;
+
 typedef struct Grid{
     int cols = gridCols;
     int rows = gridRows;
@@ -142,7 +183,25 @@ typedef struct Grid{
         
         return;  //à compléter avec la fonction de Gaëlle
     }
+
+    void capture_parts(Parts& parts){
+        return; //à compléter
+    }
 }Grid;
+
+typedef struct Simu{
+    Grid grid;
+    Parts particules;
+
+    void simu_reset(){
+        particules.reset();
+    }
+
+    void simu_update(){
+        particules.update();
+        grid.capture_parts(particules);
+    }
+}Simu;
 
 
 
@@ -156,6 +215,9 @@ extern int gridVertexCount;
 
 extern Grid cells;      // vecteur des cellules (tableau)
 extern Grid cellsNext;  // next state
+extern Parts particules; // vecteur des particules (tableau)
+extern Simu simulation; // structure globale de la simulation
+
 //std::vector<float> cellVertices; // per-vertex positions
 //std::vector<float> cellColors;   // per-vertex colors (rgb)
 extern bool simRunning; // start running by default
