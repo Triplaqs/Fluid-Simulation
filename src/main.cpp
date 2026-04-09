@@ -28,9 +28,9 @@
 #include <ctime>
 #include <chrono>
 
-//gestin audio
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+//gestion audio
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL_mixer.h>
 #include <cmath>
 
 
@@ -124,7 +124,6 @@ int main(int argc, char* argv[]){
     glViewport(0, 0, 800, 600);
 
     //possibililté de resize 
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     //préciser que l'ont veut qu'il resize régulièrement
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -132,7 +131,8 @@ int main(int argc, char* argv[]){
     //création 3 points :
 
     //Genère un buffer et créé son l'ID
-    unsigned int VBO;
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
     glGenBuffers(1, &VBO);
 
     //associe le buffer à la carte graphique 
@@ -275,7 +275,6 @@ int main(int argc, char* argv[]){
 
 
 //Manipulation d'objet avec structure :
-    unsigned int VAO;
     glGenVertexArrays(1, &VAO);
 
     // 1. bind Vertex Array Object
