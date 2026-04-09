@@ -28,6 +28,12 @@
 #include <ctime>
 #include <chrono>
 
+//gestin audio
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <cmath>
+
+
 //ligne pour générer un aléatoire :
 //float entre 0 et 1 :
 //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -494,7 +500,9 @@ int main(int argc, char* argv[]){
             show_ui = !show_ui; // 'H' pour Hide
         }
 //P3.5 : IMGUI
-        if (show_ui) {
+        if (show_ui) {//gestion de la musique avec SDL (voir site internet dans sources pour la base du code)
+    
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -664,6 +672,8 @@ int main(int argc, char* argv[]){
             // Rendu ImGui
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            
         }
         
 //P4 : fin render loop
@@ -747,6 +757,8 @@ int main(int argc, char* argv[]){
             }
         }
     }
+
+
 
 
 
