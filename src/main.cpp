@@ -461,8 +461,6 @@ int main(int argc, char* argv[]){
         }*/
 
 
-
-
         //Gestion de pression des touches :
         if(start_press >= 0.0f){
             //Fragmentation du cooldown
