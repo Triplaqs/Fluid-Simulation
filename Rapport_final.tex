@@ -10,6 +10,15 @@
 \usepackage[T1]{fontenc}      % Police contenant les caractères français
 \usepackage[francais]{babel}  
 \usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{hyperref} %pour les liens
+\usepackage{float}
+
+
+
+
+
+
 
 
 
@@ -46,7 +55,7 @@ Université de Montpellier.}
 %\dominitoc  % initializer les minitoc
 \tableofcontents
 \newpage
-\section*{Présentation du Sujet} % Commencer une section, * permet de ne pas numéroté l'introduction
+\section{Présentation du Sujet} % Commencer une section, * permet de ne pas numéroté l'introduction
 \emph{1-2 pages}
 	%Présentation du Sujet (1-2 pages) 
 \begin{itemize}%pour faire une liste à puces
@@ -94,13 +103,81 @@ Université de Montpellier.}
     \item Imgui (facile d'utilisation)
 \end{itemize}
 
-\item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres)
-\begin{itemize}
-    \item screen de l'interface puis description :
-    \item fenetre (biliothèques utilisées, etc)
-    \item zone de rendu (shader, openGL)
-    \item panneau de parametres (imgui)
-\end{itemize}
+\item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL)) \\
+    {\color{green}Dans cette section, nous allons présenter l'évolution de l'affichage de notre projet au cours du semestre, 
+    depuis les premiers affichages (grille de chaleur) jusqu'à la version finale de notre
+    simulation de fluide. 
+    Nous nous intéresserons successivement aux différentes étapes de notre projet, grille de chaleur,
+    affichage du fluide, fenêtre de paramètres et ajouts d'obstacles.}
+
+    \subsection*{Évolution 1 : premier affichage d'une grille de chaleur (voir figure1)}
+
+    {\color{green}Dans notre première version, l'objectif était d'avoir un premier affichage graphique avec OpenGL.
+    Nous avons donc initialisé une fenêtre et une zone de rendu OpenGL affichant une grille.
+    Cette grille prend des valeurs et les affiche sous forme de carte de chaleur. Notons la pertinence des couleurs, 
+    nous avons utilisé plusieurs teintes de rouges pour garder une cohérence avec la diffusion de chaleur (à coté 
+    d'une case très chaude se trouve une case un peu moins chaude mais pas froide, donc moins rouge mais pas bleue).
+    Cette étape nous a permis de tester la création de la fenêtre, la boucle principale 
+    et l'utilisation de shaders pour colorer chaque cellule en fonction d'une valeur.}
+
+    \begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{PJ_proj/carte_chaleur.png}
+    \caption{Première version : affichage d'une grille de chaleur.}
+    \label{evolution1}
+    \end{figure}
+
+    \subsection*{Évolution 2 : première simulation de fluide (voir figure2)}
+    {\color{green}Dans un second temps, nous avons implémenté la méthode de Jos Stam \emph{Real-Time
+    Fluid Dynamics for Games} qui nous a permit d'avoir un beau rendu en 2D et une première simulation de fluide.
+    Cette méthode repose sur une représentation du fluide dans une grille Eulerienne (voir section ....). La zone de rendu
+    affiche donc la densité du fluide qui est mise à jour à chaque itération de la boucle de simulation. Dans 
+    cette version, les paramètres  (couleur, densité, intensité) sont modifiables uniquement dans le 
+    code lui‑même, c’est‑à‑dire qu’ils sont hard‑codés. Cette version est intéressante car elle nous permet
+    d'observer une simulation de fluide en temps réel.}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol1.png}
+        \caption{Deuxieme version : affichage d'un fluide.}
+        \label{evolution2}
+    \end{figure}
+
+    \subsection*{Évolution 3 : ajout du panneau de paramètres (voir figure3)}
+    {\color{green}Nous avons ensuite ajouté un panneau de paramètres en utilisant la bibliothéque ImGui.
+    Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité,
+    la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation
+    qui met à jour la grille. Notons que ce panneau peut s'enlever et se remettre en pressant la touche "h".}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol2.png}
+        \caption{Troisième version : ajout d'un panneau de paramètres.}
+        \label{evolution3}
+    \end{figure}
+
+
+    \subsection*{Évolution 4 : gestion des obstacles }
+    {\color{green}Enfin nous avons étoffé notre simulation en ajoutant des obstacles. 
+    Nous avons donc rajouté au panneau de paramètres les différents outils pour contrôler ceux-ci. 
+    En effet, l'utilisateur peut activer ou désactiver les obstacles et changer leur forme, nous pouvons également
+    rajouter plusieurs obstacles. Lors de la simulation,
+    nous pouvons les déplacer avec le curseur de notre souris. Nous avons également implémenté deux modes d'injection
+    du fluide : un point ou une ligne qui modifient le comportement du fluide. Par
+    la même occasion nous avons rajouté un mode d'affichage 
+    représentant la chaleur du fluide, l'utilisateur choisi sur le panneau de paramètres si le fluide
+    sort chaud ou froid (rouge ou bleu). }
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol3.png}
+        \caption{Quatrième version : ajout d'un obstacle.}
+        \label{evolution4}
+    \end{figure}
+
+
+
+
 
 \item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
 \begin{itemize}
