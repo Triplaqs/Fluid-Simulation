@@ -29,8 +29,8 @@
 #include <chrono>
 
 //gestin audio
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL_mixer.h>
 #include <cmath>
 
 
@@ -459,8 +459,6 @@ int main(int argc, char* argv[]){
                 affichagefleche_aleatoire(c);
             }
         }*/
-
-
 
 
         //Gestion de pression des touches :

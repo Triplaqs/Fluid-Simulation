@@ -6,6 +6,10 @@ project(FluidSimulation C CXX)
 # ---- Package imports
 find_package(glfw3 REQUIRED)
 
+#à ajouter quand ils seront incorporés au projet et qu'on pourra les demander
+#find_package(SDL2 REQUIRED)
+#find_package(SDL2_mixer REQUIRED)
+
 # ---- Compile glad into its own library
 add_library(glad STATIC glad/src/glad.c)
 target_include_directories(glad PUBLIC glad/include)
@@ -20,8 +24,6 @@ set(IMGUI_SOURCES
     Imgui/imgui_impl_opengl3.cpp
 )
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
 
 
 # ---- Compile your executable
@@ -46,7 +48,8 @@ target_include_directories(out PRIVATE
 
 # Link libraries
 target_link_libraries(out glad glfw)
-target_link_libraries(out
-    SDL2::SDL2
-    SDL2_mixer::SDL2_mixer
-)
+
+#target_link_libraries(out
+#    SDL2::SDL2
+#    SDL2_mixer::SDL2_mixer
+#)
