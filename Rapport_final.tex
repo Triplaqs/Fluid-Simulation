@@ -1,5 +1,3 @@
-% Une ligne commentaire débute par le caractère « % »
-
 \documentclass[a4paper]{article}
 
 % Options possibles : 10pt, 11pt, 12pt (taille de la fonte)
@@ -8,7 +6,7 @@
 
 \usepackage[utf8]{inputenc}   % LaTeX, comprends les accents !
 \usepackage[T1]{fontenc}      % Police contenant les caractères français
-\usepackage[francais]{babel}  
+\usepackage[french]{babel}  
 \usepackage{fullpage}
 \usepackage{xcolor}
 \usepackage{hyperref} %pour les liens
@@ -69,18 +67,23 @@ Université de Montpellier.}
     \end{itemize}
 
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.
-    \begin{itemize}
-        \item projet transverse à l'info et aux physique/maths étant donné notre double licence
-        \item découverte du c++ et openGL
-        \item monde informatique : utilité de la simulation de fluides dans les jeux vidéos, météorologie, environnement, etc.
 
-    \end{itemize}
+        {\color{red}Nous avons choisi ce projet car il nous a parru être le plus adapté à nos compétences, étant donné notre parcours
+        en double licence mathématiques et informatique. En effet, nous avons rapidement compris les concepts de base de la simulation, ce qui nous
+        a permis d'implémenter la méthode de Jos Stam "Stable Fluids". 
+        Nous avons également aimé l'idée d'implémenter une interface graphique pour visualiser en temps réél l'évolution de notre projet et le fait de pouvoir intéragir avec celui-ci. 
+        De plus, c'est avec ce projet que nous avons découvert le langage c++ et la bibliothèque OpenGl, qui sont des outils etentiels pour la simulaiton de fluides 
+        mais aussi dans de nombreux domaines tels que les jeux vidéos, la météorologie ou l'environnment.}
+
 
 \item	Présenter les différentes approches possibles pour la résolution du problème, et en particulier celle choisie.
-    \begin{itemize}
-        \item méthode avec la grille eulerienne ou langrangienne
-        \item méthode choisie : eulerienne
-    \end{itemize}
+
+        {\color{red} Pour implémenter la simulation de fluides en 2D, 2 méthodes sont possibles : la méthode eulérienne ou la méthode lagrangienne.
+        La méthode eulérienne consiste à représenter le fluide dans une grille fixe, dans laquelle on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc.
+        La méthode lagrangienne consiste à représenter le fluide à l'aide de particules, c'est à dire que chaque particule contient les propriétés du fluide donc celui-ci est représenté comme
+        à l'aide de particules.}
+        {\color{red}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémeenter et moins couteuse en complexité. La méthode 
+        lagrangienne peut rapidement exploser en temps de calcul en fonction du nombre de particules.}
 
 \item Donner le cahier des charges détaillé
     \begin{itemize}
@@ -120,7 +123,7 @@ Université de Montpellier.}
     Cette étape nous a permis de tester la création de la fenêtre, la boucle principale 
     et l'utilisation de shaders pour colorer chaque cellule en fonction d'une valeur.}
 
-    \begin{figure}[h]
+    \begin{figure}[ht]
     \centering
     \includegraphics[width=0.45\textwidth]{PJ_proj/carte_chaleur.png}
     \caption{Première version : affichage d'une grille de chaleur.}
@@ -136,7 +139,7 @@ Université de Montpellier.}
     code lui‑même, c’est‑à‑dire qu’ils sont hard‑codés. Cette version est intéressante car elle nous permet
     d'observer une simulation de fluide en temps réel.}
 
-    \begin{figure}[h]
+    \begin{figure}[ht]
         \centering
         \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol1.png}
         \caption{Deuxieme version : affichage d'un fluide.}
@@ -206,13 +209,13 @@ Université de Montpellier.}
 
 \end{itemize}
 \item Statistiques du projet
-\begin{itemize}
-    \item nombre de lignes
-    \item nombre de classes
-    \item nombre de fichiers
-    \item composantes
-    \item modules
-\end{itemize}
+
+{\color{red}En termes de statistiques, notre projet est composé de certaines classes principales : Cellule, Grille, Obstacle, etc. Il est composé de 22 fichiers (cpp et h), 
+et contient plus de 2000 lignes de code.
+Le projet est organisé en plusieurs modules, tels que le module de gestion des obstacles, le module de gestion de la chaleur, etc.
+}
+
+
 \end{enumerate}
 
 \section{Algorithmes et Structures de Données}
@@ -220,11 +223,32 @@ Université de Montpellier.}
 
 \begin{enumerate}%pour faire une liste numérotée
 \item Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. Attention : il s'agit ici de choisir 1 ou 2 algorithmes intéressants, et non pas de présenter tous les algorithmes implémentés.
+
+    \subsection*{L'Advection}
+    \subsection*{La Diffusion}
+    \subsection*{La Projection}
+    {\color{red}Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente la décomposition de Hodge. C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible, 
+    Cet algorithme force la vitesse à être conservatrice de masse, c'est à dire que le fluide ne peut pas être créé ou détruit. C'est une
+    propriété importante pour une simulation réaliste. Visuellement, la projection force l'écoulement à avoir de meilleures courbes, et évite les écoulements en ligne droite. \\
+    L'algorithme de projection est composé de 3 étapes :
     \begin{itemize}
-        \item advection
-        \item diffusion
-        \item projection
-    \end{itemize}
+        \item calcul de la divergence : pour chaque cllule de la grille, on évalue la divergence discrète :
+        \begin{equation}
+            {div}_{i,j} = -\frac{h}{2}left(u_{i+1,j} - u_{i-1,j}ight) + left(v_{i,j+1} - v_{i,j-1}ight)
+        \end{equation}
+        où $h = 1/N$ est la taille d'une cellule de la grille, et $u$ et $v$ sont les composantes de la vitesse du fluide.
+        \item résolution de l'équation de Poisson : \\
+        On résout itérativement l'équation $\nabla^2 p = div$ par 20 itérations de relaxation de Gauss-Seidel, où $p$ est un champ de pression :
+        \begin{equation}
+            p_{i,j}^{(k+1)} = \frac{1}{4}left({div}_{i,j} + p_{i+1,j}^{(k)} + p_{i-1,j}^{(k)} + p_{i,j+1}^{(k)} + p_{i,j-1}^{(k)} - div_{i,j}ight)
+        \end{equation}
+        On réutilisa exactement le code de la diffusion pour assurer la cohérence du code et éviter les redondances.
+        \item correction du champ de vitesse : \\
+        pour chaque cellule de la grille, on corrige la vitesse en soustrayant le gradient du champ de pression :
+        \begin{equation}
+            mathbf{u}'_{i,j} = \mathbf{u}_{i,j} - \frac{1}{2h} \begin{pmatrix} p_{i+1,j} - p_{i-1,j} \end{pmatrix}
+        \end{equation}
+    \end{itemize}}
     
 \item Évaluer la complexité théorique en temps des algorithmes présentés
     \begin{itemize}
@@ -265,9 +289,9 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \item	Discuter les changements majeurs effectués en cours de projet. 
 \begin{itemize}
 \item passage de la grille de départ à la nouvelle grille (pourquoi?)
-\item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'un obstacle à plusieurs, est-ce
+\item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce
     que ça a impacté les autres modules ? pourquoi? comment ?
-\item implémentation de la fenetre pour rentrer les paramètres
+\item implémentation de la fenetre pour rentrer les paramètresuu
 \end{itemize}
 \end{enumerate}
 
