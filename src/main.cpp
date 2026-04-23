@@ -28,6 +28,12 @@
 #include <ctime>
 #include <chrono>
 
+//gestin audio
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <cmath>
+
+
 //ligne pour générer un aléatoire :
 //float entre 0 et 1 :
 //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -418,26 +424,26 @@ int main(int argc, char* argv[]){
         //affichage_nouveau_fluide(shaderProgramCellsTemp);
 
         //On se connecte au Bluetooth (si on le veut et que c'est pas encore fait)
-        /*if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
+        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
             std::cout << "Tentative de connexion..." << std::endl;
             //if (serialPort.openDevice("\\\\.\\COM4", 115200) == 1) { //Windows
             if (serialPort.openDevice("/dev/rfcomm0", 115200) == 1) { 
                 isBluetoothConnected = true;
-                std::cout << "Connecte !" << std::endl;
+                std::cout << "Connected !" << std::endl;
             }
-        }*/
-        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
+        }
+        /*if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !isBluetoothConnected) {
             std::cout << "Tentative de connexion sur Linux..." << std::endl;
         // On essaie d'ouvrir le fichier créé par rfcomm watch
         if (serialPort.openDevice("/dev/rfcomm0", 115200) == 1) { 
             isBluetoothConnected = true;
-            // IMPORTANT : Donner les droits de lecture au fichier
+            // IMPORTANT : Donner les droits de lecture au fichier !!!
             system("sudo chmod 666 /dev/rfcomm0"); 
-            std::cout << "Connecte avec succes !" << std::endl;
+            std::cout << "Connected with success" << std::endl;
         }else {
-                std::cout << "Echec : /dev/rfcomm0 n'est pas encore prêt. Connecte l'appli d'abord !" << std::endl;
+                std::cout << "Error : /dev/rfcomm0 is still not ready." << std::endl;
             }
-        }
+        }*/
 
         // --- 2. LECTURE DES DONNÉES ---
         // On ne lit le Bluetooth que si la connexion est active
@@ -472,6 +478,7 @@ int main(int argc, char* argv[]){
 
 
         affichage_nouveau_fluide(shaderProgramCellsTemp);
+
         // dessiner tous les obstacles enregistrés dans le renderer
         for (const Obstacle& o : getObstacles()) {
             float cx = -1.0f + 2.0f * ((o.cj - 0.5f) / (float)N);
@@ -514,7 +521,8 @@ int main(int argc, char* argv[]){
             drawHeartNDC(hrx, hry, hrr);
         }*/
         //test affichage
-        /*if(cells.aff_mode==0){
+        /*
+        if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);
             for (const Cell& c : cells.grid){
                 glBindVertexArray(c.VAO1);
@@ -539,8 +547,8 @@ int main(int argc, char* argv[]){
             for (const Cell& c : cells.grid) {
                 //affichagefleche(c);
                 affichagefleche_aleatoire(c);
-            }false
-        }false*/
+            }
+        }*/
 
 
 
@@ -584,7 +592,9 @@ int main(int argc, char* argv[]){
             show_ui = !show_ui; // 'H' pour Hide
         }
 //P3.5 : IMGUI
-        if (show_ui) {
+        if (show_ui) {//gestion de la musique avec SDL (voir site internet dans sources pour la base du code)
+    
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -626,6 +636,59 @@ int main(int argc, char* argv[]){
             
                 // Remettre le focus sur l'input après clic (optionnel)
                 ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            ImGui::Text("Enter a X position for the stream source (0 to 100) ");
+            bool enterPressed4 = ImGui::InputText("##Input4", inputBuffer4, IM_ARRAYSIZE(inputBuffer4), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Position x") || enterPressed4) {
+                std::string sentence4(inputBuffer4);
+                x = std::stof(sentence4); // Convertit la string en float et stocke dans x
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de de position x reçu : %f\n", x);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            ImGui::Text("Enter a Y position for the stream source (0 to 100) ");
+            bool enterPressed5 = ImGui::InputText("##Input5", inputBuffer5, IM_ARRAYSIZE(inputBuffer5), ImGuiInputTextFlags_EnterReturnsTrue);
+            ImGui::SameLine();
+            if (ImGui::Button("Simulate Position y") || enterPressed5) {
+                std::string sentence5(inputBuffer5);
+                y = std::stof(sentence5); // Convertit la string en float et stocke dans y
+                sent = true;
+
+                // Exemple : phoneme_parser.parse(sentence); animStartTmps = currentTime;
+                printf("Paramètre de position y reçu : %f\n", y);
+            
+                // Remettre le focus sur l'input après clic (optionnel)
+                ImGui::SetKeyboardFocusHere(-1); 
+            }
+
+            //si on est en version injection du fluide en ligne, il faut un x2 et y2
+            if (fluid_start == 1) {
+                ImGui::Text("Enter X2 position for the line (0 to 100)");
+                bool enterPressed6 = ImGui::InputText("##Input6", inputBuffer6, IM_ARRAYSIZE(inputBuffer6), ImGuiInputTextFlags_EnterReturnsTrue);
+                ImGui::SameLine();
+                if (ImGui::Button("Simulate X2") || enterPressed6) {
+                    std::string sentence6(inputBuffer6);
+                    x2 = std::stof(sentence6);
+                    printf("Paramètre X2 reçu : %f\n", x2);
+                    ImGui::SetKeyboardFocusHere(-1);
+                }
+
+                ImGui::Text("Enter Y2 position for the line (0 to 100)");
+                bool enterPressed7 = ImGui::InputText("##Input7", inputBuffer7, IM_ARRAYSIZE(inputBuffer7), ImGuiInputTextFlags_EnterReturnsTrue);
+                ImGui::SameLine();
+                if (ImGui::Button("Simulate Y2") || enterPressed7) {
+                    std::string sentence7(inputBuffer7);
+                    y2 = std::stof(sentence7);
+                    printf("Paramètre Y2 reçu : %f\n", y2);
+                    ImGui::SetKeyboardFocusHere(-1);
+                }
             }
             
             ImGui::Text("Enter a direction for the stream (0.0 to 360.0):");
@@ -749,11 +812,18 @@ int main(int argc, char* argv[]){
             //     refreshObstacles();
             // }
 
+            // Bouton pour choisir la forme du point d'injection du fluide (un point ou un trait )
+            if (ImGui::Button(fluid_start == 0 ? "Shape fluid start: point" : "Shape fluid start: line")) {
+                fluid_start = 1 - fluid_start;
+            }
+
             ImGui::End();
 
             // Rendu ImGui
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            
         }
         
 //P4 : fin render loop
@@ -825,6 +895,8 @@ int main(int argc, char* argv[]){
             }
         }
     }
+
+
 
 
 

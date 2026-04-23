@@ -201,19 +201,31 @@ void updateSimulation_nouveau(unsigned int shaderProgram)
     // on teste ajouter une source de densité 
 
     //on choisit les coordonnées pour l'injection de la densité (en bas à gauche avec 5,5 et milieu N/2,N/2)
-    int i = N/2;   
-    int j = N/2;
-    dens_prev[IX(i, j)] = glob*50.0f;
-    u_prev[IX(i, j)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
-    v_prev[IX(i, j)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
-    
+    if (fluid_start == 0){
+        int i = x; 
+        int j = y;
+        dens_prev[IX(i, j)] = glob*50.0f;
+        u_prev[IX(i, j)] = force*cos((angle - 90.0f)*M_PI/180.0f)*(50.0f);   // se diffuse vers le haut si valeur positive et vers le bas si valeur négative 
+        v_prev[IX(i, j)] = force*sin((angle - 90.0f)*M_PI/180.0f)*(-50.0f);  //se diffuse vers la droite si valeur positive et vers la gauche si négative
+    }
 
     // le depart est une colonne presque entiere
-    /*for (int i = 20; i < 80; i++){
-        dens_prev[IX(i, 20)] = 30.0f;
-        u_prev[IX(N/2,N/2)] = 50.0f;
-        v_prev[IX(N/2,N/2)] = -50.0f;
-    }*/
+    else if (fluid_start == 1){
+        int steps = 100; // nombre de points sur la ligne
+
+        for (int k = 0; k < steps; k++){
+            float t = float(k) / float(steps - 1);
+
+            int i = x  + t * (x2 - x);
+            int j = y  + t * (y2 - y);
+
+            dens_prev[IX(i, j)] = glob * 50.0f;
+
+            u_prev[IX(i, j)] = force * cos((angle - 90.0f) * M_PI / 180.0f) * 50.0f;
+            v_prev[IX(i, j)] = force * sin((angle - 90.0f) * M_PI / 180.0f) * -50.0f;
+        }   
+    }
+    
 
 
 
