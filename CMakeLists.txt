@@ -32,6 +32,7 @@ set(IMGUI_SOURCES
 )
 
 
+
 # ---- Compile your executable
 add_executable(out
     src/utils.cpp
@@ -55,6 +56,7 @@ target_include_directories(out PRIVATE
 # Link libraries
 target_link_libraries(out glad glfw)
 
+
 # Link SDL2 only if found
 if(SDL2_FOUND)
     target_link_libraries(out ${SDL2_LIBRARIES})
@@ -64,3 +66,4 @@ if(SDL2_MIXER_FOUND)
     target_link_libraries(out ${SDL2_MIXER_LIBRARIES})
     target_include_directories(out PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
 endif()
+

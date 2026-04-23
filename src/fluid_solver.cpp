@@ -16,7 +16,6 @@ void set_bnd ( int N, int b, float * x )
 {
     int i, j;
 
-    // standard border conditions
     for ( i = 1 ; i <= N ; i++ ) {
         x[IX(0 ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
         x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
@@ -28,7 +27,7 @@ void set_bnd ( int N, int b, float * x )
     x[IX(N+1,0 )] = 0.5f*(x[IX(N,0 )]+x[IX(N+1,1)]);
     x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N )]);
 
-    // enforce obstacle: zero value inside any defined circular obstacle
+    // bord obstacle
     if (&isObstacleCell) {
         for ( i = 1; i <= N; ++i ) {
             for ( j = 1; j <= N; ++j ) {
