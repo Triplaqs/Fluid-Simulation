@@ -13,6 +13,10 @@ if(PkgConfig_FOUND)
     pkg_check_modules(SDL2_MIXER SDL2_mixer)
 endif()
 
+#à ajouter quand ils seront incorporés au projet et qu'on pourra les demander
+#find_package(SDL2 REQUIRED)
+#find_package(SDL2_mixer REQUIRED)
+
 # ---- Compile glad into its own library
 add_library(glad STATIC glad/src/glad.c)
 target_include_directories(glad PUBLIC glad/include)
@@ -26,6 +30,7 @@ set(IMGUI_SOURCES
     Imgui/imgui_impl_glfw.cpp
     Imgui/imgui_impl_opengl3.cpp
 )
+
 
 # ---- Compile your executable
 add_executable(out

@@ -28,6 +28,7 @@
 #include <ctime>
 #include <chrono>
 
+
 //gestion audio
 //#include <SDL2/SDL.h>
 //#include <SDL2/SDL_mixer.h>
@@ -460,8 +461,6 @@ int main(int argc, char* argv[]){
         }*/
 
 
-
-
         //Gestion de pression des touches :
         if(start_press >= 0.0f){
             //Fragmentation du cooldown
@@ -644,6 +643,13 @@ int main(int argc, char* argv[]){
                 // Remettre le focus sur l'input après clic (optionnel)
                 ImGui::SetKeyboardFocusHere(-1); 
             }
+
+            // Bouton pour basculer entre fluide chaud et froid
+            if (ImGui::Button("Chaud/Froid")) {
+                nextFluidIsHot = !nextFluidIsHot;
+            }
+            ImGui::SameLine();
+            ImGui::Text("Couleur active : %s", nextFluidIsHot ? "Rouge" : "Bleu");
 
             // Bouton ON/OFF pour l'obstacle (affichage + simulation)
             // (Le shape est choisi ci-dessous)

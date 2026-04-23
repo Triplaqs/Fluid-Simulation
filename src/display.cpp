@@ -331,15 +331,17 @@ void affichage_nouveau_fluide(unsigned int shaderProgram)
     {
         for(int j = 1; j <= N; j++)
         {
-            float d = dens[IX(i,j)];
-            //float d = (float)i / N;  // juste un dégradé vertical pour tester affichage OKKKK ca marche 
+            float red = dens_red[IX(i,j)];
+            float blue = dens_blue[IX(i,j)];
 
-            if (d < 0.0f) d = 0.0f;
-            else if (d > 1.0f) d = 1.0f;
+            if (red < 0.0f) red = 0.0f;
+            else if (red > 1.0f) red = 1.0f;
+            if (blue < 0.0f) blue = 0.0f;
+            else if (blue > 1.0f) blue = 1.0f;
 
-            float r = d*fmod(col, 256)/(30.0f); //on modulote la couleur de la composante rouge entrée par l'user à 255
-            float g = d ;
-            float b = d;
+            float r = red;
+            float g = 0.0f;
+            float b = blue;
 
             
             float x1 = -1.0f + 2.0f * ((j-1) / (float)N);

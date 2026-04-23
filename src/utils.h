@@ -74,6 +74,9 @@ extern float dt, diff, visc;
 
 extern std::vector<float> u, v, u_prev, v_prev;
 extern std::vector<float> dens, dens_prev;
+extern std::vector<float> dens_red, dens_red_prev;
+extern std::vector<float> dens_blue, dens_blue_prev;
+
 
 
 //définition de la macro
@@ -223,6 +226,7 @@ extern std::chrono::steady_clock::time_point lastStepTime;
 
 //Est-ce que la fenêtre est affichée ou non ? (se modifie avec H pour Hide)
 extern bool show_ui;
+extern bool nextFluidIsHot;
 
 // Vertices du triangle (global)
 extern float vertices[9];
