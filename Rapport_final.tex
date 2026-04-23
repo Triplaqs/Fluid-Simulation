@@ -82,9 +82,27 @@ Université de Montpellier.}
         \item méthode choisie : eulerienne
     \end{itemize}
 
-\item Donner le cahier des charges détaillé
+\item Donner le cahier des charges détaillé \\
+    {\color{green} Le cahier des charges du projet, réalisé en décembre 2025,
+    fixait le cadre de développement, et définissait les objectifs, les contraintes 
+    et les fonctionnalités (minimales) à implémenter. Vous trouverez à la suite une synthése de celui-ci.
     \begin{itemize}
-        \item Partie 2 du cahier des charges de base
+    \item Le projet consistait à développer un rendu interactif permettant
+    la visualisation et la manipulation en temps réel d'une simulation de fluide
+    en 2D. Comme précisé lors de la réunion avec notre responsable de projet,
+    la simulation devait être interactive et comporter une interface graphique.
+    Nous avions fait le choix de développer ce projet en C++ avec un affichage en OpenGL.
+    \item L'objectif principal était d'obtenir une zone de rendu avec d'un coté la 
+    simulation et de l'autre une fenêtre de gestion des paramètres. Lors de la 
+    première réunion nous avions également déterminé le périmètre du projet. 
+    Nous avions décidé que la simulation reposerait sur une approche 
+    Eulerienne du fluide dans une grille 2D de taille $100 \times 100$. 
+    \item Nous avions également 
+    pensé aux fonctionnalités que nous pourrions rajouter comme la connexion
+    bluetooth à un téléphone permettant de gérer la simulation ou encore 
+    l'ajout de musique en fonction des forces du fluide. Enfin, nous avions 
+    imaginé une organisation moudlaire (calcul du fluide, interactions, affichage), 
+    permettant une répartition optimale des tâches. }
     \end{itemize}
 
 \end{itemize}
@@ -180,13 +198,43 @@ Université de Montpellier.}
 
 
 \item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
-\begin{itemize}
-    \item diagramme UML (cellules, grille, etc)
+
+    {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
+    Le diagramme UML (voir figure5) suivant décrit l’organisation du projet.
+    Nous pouvons clairement distinguer les principaux modules :
+    \begin{itemize}
+    \item Données : module qui regroupe les structures représentant la grille, les cellules et les particules (nous 
+    vons également inclu la classe Simulation pour des raisons de clarté);
+    \item Fluid Solver : qui implémente les étapes de la simulation ;
+    \item Zone de rendu : ce module permet l'affichage en OpenGL ;
+    \item Fenêtre de paramètres : interface Imgui  ;
+    \item Interaction utilisateur : ce module traite les actions du clavier ou de la souris ;
+    \item Gestion des obstacles : il a pour but de réunir ce qui touche aux obstacles, la création et le déplacement de ceux-ci.
+    \end{itemize}
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/diag_uml.drawio.png}
+        \caption{Diagramme UML}
+        \label{diagUML}
+    \end{figure}
+    Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.}
+    \begin{itemize}
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
     \item obstacle (satine)
     \item chaleur (saurane)
-    \item point ou ligne (gaelle)
+    \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
+     de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
+    unique, soit le long d’une ligne définie par deux coordonnées dans la grille (soit 4 points).
+    \\
+    En mode point, la densité et les forces sont appliquées uniquement à la cellule 
+    correspondant à la position sélectionnée.
+    \\ 
+    En mode ligne : nous déterminons simplement le nombre d’étapes nécessaires pour relier les deux 
+    points $(i_0,j_0),(i_1,j_1)$ en utilisant que le nombre d'étapes nécessaire est : \\
+    $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simplement toutes les cellules situées 
+    entre les deux positions sélectionnées, en suivant le segment qui les relie. 
+    Chaque cellule rencontrée reçoit la densité et la force, ce qui permet de créer une source linéaire.}
     \item calcul d'une simulation, le fluide, physique 
     \item PARTIE B : pas terminé
     \item bluetooth, lagrangien, musique, etc
