@@ -26,19 +26,21 @@ static std::vector<Obstacle> obstacles;
 // previous frame obstacle positions (used to compute obstacle velocity)
 static std::vector<Obstacle> prevObstacles;
 
+
 // signed distance function for hexagram, in grid units and centered at (0,0)
 static float sdHexagramGrid(float x, float y, float r)
 {
     // Usage : r = radius of star
-    // implementation du truc du prof pour faire une étoile à 6 branches (hexagramme) en utilisant des produits scalaires pour faire les symétries et des fonctions de distance pour faire les formes de base
+    // implementation du truc du prof pour faire une étoile à 6 branches (hexagramme) en utilisant des produits scalaires 
+    //pour faire les symétries et des fonctions de distance pour faire les formes de base
     //ne marche pas je crois (bord en carre et non etoile)
     float kx = -0.5f;
     float ky = 0.8660254038f;
     float kz = 0.5773502692f;
     float kw = 1.7320508076f;
 
-    float px = fabsf(x);
-    float py = fabsf(y);
+    float px = fabsf(x)+cos(M_PI/6.0f);
+    float py = fabsf(y)+sin(M_PI/6.0f);
 
     float dot1 = px * kx + py * ky;
     if (dot1 < 0.0f) {
@@ -57,10 +59,11 @@ static float sdHexagramGrid(float x, float y, float r)
     py -= r;
 
     float len = sqrtf(px * px + py * py);
-    return len * (py > 0.0f ? 1.0f : -1.0f);
+    return len * (py > 0.0f ? 1.0f : -1.0f)+5.15f;
 }
 
 // signed distance function for heart, in grid units and centered at (0,0)
+//inutile ??? utiliser dans le coeur bizarre
 static float sdHeartGrid(float x, float y, float r)
 {
     // Normalize by radius
@@ -97,7 +100,6 @@ bool isObstacleCell(int i, int j){
                 break;
             }
             case OBSTACLE_HEART: {
-                // approx
                 if ((dx*dx + dy*dy) <= (float)o.radius * (float)o.radius) return true;
                 break;
             }
@@ -166,6 +168,7 @@ const std::vector<Obstacle>& getObstacles()
     return obstacles;
 }
 
+/*
 // public API used by main.cpp
 void bouled(int ci, int cj, int radius, ObstacleShape shape)
 {
@@ -177,7 +180,7 @@ void bouled(int ci, int cj, int radius)
 {
     bouled(ci, cj, radius, OBSTACLE_CIRCLE);
 }
-
+*/
 
 
 void addDensity(int i, int j, float qt)

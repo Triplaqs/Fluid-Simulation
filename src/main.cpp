@@ -488,7 +488,7 @@ int main(int argc, char* argv[]){
                 drawHexagramNDC(cx, cy, r);
             }
         }
-
+/*
         // dessiner l'hexagramme indépendant  inutile???
         if (showHexagram) {
             // Limiter le centre pour que l'hexagramme ne dépasse pas la grille
@@ -512,7 +512,7 @@ int main(int argc, char* argv[]){
             float hry = -1.0f + 2.0f * ((heart_ci - 0.5f) / (float)N);
             float hrr = 2.0f * ((float)heart_r / (float)N);
             drawHeartNDC(hrx, hry, hrr);
-        }
+        }*/
         //test affichage
         /*if(cells.aff_mode==0){
             glUseProgram(shaderProgramCellsTemp);

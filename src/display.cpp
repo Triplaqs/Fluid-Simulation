@@ -244,17 +244,28 @@ void drawHeartNDC(float cx, float cy, float radius)
         verts.push_back(y);
     }
 
-    glUseProgram(shaderProgramCellsTemp);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+    glUseProgram(obstacleProgram);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
 
-    setTriangleColor(shaderProgramCellsTemp, 1.0f, 0.0f, 1.0f, 1.0f);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG + 2);
+    // set uniforms (reuse same shader so smoothing still works)
+    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
+    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
+    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
+    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
+    if (loc_r >= 0) glUniform1f(loc_r, radius);
+    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
+    if (loc_e >= 0) glUniform1f(loc_e, edge);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
+
+    glDisable(GL_BLEND);
     glBindVertexArray(0);
 }
-
 
 void drawHexagramNDC(float cx, float cy, float radius)
 {
@@ -269,15 +280,15 @@ void drawHexagramNDC(float cx, float cy, float radius)
     // triangle pointant vers le haut
     for (int k = 0; k < 3; ++k) {
         float a = angleUp + k * 2.0f * PI / 3.0f;
-        verts.push_back(cx + cosf(a) * radius);
-        verts.push_back(cy + sinf(a) * radius);
+        verts.push_back(cx + cosf(a+0.5) * radius);
+        verts.push_back(cy + sinf(a+0.5) * radius);
     }
 
     // triangle pointant vers le bas
     for (int k = 0; k < 3; ++k) {
         float a = angleDown + k * 2.0f * PI / 3.0f;
-        verts.push_back(cx + cosf(a) * radius);
-        verts.push_back(cy + sinf(a) * radius);
+        verts.push_back(cx + cosf(a+0.5) * radius);
+        verts.push_back(cy + sinf(a+0.5) * radius);
     }
 
     glUseProgram(obstacleProgram);
