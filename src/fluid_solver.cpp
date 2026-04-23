@@ -121,4 +121,3 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
     advect ( N, 1, u, u0, u0, v0, dt ); advect ( N, 2, v, v0, u0, v0, dt );
     project ( N, u, v, u0, v0 );
 }
-
