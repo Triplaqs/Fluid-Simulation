@@ -11,7 +11,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref} %pour les liens
 \usepackage{float}
-
+\usepackage[dvipsnames]{xcolor}
 
 
 
@@ -61,9 +61,20 @@ Université de Montpellier.}
 \item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
     \begin{itemize}
         \item projet en licence informatique L3
+
         \item méthode de Jos Stam "Stable FLuids"
         \item simulation d'un fluide en temps réel
-        \item intéraction utilisateur
+        \item intéraction utilisateur.\\
+            {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
+            de la faculté des sciences de Montpellier.
+            L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
+            Pour ce la, nous avons choist d'implementer la methode
+            de Jos Stam, "Stable Fluids", qui permet de simuler un 
+            fluide de manière stable et rapide.
+            Nous avons également implémenté une interface graphique pour 
+            visualiser en temps réél l'évolution de notre projet et le fait 
+            de pouvoir intéragir avec celui-ci, notament grace a creation d'une interface graphique 
+            et des obstacle clicables.}
     \end{itemize}
 
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.
@@ -187,7 +198,35 @@ Université de Montpellier.}
     \item diagramme UML (cellules, grille, etc)
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
-    \item obstacle (satine)
+    \item obstacle (satine)\\
+            {\color{WildStrawberry} Dans un premier temps, nous avons implementer la creation 
+            d'un unique obstacle en modifiant pour cela la fonction de gestion des dords ainsi que le main.
+            nous pouvions egalement afficher ou non cette obstacle a l'aide d'un bouton on/off.
+            suite a cela nous avons rendu cette obstacle interactif en offrant a l'utilisateur la 
+            possibilite de le deplacer a l'aide du curseur de la souris.\\
+            Nous avons ensuite étoffé notre simulation en ajoutant la possibilité d'avoir plusieurs obstacles,
+            mais egalement celle de choisir la forme entre un 
+            coeur, un cercle et une etoile. Pour cela, les obstacle ont ete 
+            mis dans une liste (coordonnée,rayon,forme) afin de les rendre facilement reconnaissable et selectionnable.
+            (ainsi, le premier obstacle de la liste est celui qui est prioritaire pour etre deplacer et le dernier obstaclede la liste es le
+            premier retirer).on peut ainsi choisir le nombres d'obstacle grace u a un boutons +/- devant chaque forme possible.
+            Pour chaque forme d'obstacle, nous avons dut
+            crer une fonction qui genere les bords de la forme en question
+            et une fonction pour l'affichage (afin d'avoir un obstacle colorer).
+            Ainsi, chaque obstacle peuvent etre deplacer independament les uns des autres.
+            Pour une bonne gestion des bords, il a fallut crer une fonction obstacleNormal qui
+            permet de calculer la normale a l'obstacle en fonction de sa forme et de sa position, 
+            ce qui nous a permis d'avoir une bonne gestion des bords du fluide et une bonne direction
+            pour les fluides. Cette fonction gere la vitesse d'impacte et de rebond du fluides
+            en fonction de la normale a l'obstacle, rendant le renvoi du fluide plus réaliste.
+
+            } 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/tout_les_obstacles.png}
+        \caption{Ajout de plusieurs obstacles.}
+        \label{evolution4}
+    \end{figure}
     \item chaleur (saurane)
     \item point ou ligne (gaelle)
     \item calcul d'une simulation, le fluide, physique 
@@ -226,6 +265,20 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 
     \subsection*{L'Advection}
     \subsection*{La Diffusion}
+    {\color{WildStrawberry}Comme l'advection, la diffusion est un processus 
+    physique qui décrit la propagation d'une substance 
+    (comme la chaleur ou la densité) à travers un fluide.
+    On peut modeliser la diffusion à l'aide de l'équation de diffusion suivante:
+        \begin{equation}
+            x_{i,j}^{t+1} = x_{i,j}^{t} + \alpha \left( 
+            (x_{i+1,j}^{t} - 2x_{i,j}^{t} + x_{i-1,j}^{t}) 
+            + (x_{i,j+1}^{t} - 2x_{i,j}^{t} + x_{i,j-1}^{t}) 
+        \right)
+    \end{equation}
+    Cette algorithme utilise la methode de resolution de l'equation
+     de diffusion par relaxation de Gauss-Seidel, qui consiste à iterer sur chaque cellule de la 
+     grille et à mettre à jour sa valeur en fonction des valeurs de ses voisins.
+    }
     \subsection*{La Projection}
     {\color{red}Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente la décomposition de Hodge. C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible, 
     Cet algorithme force la vitesse à être conservatrice de masse, c'est à dire que le fluide ne peut pas être créé ou détruit. C'est une
@@ -282,15 +335,46 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \begin{enumerate}%pour faire une liste numérotée
 \item 	Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).
 \begin{itemize}
-    \item répartition des roles
+    \item répartition des roles\\
+    {\color{WildStrawberry}   Durant le project, nous avons dans un premier temps travailler ensemble
+pour la mise en place de la grille de départet la creation du fluide
+ainsi que pour l'affichage de celui ci. Une fois cette partie terminée, nous avons ensuite
+ décidé de nous répartir les tâches pour être plus efficace.
+ Ainsi, Gaelle a travailler sur les differents curseur avec Axel, Satine a
+ travailler sur les obstacles, Axel à egalement travailler sur le bleetooth, et Saurane a travailler 
+ sur la diffusion de la chaleur.}
+ 
     \item diagramme de gantt
-    \item branches github, commits 
+    \item branches github, commits \\
+    {\color{WildStrawberry} Pour la mise en place d'un travaille d'equipe
+    optimale, nous aveons utilisé github. Lorsque nous travaillions ensemble, 
+    nous nous placions sur la branche main afin que chacun puise acceder 
+    a ce que les autres ont fait facilement, puis lorsque nous avons choisit 
+    de nous repartir les taches nous nous sommes tous mis à
+    travailler sur des braches differentes (Gaelle, Satine,Axel,Saurane)
+    afin de pouvoir travailler et enregistrer notre travaille
+    sans risquer de causer des conflits ou d'enreistrer quelque chose qui ne fonctionne pas.
+    Une fois notre programme complet nous le metions alors sur le main afin que tous le monde puisse y acceder.}
 \end{itemize}
 \item	Discuter les changements majeurs effectués en cours de projet. 
 \begin{itemize}
 \item passage de la grille de départ à la nouvelle grille (pourquoi?)
 \item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce
-    que ça a impacté les autres modules ? pourquoi? comment ?
+    que ça a impacté les autres modules ? pourquoi? comment ?\\
+    {\color{WildStrawberry} 
+      Pour les creation d'obstacle, il a fallut dans un premier temps readapter la fonction
+      qui delimiter les bord du fluides afin que celui ci prenne en compte l'object
+      ce qui a crer de nombreux probleme (la disparition du fluide a travers l'obstacle ou la fuite du fluide a travers les bords).
+      ou encore des probleme de dependance entre les diferents obstacles lorsque que nous avons voulu
+      ajouter plusieurs obstacles mobile. De plus, l'implementation d'obstacle ayant une autre forme
+      que la boule pose de nombreux probleme notamment dans la partie de delimitation du fluides ou encore dans la partie d'affichage.
+      Pour resoudre ces probleme il a fallut revoir le code en changement la facon de voir 
+      les obstacles mais également en les implementant de maniere differente.
+      Ainsi, les obstacle ont ete ranger une une liste afin que le premier obstacle soit reconnaisable
+      et ceux ci sont ainsi selectionner a partir du premier de la liste lorsqu'il fuat
+      les afficher et c'est le dernier obstacles qui est effacer lorsque l'on desire e retirer un.
+    }   
+
 \item implémentation de la fenetre pour rentrer les paramètresuu
 \end{itemize}
 \end{enumerate}
