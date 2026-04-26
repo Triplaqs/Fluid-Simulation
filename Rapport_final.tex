@@ -13,12 +13,7 @@
 \usepackage{float}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{amsmath} 
-
-
-
-
-
-
+\usepackage{pgfgantt}
 
 
 \usepackage{graphicx}  % pour inclure des images
@@ -243,7 +238,7 @@ Université de Montpellier.}
                 en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. 
                 Nous pouvions également afficher ou non cet obstacle à l'aide d'un \textbf{bouton on/off} qui nous rammener a 
                 l'utlisation ou non de la fonction lancant la creation de l'obstacle. 
-                Par la suite, nous avons rendu cet obstacle le plus \textbf{interactif} possibleen offrant à l'utilisateur 
+                Par la suite, nous avons rendu cet obstacle le plus \textbf{interactif} possible en offrant à l'utilisateur 
                 la possibilité de le déplacer à l'aide du curseur de la souris.\\
 
                 Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer 
@@ -251,7 +246,7 @@ Université de Montpellier.}
                 un \textbf{cercle}, un \textbf{cœur} ou une \textbf{étoile}. Pour cela, nous avans implementer
                 un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir 
                 ajouter ou supprimer les differents obstacles.
-                Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), leur rayon et leur forme, 
+                Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme, 
                 ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité. 
                 L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.\\
 
@@ -265,8 +260,8 @@ Université de Montpellier.}
                 Ainsi, si $d < 0$, le point est à l'intérieur de la boule (donc le fluide ne peut pas y pénétrer),
                 si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). \\
 
-                Pour des formes plus complexes comme le cœur, nous utilisons une représentation paramétrique 
-                pour l'affichage. La forme est définie à l'aide d'un paramètre $t \in [0, 2\pi]$ :
+                Pour des formes plus complexes comme le cœur, nous utilisons une 
+                représentation définie à l'aide d'un paramètre $t \in [0, 2\pi]$ :
                 \[
                 x(t) = 16 \sin^3(t)
                 \]
@@ -275,6 +270,8 @@ Université de Montpellier.}
                 \]
                 Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner 
                 correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.\\
+                
+                De même, le triangle est conçu à partir de deux triangles rectangles.\\
 
                 Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion 
                 des interactions entre le fluide et les obstacles. En utilisant en particulier, la fonction \texttt{obstacleNormal} qui 
@@ -453,6 +450,10 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 \item Évaluer la complexité théorique en temps des algorithmes présentés
     \begin{itemize}
         \item complexité globale de update\_simulation
+        \item {\color{WildStrawberry}La Diffusion : \\
+        L’algorithme parcourt une grille de taille $N \times N$ à chaque itération, ce qui représente un coût de $N^2$. 
+        Comme le nombre d’itérations est constant (20), la complexité totale est en $\mathcal{O}(N^2)$.
+        }
     \end{itemize}
 
 \end{enumerate}
@@ -471,7 +472,41 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \item Analyser (et comparer, si plusieurs) les performances des solutions implémentées.
 \begin{itemize}
 \item eulerien vs lagrangien (uniquement eulerien a été implémenté)
-\item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screens)
+\item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screenshot)
+    {\color{WildStrawberry}On peut voir l'évolution de notre projet a travers son evolution visuelle.
+    mais egalement c'est peformance en fonction de différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
+    }
+   \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/image de base.png}
+        \caption{Simulation avec un obstacle et toute les proprite du fluides non modifiées}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/densite 5_autre position.png}
+        \caption{Simulation avec 2 obstacles et une densité plus élevée(5)}
+    \end{figure}
+    
+    {\color{WildStrawberry}On constate une meillieur visibilite des obstacle et du fluide ainsi que sa direction.}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/bicolor.png}
+        \caption{Simulation avec alternace etre le rouge et le bleu pour representer la chaleur du fluide}
+    \end{figure}
+
+    {\color{WildStrawberry} On remarque que le fluide sortant ce melange assez facilement en creant
+    des degradés de rouge et de bleu.}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{PJ_proj/line.png}
+        \caption{Simulation avec sortie du fluide en ligne horizontale}
+    \end{figure}
+    {\color{WildStrawberry} On constate un fort fluite remplissant vite le cadre comparer
+    au point des image au dessus.}
+
 \end{itemize}
 
 
@@ -483,25 +518,68 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \item 	Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).
 \begin{itemize}
     \item répartition des roles\\
-    {\color{WildStrawberry}   Durant le project, nous avons dans un premier temps travailler ensemble
-pour la mise en place de la grille de départet la creation du fluide
-ainsi que pour l'affichage de celui ci. Une fois cette partie terminée, nous avons ensuite
- décidé de nous répartir les tâches pour être plus efficace.
- Ainsi, Gaelle a travailler sur les differents curseur avec Axel, Satine a
- travailler sur les obstacles, Axel à egalement travailler sur le bleetooth, et Saurane a travailler 
- sur la diffusion de la chaleur.}
+    {\color{WildStrawberry} Durant le projet, nous avons dans un premier temps travaillé ensemble
+        pour la mise en place de la grille de départ et la création du fluide
+        ainsi que pour l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite
+        décidé de nous répartir les tâches pour être plus efficace.
+        Ainsi, Gaelle a permis de déplacer le fluide dans diverses directions et a 
+        partir de divers points, Satine a
+        travailler sur les obstacles, Axel à généré le code ImGui afin de pouvoir 
+        modifier les différents paramètres du fluides(densité, couleur,...) et le Bluetooth, et Saurane a travailler 
+        sur la diffusion de la chaleur.
+    }
  
-    \item diagramme de gantt
+    \item diagramme de Gantt\\
+    {\color{WildStrawberry} Nous avons réalisé un diagramme de Gantt pour planifier les différentes étapes du projet.}
+
+
+\section*{Organisation du travail - Diagramme de Gantt}
+
+\begin{ganttchart}[
+    hgrid,
+    vgrid,
+    time slot format=isodate,
+    bar height=0.6
+]{2024-01-01}{2024-01-14}
+
+\gantttitlecalendar{day} \\
+
+\ganttbar[bar/.style={fill=Cyan}]{Travail collaboratif creation du fluide de depart}{2024-01-01}{2024-01-04} \\
+\ganttbar[bar/.style={fill=Cyan}]{Répartition des tâches}{2024-01-04}{2024-01-04} \\
+
+\ganttbar[bar/.style={fill=BrickRed}]{Creation de la diffusion chaud/froid}{2024-01-05}{2024-01-11} \\
+\ganttbar[bar/.style={fill=WildStrawberry}]{Creation des obstacles}{2024-01-05}{2024-01-11} \\
+\ganttbar[bar/.style={fill=Blue}]{Branche Axel}{2024-01-05}{2024-01-11} \\
+\ganttbar[bar/.style={fill=ForestGreen}]{Ajout de directions du fluides}{2024-01-05}{2024-01-11} \\
+
+\ganttbar[bar/.style={fill=Cyan}]{Fusion finale vers main}{2024-01-12}{2024-01-14}
+
+\end{ganttchart}
+
+\vspace{1cm}
+
+\textbf{Légende :}
+\begin{itemize}
+\item \textcolor{ForestGreen}{\rule{0.5cm}{0.3cm}} Gaelle
+\item \textcolor{WildStrawberry}{\rule{0.5cm}{0.3cm}} Satine
+\item \textcolor{Blue}{\rule{0.5cm}{0.3cm}} Axel
+\item \textcolor{BrickRed}{\rule{0.5cm}{0.3cm}} Saurane
+\item \textcolor{Cyan}{\rule{0.5cm}{0.3cm}} tout le monde (travail collaboratif sur la branche main)
+\end{itemize}
+
     \item branches github, commits \\
-    {\color{WildStrawberry} Pour la mise en place d'un travaille d'equipe
-    optimale, nous aveons utilisé github. Lorsque nous travaillions ensemble, 
-    nous nous placions sur la branche main afin que chacun puise acceder 
-    a ce que les autres ont fait facilement, puis lorsque nous avons choisit 
-    de nous repartir les taches nous nous sommes tous mis à
-    travailler sur des braches differentes (Gaelle, Satine,Axel,Saurane)
-    afin de pouvoir travailler et enregistrer notre travaille
-    sans risquer de causer des conflits ou d'enreistrer quelque chose qui ne fonctionne pas.
-    Une fois notre programme complet nous le metions alors sur le main afin que tous le monde puisse y acceder.}
+    {\color{WildStrawberry} Pour la mise en place d'un travail d'équipe
+        optimale, nous avons utilisé GitHub. Lorsque nous travaillions ensemble, 
+        nous nous placions sur la branche main afin que chacun puisse accéder 
+        à ce que les autres ont fait facilement, puis lorsque nous avons choisi 
+        de nous repartir les taches nous nous sommes tous mis à
+        travailler sur des branches différentes (Gaelle, Satine, Axel,Saurane)
+        afin de pouvoir travailler et enregistrer notre travaille
+        sans risquer de causer des conflits ou d'enregistrer quelque chose qui ne fonctionne pas.
+        Une fois notre programme complet nous le mettions alors sur le main afin que tout le monde puisse y accéder.
+        Nous avons également veillé à faire des commit réguliers et descriptifs 
+        pour suivre l'évolution du projet et faciliter la collaboration.
+    }
 \end{itemize}
 \item	Discuter les changements majeurs effectués en cours de projet. 
 \begin{itemize}
@@ -509,17 +587,26 @@ ainsi que pour l'affichage de celui ci. Une fois cette partie terminée, nous av
 \item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce
     que ça a impacté les autres modules ? pourquoi? comment ?\\
     {\color{WildStrawberry} 
-      Pour les creation d'obstacle, il a fallut dans un premier temps readapter la fonction
-      qui delimiter les bord du fluides afin que celui ci prenne en compte l'object
-      ce qui a crer de nombreux probleme (la disparition du fluide a travers l'obstacle ou la fuite du fluide a travers les bords).
-      ou encore des probleme de dependance entre les diferents obstacles lorsque que nous avons voulu
-      ajouter plusieurs obstacles mobile. De plus, l'implementation d'obstacle ayant une autre forme
-      que la boule pose de nombreux probleme notamment dans la partie de delimitation du fluides ou encore dans la partie d'affichage.
-      Pour resoudre ces probleme il a fallut revoir le code en changement la facon de voir 
-      les obstacles mais également en les implementant de maniere differente.
-      Ainsi, les obstacle ont ete ranger une une liste afin que le premier obstacle soit reconnaisable
-      et ceux ci sont ainsi selectionner a partir du premier de la liste lorsqu'il fuat
-      les afficher et c'est le dernier obstacles qui est effacer lorsque l'on desire e retirer un.
+      Pour la creation d'obstacle, il a fallut dans un premier temps réadapter la fonction
+        qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles,
+        ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle
+        ou la fuite du fluide à travers les bords), ou encore des problèmes de dépendance entre
+        les différents obstacles lorsque nous avons voulu ajouter plusieurs obstacles mobiles.
+        De plus, l'implémentation d'obstacles ayant une autre forme que la boule ( le premier obstacle programmer)
+        pose de nombreux problèmes notamment dans la partie de délimitation du fluide 
+        ou encore dans la partie d'affichage.\\
+
+        Pour résoudre ces problèmes il a fallu revoir le code en changeant la façon de voir
+        les obstacles mais également en les implémentant de manière différente.
+        Ainsi, les obstacles ont été rangés dans une liste afin que chaque obstacle
+        soit reconnaissable et manipulable facilement. Ils sont ainsi sélectionnés à partir
+        de cette liste lorsqu'il faut les afficher, et c'est le dernier obstacle de la liste
+        qui est supprimé lorsque l'on désire en retirer un. Cette organisation a également permis
+        de mieux gérer les interactions entre plusieurs obstacles et de réduire les conflits
+        lors de leurs déplacements.\\
+
+        Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et leur gestion
+        dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
     }   
 
 \item implémentation de la fenetre pour rentrer les paramètresuu
