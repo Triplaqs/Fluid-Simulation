@@ -12,6 +12,7 @@
 \usepackage{hyperref} %pour les liens
 \usepackage{float}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath} 
 
 
 
@@ -61,20 +62,20 @@ Université de Montpellier.}
 \item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
     \begin{itemize}
         \item projet en licence informatique L3
-
         \item méthode de Jos Stam "Stable FLuids"
         \item simulation d'un fluide en temps réel
         \item intéraction utilisateur.\\
             {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
-            de la faculté des sciences de Montpellier.
-            L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
-            Pour ce la, nous avons choist d'implementer la methode
-            de Jos Stam, "Stable Fluids", qui permet de simuler un 
-            fluide de manière stable et rapide.
-            Nous avons également implémenté une interface graphique pour 
-            visualiser en temps réél l'évolution de notre projet et le fait 
-            de pouvoir intéragir avec celui-ci, notament grace a creation d'une interface graphique 
-            et des obstacle clicables.}
+                de la faculté des sciences de Montpellier.\\
+                L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
+                Pour cela, nous avons choist d'implementer la methode
+                de Jos Stam, "Stable Fluids", qui permet de simuler un 
+                fluide de manière stable et rapide.\\
+                Nous avons également implémenté une interface graphique pour 
+                visualiser en temps réél l'évolution de notre projet et le fait 
+                de pouvoir intéragir avec celui-ci, notament grace a creation 
+                d'obstacle clicables et la possiblilite de modifier en temps reel 
+                different paramètres du fluide.}
     \end{itemize}
 
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.
@@ -237,27 +238,50 @@ Université de Montpellier.}
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
     \item obstacle (satine)\\
-            {\color{WildStrawberry} Dans un premier temps, nous avons implementer la creation 
-            d'un unique obstacle en modifiant pour cela la fonction de gestion des dords ainsi que le main.
-            nous pouvions egalement afficher ou non cette obstacle a l'aide d'un bouton on/off.
-            suite a cela nous avons rendu cette obstacle interactif en offrant a l'utilisateur la 
-            possibilite de le deplacer a l'aide du curseur de la souris.\\
-            Nous avons ensuite étoffé notre simulation en ajoutant la possibilité d'avoir plusieurs obstacles,
-            mais egalement celle de choisir la forme entre un 
-            coeur, un cercle et une etoile. Pour cela, les obstacle ont ete 
-            mis dans une liste (coordonnée,rayon,forme) afin de les rendre facilement reconnaissable et selectionnable.
-            (ainsi, le premier obstacle de la liste est celui qui est prioritaire pour etre deplacer et le dernier obstaclede la liste es le
-            premier retirer).on peut ainsi choisir le nombres d'obstacle grace u a un boutons +/- devant chaque forme possible.
-            Pour chaque forme d'obstacle, nous avons dut
-            crer une fonction qui genere les bords de la forme en question
-            et une fonction pour l'affichage (afin d'avoir un obstacle colorer).
-            Ainsi, chaque obstacle peuvent etre deplacer independament les uns des autres.
-            Pour une bonne gestion des bords, il a fallut crer une fonction obstacleNormal qui
-            permet de calculer la normale a l'obstacle en fonction de sa forme et de sa position, 
-            ce qui nous a permis d'avoir une bonne gestion des bords du fluide et une bonne direction
-            pour les fluides. Cette fonction gere la vitesse d'impacte et de rebond du fluides
-            en fonction de la normale a l'obstacle, rendant le renvoi du fluide plus réaliste.
+            {\color{WildStrawberry} 
+                Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
+                en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. 
+                Nous pouvions également afficher ou non cet obstacle à l'aide d'un \textbf{bouton on/off} qui nous rammener a 
+                l'utlisation ou non de la fonction lancant la creation de l'obstacle. 
+                Par la suite, nous avons rendu cet obstacle le plus \textbf{interactif} possibleen offrant à l'utilisateur 
+                la possibilité de le déplacer à l'aide du curseur de la souris.\\
 
+                Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer 
+                \textbf{plusieurs obstacles simultanément}, ainsi que de choisir leur forme parmi 
+                un \textbf{cercle}, un \textbf{cœur} ou une \textbf{étoile}. Pour cela, nous avans implementer
+                un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir 
+                ajouter ou supprimer les differents obstacles.
+                Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), leur rayon et leur forme, 
+                ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité. 
+                L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.\\
+
+                Afin de représenter précisément les différentes formes et leurs interactions avec le fluide, 
+                nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$, 
+                de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord). 
+                Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par :
+                \[
+                d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r
+                \]
+                Ainsi, si $d < 0$, le point est à l'intérieur de la boule (donc le fluide ne peut pas y pénétrer),
+                si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). \\
+
+                Pour des formes plus complexes comme le cœur, nous utilisons une représentation paramétrique 
+                pour l'affichage. La forme est définie à l'aide d'un paramètre $t \in [0, 2\pi]$ :
+                \[
+                x(t) = 16 \sin^3(t)
+                \]
+                \[
+                y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t)
+                \]
+                Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner 
+                correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.\\
+
+                Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion 
+                des interactions entre le fluide et les obstacles. En utilisant en particulier, la fonction \texttt{obstacleNormal} qui 
+                permet de calculer la \textbf{normale} au bord de chaque obstacle, c’est-à-dire la direction 
+                perpendiculaire à sa surface. Cette information est essentielle pour simuler correctement 
+                les phénomènes de réflexion et de rebond du fluide. Ainsi, le fluide réagit 
+                de manière cohérente à la forme des obstacles, rendant la simulation realiste et représentatif.
             } 
     \begin{figure}[H]
         \centering
@@ -314,20 +338,94 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 
     \subsection*{L'Advection}
     \subsection*{La Diffusion}
-    {\color{WildStrawberry}Comme l'advection, la diffusion est un processus 
-    physique qui décrit la propagation d'une substance 
-    (comme la chaleur ou la densité) à travers un fluide.
-    On peut modeliser la diffusion à l'aide de l'équation de diffusion suivante:
-        \begin{equation}
-            x_{i,j}^{t+1} = x_{i,j}^{t} + \alpha \left( 
-            (x_{i+1,j}^{t} - 2x_{i,j}^{t} + x_{i-1,j}^{t}) 
-            + (x_{i,j+1}^{t} - 2x_{i,j}^{t} + x_{i,j-1}^{t}) 
-        \right)
-    \end{equation}
-    Cette algorithme utilise la methode de resolution de l'equation
-     de diffusion par relaxation de Gauss-Seidel, qui consiste à iterer sur chaque cellule de la 
-     grille et à mettre à jour sa valeur en fonction des valeurs de ses voisins.
+    {\color{WildStrawberry}
+    Comme l'advection, la diffusion est un processus physique qui décrit la propagation d'une substance.
+    Nous avons donc choisit de l'implementer en pseudocode comme suit :
+
+    \begin{verbatim}
+    fonction DIFFUSE(N, x, x0, diff, dt)
+        a ← dt × diff × N²
+
+        pour k de 1 à 20 faire
+            pour i de 1 à N faire
+                pour j de 1 à N faire
+                    x[i,j] ← ( x0[i,j]
+                            + a × ( x[i-1,j] + x[i+1,j]
+                                    + x[i,j-1] + x[i,j+1] ) )
+                            / (1 + 4a)
+                fin pour
+            fin pour
+
+            appliquer_conditions_aux_limites(x)
+        fin pour
+
+        retourner x
+    fin 
+    \end{verbatim}
+
+    L'algorithme de diffusion utilise l'equation aux deriées partielle
+    qui suit :
+    \begin{equation*}
+    \frac{\partial x}{\partial t} = D \nabla^2 x
+    \end{equation*}
+
+    où :
+    \begin{itemize}
+        \item $x$ est la quantité diffusée (densité, température),
+        \item $D$ est le coefficient de diffusion,
+        \item $\nabla^2$ est le Laplacien.
+    \end{itemize}
+
+    En utilisant la discretisation utiliser par Jos Stam on obtient :
+
+    \begin{equation*}
+    x^{t+1} = x^t + \Delta t \, D \, \nabla^2 x^{t+1}
+    \end{equation*}
+
+    Ce choix est essentiel pour garantir la stabilité numérique, même pour de grands pas de temps.
+    
+    Sur une grille 2D, le Laplacien discret est approximé par :
+
+    \begin{equation*}
+    \nabla^2 x_{i,j} \approx x_{i-1,j} + x_{i+1,j} + x_{i,j-1} + x_{i,j+1} - 4x_{i,j}
+    \end{equation*}
+
+    En remplacant la formule de Jos Stam par l'approximation du Laplacien, on obtient :
+
+    \begin{equation*}
+    x_{i,j}^{t+1} =
+    \frac{x_{i,j}^{0} + a \left(
+    x_{i-1,j}^{t} + x_{i+1,j}^{t} + x_{i,j-1}^{t} + x_{i,j+1}^{t}
+    \right)}{1 + 4a}
+    \end{equation*}
+
+    avec :
+    \begin{equation*}
+    a = \Delta t \cdot D \cdot N^2
+    \end{equation*}
+
+
+    D'après Gauss-Seidel, l’équation précédente correspond à un système linéaire de la forme :
+    \begin{equation*}
+    (I - a \Delta)x = x_0
+    \end{equation*}
+
+    Ce système est résolu par une méthode itérative de Gauss-Seidel. Elle consiste à :
+    \begin{itemize}
+        \item parcourir la grille plusieurs fois,
+        \item mettre à jour chaque cellule immédiatement avec les nouvelles valeurs disponibles,
+        \item répéter jusqu’à convergence.
+    \end{itemize}
+
+    Cette méthode accélère la convergence et permet une simulation stable et efficace.
+
+    Ainsi, on peut interpréter la diffusion comme un processus qui rend les valeurs de plus en plus uniformes : 
+    Une zone où la quantité est très concentrée se diffuse progressivement vers les cellules voisines. 
+    Au fil des itérations, cela rend la répartition de plus en plus uniforme, ce qui est indispensable 
+    pour obtenir des simulations de fluides réalistes.
+
     }
+
     \subsection*{La Projection}
     {\color{red}Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente la décomposition de Hodge. C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible, 
     Cet algorithme force la vitesse à être conservatrice de masse, c'est à dire que le fluide ne peut pas être créé ou détruit. C'est une
