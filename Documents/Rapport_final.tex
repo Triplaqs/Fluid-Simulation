@@ -21,13 +21,13 @@
 %\pagestyle{headings}        % Pour mettre des entêtes avec les titres
                               % des sections en haut de page
 
- \title{Simulation de fluides en 2D\\         % Les paramètres du titre : titre, auteur, date
+\title{Simulation de fluides en 2D\\         % Les paramètres du titre : titre, auteur, date
   Projet de programmation 2}          
 \author{Axel Pereyrol, Saurane Delrieu, Gaelle Milezi, Satine Barraux\\
   \emph{L3 informatique}\\
   Faculté des Sciences\\
 Université de Montpellier.}
-\date{2025-2026}             
+\date{2025-2026}         
 
 
 
@@ -42,7 +42,7 @@ Université de Montpellier.}
 
 \begin{abstract}     % Résumé du travail
 
-  \emph{Description très succinte du problème et des différentes étapes de réalisation}
+  \emph{Description très succincte du problème et des différentes étapes de réalisation}
 
 \end{abstract}
 \newpage
@@ -54,6 +54,7 @@ Université de Montpellier.}
 	%Présentation du Sujet (1-2 pages) 
 \begin{itemize}%pour faire une liste à puces
 
+%1.1		SATINE
 \item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
     \begin{itemize}
         \item projet en licence informatique L3
@@ -73,6 +74,7 @@ Université de Montpellier.}
                 different paramètres du fluide.}
     \end{itemize}
 
+%1.2		SAURANE
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.
 
         {\color{blue}Nous avons choisi ce projet car il nous a parru être le plus adapté à nos compétences, étant donné notre parcours
@@ -83,6 +85,7 @@ Université de Montpellier.}
         mais aussi dans de nombreux domaines tels que les jeux vidéos, la météorologie ou l'environnment.}
 
 
+%1.3	    SAURANE
 \item	Présenter les différentes approches possibles pour la résolution du problème, et en particulier celle choisie.
 
         {\color{blue} Pour implémenter la simulation de fluides en 2D, 2 méthodes sont possibles : la méthode eulérienne ou la méthode lagrangienne.
@@ -92,6 +95,7 @@ Université de Montpellier.}
         {\color{blue}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémeenter et moins couteuse en complexité. La méthode 
         lagrangienne peut rapidement exploser en temps de calcul en fonction du nombre de particules.}
 
+%1.4           GAËLLE  
 \item Donner le cahier des charges détaillé \\
     {\color{green} Le cahier des charges du projet, réalisé en décembre 2025,
     fixait le cadre de développement, et définissait les objectifs, les contraintes 
@@ -125,6 +129,7 @@ Université de Montpellier.}
 
 \begin{enumerate}%pour faire une liste numérotée
 
+%2.1         AXEL
 \item Technologies utilisées
 \begin{itemize}
     \item langage de programmation : c++ (justification pour l'optimsation, etc)
@@ -132,6 +137,20 @@ Université de Montpellier.}
     \item Imgui (facile d'utilisation)
 \end{itemize}
 
+\newcommand{\axel}[1]{{\color{purple} #1 }}
+
+%============================== AXEL 1 =======================================
+\axel{Pour notre projet, nous hésitions entre du C++ et du Python ; nous avons opté pour du C++ pour un typage plus fort et une meilleure gestion de ce qu'il se passe en mémoire et en interne plus généralement.\\
+
+À partir de la nous avions deux options concernant l'API graphique : SFML et OpenGL. Nous avons ici choisi OpenGL afin de pouvoir déléguer au GPU et parce que nous avions déjà quelques bases dans le langage (grâce à l'excellent cours Learn OpenGL de Joey De Vries).\\
+
+Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité via le terminal, avant de basculer sur IMGUI (voir le Github polyvalent de Ocornut), qui s'impose comme une référence en terme de panneau de contrôle interactif en OpenGL.\\}
+
+
+%=============================================================================
+
+
+%2.2      GAËLLE
 \item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL)) \\
     {\color{green}Dans cette section, nous allons présenter l'évolution de l'affichage de notre projet au cours du semestre, 
     depuis les premiers affichages (grille de chaleur) jusqu'à la version finale de notre
@@ -207,7 +226,7 @@ Université de Montpellier.}
 
 
 
-
+%2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
 \item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
 
     {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
@@ -230,8 +249,14 @@ Université de Montpellier.}
     \end{figure}
     Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.}
     \begin{itemize}
+
+%PARTIE A
+\label{2.3 - Partie A}
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
+    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
+    
+    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
     \item obstacle (satine)\\
             {\color{WildStrawberry} 
                 Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
@@ -303,15 +328,26 @@ Université de Montpellier.}
     entre les deux positions sélectionnées, en suivant le segment qui les relie. 
     Chaque cellule rencontrée reçoit la densité et la force, ce qui permet de créer une source linéaire.}
     \item calcul d'une simulation, le fluide, physique 
-    \item PARTIE B : pas terminé
-    \item bluetooth, lagrangien, musique, etc
+%PARTIE B
+    \item PARTIE B :\\
 \end{itemize}
 
+\axel{Bluetooth, Semi-Lagrangien, Multi-threading\\}
+
+\axel{Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas poussé vers l’opérationnalité totale. Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées, malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.\\
+
+Nous avons aussi envisagé, pour enrichir notre simulation, d'implémenter une simulation parrallèle de Semi-Lagrangien. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est grossièrement un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille).\\
+
+Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL, mais nous n'avons pu faire aboutir cette option par faute de temps.\\}
+%2.4      AXEL
 \item Décrire les fonctionnalités de l'interface graphique implémentée (champs de simulation, bouton, affichage de l'obstacle).
+
+\axel{Notre panneau d'interaction avec la simulation permet de mettre la main sur un panel de parties arbitraires de notre simulation. Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en personnalisation. De ce fait, nous pouvons (entre autres) modifier la densité du fluide, sa force, sa direction, la disposition du/des points de départs sa couleur aussi. Nous avons aussi des obstacles que nous pouvons ajouter, on peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic avec déplacement de la souris.\\}
 \begin{itemize}
     \item description des boutons et des interactions possibles
 \end{itemize}
 
+%2.5       AXEL
 \item Décrire le format des données en entrée ou encore les conventions utilisées pour les entrées de vos programmes.(représentation du fluide, grille, stackage des paramètres)
 \begin{itemize}
     \item fluide stocké dans une grille
@@ -319,6 +355,7 @@ Université de Montpellier.}
     \item cellules contiennent les paramètres de la simulation (densité, chaleur, vitesse)
     \item expliquer ce que représentent ces paramètres
 
+%2.6     SAURANE
 \end{itemize}
 \item Statistiques du projet
 
@@ -328,14 +365,16 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 }
 
 
+
 \end{enumerate}
 
 \section{Algorithmes et Structures de Données}
 \emph{2 à 3 pages}
 
 \begin{enumerate}%pour faire une liste numérotée
-    
-    \item Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. \\
+
+%3.1        GAËLLE  -  SATINE  -  SAURANE
+\item Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. \\
     {\color{blue} Dans cette section, nous allons présenter et analyser l'un des algorithmes principaux du projet : \texttt{vel\_step}. 
     Pour cela, nous allons détailler 3 algorithmes essentiels : advection, diffusion et projection.
     \texttt{vel\_step} est l'algorithme qui fait évoluer la vitesse du fluide à chaque itération de la simulation.
@@ -362,7 +401,6 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
     \end{verbatim}
 
     }
-
     \subsection*{L'Advection}
     \subsection*{La Diffusion}
     {\color{WildStrawberry}
@@ -512,6 +550,7 @@ Algorithme : Projection
         \end{align}
     \end{itemize}}
     
+%3.2        GAËLLE  -  SATINE  -  SAURANE
 \item Évaluer la complexité théorique en temps des algorithmes présentés \\
     {\color{blue}Les algorithmes d'advection, de diffusion et de projection nous permettent de définir l'algorithme \texttt{vel\_step}.
     Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent : 
@@ -591,6 +630,8 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \section{Gestion du Projet}
 \emph{ (1-2 pages)}
 \begin{enumerate}%pour faire une liste numérotée
+
+%5.1    SATINE
 \item 	Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).
 \begin{itemize}
     \item répartition des roles\\
@@ -657,6 +698,8 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
         pour suivre l'évolution du projet et faciliter la collaboration.
     }
 \end{itemize}
+
+%5.2    SAURANE - SATINE - AXEL
 \item	Discuter les changements majeurs effectués en cours de projet. 
 \begin{itemize}
 \item passage de la grille de départ à la nouvelle grille (pourquoi?)
@@ -701,6 +744,7 @@ mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas d
 	Les perspectives du projet décrivent ce que l’on pourrait ajouter, modifier, réécrire afin d’améliorer le projet. 
 
 \begin{enumerate}
+%6.1     SAURANE
     \item Fonctionnalités rélisées qui étaient présentent dans le cahier des charges \\
     {\color{blue}Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
 
@@ -718,11 +762,15 @@ mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas d
 
     \end{itemize}
     }
+    
+%6.2
     \item Fonctionnalités non rélisées qui étaient présentent dans le cahier des charges
     \begin{itemize}
         \item possibilité de controler le fluide à distance via un smartphone (bluetooth)
         \item intégrer un mode musique qui fait réagir de fluide en focntion du son
     \end{itemize}
+
+%6.3   AXEL
 \item Perspecvtives du projet pour la suite : ce qu'on aurait pu implémenter avec plus de temps.
 \begin{itemize}
     \item lagrangien
