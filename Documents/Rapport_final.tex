@@ -312,16 +312,46 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
 
     \subsection*{Gestion de la chaleur}
-    Enfin un mode d'affichage thermique permet de visualiser la chaleur.
-    {\color{blue} je suis saurane et voici mon paragraphe sur le module chaleur !}
-
+    {\color{blue}
+    Un mode d'affichage thermique permet de visualiser le fluide en fonction de sa température.
+    Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. 
+    Ce paramètre est représenté par une valeur numérique qui peut être positive (indiquant une source chaude) ou négative (indiquant une source froide). \\
+    Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui permet à l'utilisateur de choisir si le fluide injecté est chaud ou froid.
     
     \begin{figure}[H]
         \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/bicolor.png}
+        \caption{Affichage chaud/froid}
+        \label{chaleur1}
+    \end{figure}
+
+    Sur cette image, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une 
+    source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes,
+    mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. \\
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/chaleur.png}
+        \caption{représentation température}
+        \label{chaleur2}
+    \end{figure}
+
+    Ici, on observe la simulation après de nombreuses itérations et on peut voir que le mélange est beaucoup plus homogène. On obtient
+    comme un voile violet, symbolisant une température tiède assez uniforme, avec quelques zones plus chaudes (rouge) ou plus froides (bleu). \\
+    Ce mode d'affichage thermique peut être combiné avec les obstacles : \\
+    \begin{figure}[H]
+        \centering
         \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol3.png}
-        \caption{Quatrième version : interaction chaleur/obstacles.}
+        \caption{chaleur + obstacles}
         \label{evolution4}
     \end{figure}
+    On peut déplacer le cercle pour mélanger les différentes zones de temparature. Dans cette simulation, on considère que les obstacles sont neutres
+    en terme de température, c'est à dire qu'ils n'ont pas d'effet de sur l'aspect thermique du fluide. \\
+    }
+    
+
+    
+    
 
 %2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
 \item LES PARTIES SUIVANTES SONT A DEPLACER AU DESSUS
@@ -330,28 +360,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 \begin{itemize}
 %PARTIE A
 \label{2.3 - Partie A}
-    \item PARTIE A : terminé, bien implémenté
-    \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
-%============================== AXEL 2 =======================================
-    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
     
-    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
-    \item chaleur (saurane)
-    {\color{blue}
-    Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. 
-    Ce paramètre est représenté par une valeur numérique qui peut être positive (indiquant une source chaude) ou négative (indiquant une source froide). \\
-    Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui permet à l'utilisateur de choisir si le fluide injecté est chaud ou froid.
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/bicolor.png}
-        \caption{Affichage chaud/froid}
-        \label{chaleur1}
-    \end{figure}
-    Sur cette image, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une 
-    source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes,
-    mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. \\
-
-    }
     \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
      de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
     unique, soit le long d’une ligne définie par deux coordonnées dans la grille (soit 4 points).
