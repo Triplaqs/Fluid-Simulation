@@ -12,8 +12,12 @@
 \usepackage{hyperref} %pour les liens
 \usepackage{float}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{amsmath} 
-\usepackage{pgfgantt}
+
+
+
+
+
+
 
 
 \usepackage{graphicx}  % pour inclure des images
@@ -21,13 +25,13 @@
 %\pagestyle{headings}        % Pour mettre des entêtes avec les titres
                               % des sections en haut de page
 
- \title{Simulation de fluides en 2D\\         % Les paramètres du titre : titre, auteur, date
+ \title{  Titre du sujet\\         % Les paramètres du titre : titre, auteur, date
   Projet de programmation 2}          
-\author{Axel Pereyrol, Saurane Delrieu, Gaelle Milezi, Satine Barraux\\
+\author{ Les membres du groupe\\
   \emph{L3 informatique}\\
   Faculté des Sciences\\
 Université de Montpellier.}
-\date{2025-2026}             
+\date{2021-2022}             
 
 
 
@@ -42,7 +46,7 @@ Université de Montpellier.}
 
 \begin{abstract}     % Résumé du travail
 
-  \emph{Description très succincte du problème et des différentes étapes de réalisation}
+  \emph{Description très succinte du problème et des différentes étapes de réalisation}
 
 \end{abstract}
 \newpage
@@ -54,48 +58,53 @@ Université de Montpellier.}
 	%Présentation du Sujet (1-2 pages) 
 \begin{itemize}%pour faire une liste à puces
 
+%1.1		SATINE
 \item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
     \begin{itemize}
         \item projet en licence informatique L3
+
         \item méthode de Jos Stam "Stable FLuids"
         \item simulation d'un fluide en temps réel
         \item intéraction utilisateur.\\
             {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
-                de la faculté des sciences de Montpellier.\\
-                L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
-                Pour cela, nous avons choist d'implementer la methode
-                de Jos Stam, "Stable Fluids", qui permet de simuler un 
-                fluide de manière stable et rapide.\\
-                Nous avons également implémenté une interface graphique pour 
-                visualiser en temps réél l'évolution de notre projet et le fait 
-                de pouvoir intéragir avec celui-ci, notament grace a creation 
-                d'obstacle clicables et la possiblilite de modifier en temps reel 
-                different paramètres du fluide.}
+            de la faculté des sciences de Montpellier.
+            L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
+            Pour ce la, nous avons choist d'implementer la methode
+            de Jos Stam, "Stable Fluids", qui permet de simuler un 
+            fluide de manière stable et rapide.
+            Nous avons également implémenté une interface graphique pour 
+            visualiser en temps réél l'évolution de notre projet et le fait 
+            de pouvoir intéragir avec celui-ci, notament grace a creation d'une interface graphique 
+            et des obstacle clicables.}
     \end{itemize}
 
+%1.2		SAURANE
 \item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.
 
-        {\color{blue}Nous avons choisi ce projet car il nous a parru être le plus adapté à nos compétences, étant donné notre parcours
+        {\color{red}Nous avons choisi ce projet car il nous a parru être le plus adapté à nos compétences, étant donné notre parcours
         en double licence mathématiques et informatique. En effet, nous avons rapidement compris les concepts de base de la simulation, ce qui nous
-        a permis d'implémenter la méthode de Jos Stam "Stable Fluids". \\
+        a permis d'implémenter la méthode de Jos Stam "Stable Fluids". 
         Nous avons également aimé l'idée d'implémenter une interface graphique pour visualiser en temps réél l'évolution de notre projet et le fait de pouvoir intéragir avec celui-ci. 
         De plus, c'est avec ce projet que nous avons découvert le langage c++ et la bibliothèque OpenGl, qui sont des outils etentiels pour la simulaiton de fluides 
         mais aussi dans de nombreux domaines tels que les jeux vidéos, la météorologie ou l'environnment.}
 
 
+%1.3	    SAURANE
 \item	Présenter les différentes approches possibles pour la résolution du problème, et en particulier celle choisie.
 
-        {\color{blue} Pour implémenter la simulation de fluides en 2D, 2 méthodes sont possibles : la méthode eulérienne ou la méthode lagrangienne.
+        {\color{red} Pour implémenter la simulation de fluides en 2D, 2 méthodes sont possibles : la méthode eulérienne ou la méthode lagrangienne.
         La méthode eulérienne consiste à représenter le fluide dans une grille fixe, dans laquelle on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc.
         La méthode lagrangienne consiste à représenter le fluide à l'aide de particules, c'est à dire que chaque particule contient les propriétés du fluide donc celui-ci est représenté comme
-        à l'aide de particules.}\\
-        {\color{blue}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémeenter et moins couteuse en complexité. La méthode 
+        à l'aide de particules.}
+        {\color{red}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémeenter et moins couteuse en complexité. La méthode 
         lagrangienne peut rapidement exploser en temps de calcul en fonction du nombre de particules.}
 
+%1.4           GAËLLE  
 \item Donner le cahier des charges détaillé \\
     {\color{green} Le cahier des charges du projet, réalisé en décembre 2025,
     fixait le cadre de développement, et définissait les objectifs, les contraintes 
     et les fonctionnalités (minimales) à implémenter. Vous trouverez à la suite une synthése de celui-ci.
+
     \begin{itemize}
     \item Le projet consistait à développer un rendu interactif permettant
     la visualisation et la manipulation en temps réel d'une simulation de fluide
@@ -125,14 +134,30 @@ Université de Montpellier.}
 
 \begin{enumerate}%pour faire une liste numérotée
 
+%2.1         AXEL
 \item Technologies utilisées
 \begin{itemize}
-    \item langage de programmation : c++ (justification pour l'optimsation, etc)
+    \item langage de programmation : C++ (justification pour l'optimsation, etc)
     \item openGL (affichage : api graphique)
-    \item Imgui (facile d'utilisation)
+    \item Imgui (facile d'utilisation)\\
 \end{itemize}
 
+\newcommand{\axel}[1]{{\color{purple} #1 }}
+
+%============================== AXEL 1 =======================================
+\axel{Pour notre projet, nous hésitions entre du C++ et du Python ; nous avons opté pour du C++ pour un typage plus fort et une meilleure gestion de ce qu'il se passe en mémoire et en interne plus généralement.\\
+
+À partir de la nous avions deux options concernant l'API graphique : SFML et OpenGL. Nous avons ici choisi OpenGL afin de pouvoir déléguer au GPU et parce que nous avions déjà quelques bases dans le langage (grâce à l'excellent cours Learn OpenGL de Joey De Vries).\\
+
+Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité via le terminal, avant de basculer sur IMGUI (voir le Github polyvalent de Ocornut), qui s'impose comme une référence en terme de panneau de contrôle interactif en OpenGL.\\}
+
+
+%=============================================================================
+
+
+%2.2      GAËLLE
 \item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL)) \\
+
     {\color{green}Dans cette section, nous allons présenter l'évolution de l'affichage de notre projet au cours du semestre, 
     depuis les premiers affichages (grille de chaleur) jusqu'à la version finale de notre
     simulation de fluide. 
@@ -151,7 +176,7 @@ Université de Montpellier.}
 
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.45\textwidth]{../PJ_proj/carte_chaleur.png}
+    \includegraphics[width=0.45\textwidth]{PJ_proj/carte_chaleur.png}
     \caption{Première version : affichage d'une grille de chaleur.}
     \label{evolution1}
     \end{figure}
@@ -167,7 +192,7 @@ Université de Montpellier.}
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol1.png}
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol1.png}
         \caption{Deuxieme version : affichage d'un fluide.}
         \label{evolution2}
     \end{figure}
@@ -180,7 +205,7 @@ Université de Montpellier.}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol2.png}
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol2.png}
         \caption{Troisième version : ajout d'un panneau de paramètres.}
         \label{evolution3}
     \end{figure}
@@ -199,7 +224,7 @@ Université de Montpellier.}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol3.png}
+        \includegraphics[width=0.45\textwidth]{PJ_proj/simulation_evol3.png}
         \caption{Quatrième version : ajout d'un obstacle.}
         \label{evolution4}
     \end{figure}
@@ -207,7 +232,7 @@ Université de Montpellier.}
 
 
 
-
+%2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
 \item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
 
     {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
@@ -224,67 +249,48 @@ Université de Montpellier.}
     \end{itemize}
      \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/diag_uml.drawio.png}
+        \includegraphics[width=0.45\textwidth]{PJ_proj/diag_uml.drawio.png}
         \caption{Diagramme UML}
         \label{diagUML}
     \end{figure}
     Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.}
     \begin{itemize}
+
+%PARTIE A
+\label{2.3 - Partie A}
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
+    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
+    
+    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
     \item obstacle (satine)\\
-            {\color{WildStrawberry} 
-                Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
-                en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. 
-                Nous pouvions également afficher ou non cet obstacle à l'aide d'un \textbf{bouton on/off} qui nous rammener a 
-                l'utlisation ou non de la fonction lancant la creation de l'obstacle. 
-                Par la suite, nous avons rendu cet obstacle le plus \textbf{interactif} possible en offrant à l'utilisateur 
-                la possibilité de le déplacer à l'aide du curseur de la souris.\\
+            {\color{WildStrawberry} Dans un premier temps, nous avons implementer la creation 
+            d'un unique obstacle en modifiant pour cela la fonction de gestion des dords ainsi que le main.
+            nous pouvions egalement afficher ou non cette obstacle a l'aide d'un bouton on/off.
+            suite a cela nous avons rendu cette obstacle interactif en offrant a l'utilisateur la 
+            possibilite de le deplacer a l'aide du curseur de la souris.\\
+            Nous avons ensuite étoffé notre simulation en ajoutant la possibilité d'avoir plusieurs obstacles,
+            mais egalement celle de choisir la forme entre un 
+            coeur, un cercle et une etoile. Pour cela, les obstacle ont ete 
+            mis dans une liste (coordonnée,rayon,forme) afin de les rendre facilement reconnaissable et selectionnable.
+            (ainsi, le premier obstacle de la liste est celui qui est prioritaire pour etre deplacer et le dernier obstaclede la liste es le
+            premier retirer).on peut ainsi choisir le nombres d'obstacle grace u a un boutons +/- devant chaque forme possible.
+            Pour chaque forme d'obstacle, nous avons dut
+            crer une fonction qui genere les bords de la forme en question
+            et une fonction pour l'affichage (afin d'avoir un obstacle colorer).
+            Ainsi, chaque obstacle peuvent etre deplacer independament les uns des autres.
+            Pour une bonne gestion des bords, il a fallut crer une fonction obstacleNormal qui
+            permet de calculer la normale a l'obstacle en fonction de sa forme et de sa position, 
+            ce qui nous a permis d'avoir une bonne gestion des bords du fluide et une bonne direction
+            pour les fluides. Cette fonction gere la vitesse d'impacte et de rebond du fluides
+            en fonction de la normale a l'obstacle, rendant le renvoi du fluide plus réaliste.
 
-                Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer 
-                \textbf{plusieurs obstacles simultanément}, ainsi que de choisir leur forme parmi 
-                un \textbf{cercle}, un \textbf{cœur} ou une \textbf{étoile}. Pour cela, nous avans implementer
-                un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir 
-                ajouter ou supprimer les differents obstacles.
-                Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme, 
-                ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité. 
-                L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.\\
-
-                Afin de représenter précisément les différentes formes et leurs interactions avec le fluide, 
-                nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$, 
-                de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord). 
-                Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par :
-                \[
-                d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r
-                \]
-                Ainsi, si $d < 0$, le point est à l'intérieur de la boule (donc le fluide ne peut pas y pénétrer),
-                si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). \\
-
-                Pour des formes plus complexes comme le cœur, nous utilisons une 
-                représentation définie à l'aide d'un paramètre $t \in [0, 2\pi]$ :
-                \[
-                x(t) = 16 \sin^3(t)
-                \]
-                \[
-                y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t)
-                \]
-                Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner 
-                correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.\\
-                
-                De même, le triangle est conçu à partir de deux triangles rectangles.\\
-
-                Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion 
-                des interactions entre le fluide et les obstacles. En utilisant en particulier, la fonction \texttt{obstacleNormal} qui 
-                permet de calculer la \textbf{normale} au bord de chaque obstacle, c’est-à-dire la direction 
-                perpendiculaire à sa surface. Cette information est essentielle pour simuler correctement 
-                les phénomènes de réflexion et de rebond du fluide. Ainsi, le fluide réagit 
-                de manière cohérente à la forme des obstacles, rendant la simulation realiste et représentatif.
             } 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/tout_les_obstacles.png}
+        \includegraphics[width=0.45\textwidth]{PJ_proj/tout_les_obstacles.png}
         \caption{Ajout de plusieurs obstacles.}
-        \label{evolution4b}
+        \label{evolution4}
     \end{figure}
     \item chaleur (saurane)
     \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
@@ -300,15 +306,26 @@ Université de Montpellier.}
     entre les deux positions sélectionnées, en suivant le segment qui les relie. 
     Chaque cellule rencontrée reçoit la densité et la force, ce qui permet de créer une source linéaire.}
     \item calcul d'une simulation, le fluide, physique 
-    \item PARTIE B : pas terminé
-    \item bluetooth, lagrangien, musique, etc
+%PARTIE B
+    \item PARTIE B :\\
 \end{itemize}
 
+\axel{Bluetooth, Semi-Lagrangien, Multi-threading\\}
+
+\axel{Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas poussé vers l’opérationnalité totale. Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées, malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.\\
+
+Nous avons aussi envisagé, pour enrichir notre simulation, d'implémenter une simulation parrallèle de Semi-Lagrangien. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est grossièrement un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille).\\
+
+Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL, mais nous n'avons pu faire aboutir cette option par faute de temps.\\}
+%2.4      AXEL
 \item Décrire les fonctionnalités de l'interface graphique implémentée (champs de simulation, bouton, affichage de l'obstacle).
+
+\axel{Notre panneau d'interaction avec la simulation permet de mettre la main sur un panel de parties arbitraires de notre simulation. Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en personnalisation. De ce fait, nous pouvons (entre autres) modifier la densité du fluide, sa force, sa direction, la disposition du/des points de départs sa couleur aussi. Nous avons aussi des obstacles que nous pouvons ajouter, on peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic avec déplacement de la souris.\\}
 \begin{itemize}
     \item description des boutons et des interactions possibles
 \end{itemize}
 
+%2.5       AXEL
 \item Décrire le format des données en entrée ou encore les conventions utilisées pour les entrées de vos programmes.(représentation du fluide, grille, stackage des paramètres)
 \begin{itemize}
     \item fluide stocké dans une grille
@@ -316,10 +333,11 @@ Université de Montpellier.}
     \item cellules contiennent les paramètres de la simulation (densité, chaleur, vitesse)
     \item expliquer ce que représentent ces paramètres
 
+%2.6     SAURANE
 \end{itemize}
 \item Statistiques du projet
 
-{\color{blue}En termes de statistiques, notre projet est composé de certaines classes principales : Cellule, Grille, Obstacle, etc. Il est composé de 22 fichiers (cpp et h), 
+{\color{red}En termes de statistiques, notre projet est composé de certaines classes principales : Cellule, Grille, Obstacle, etc. Il est composé de 22 fichiers (cpp et h), 
 et contient plus de 2000 lignes de code.
 Le projet est organisé en plusieurs modules, tels que le module de gestion des obstacles, le module de gestion de la chaleur, etc.
 }
@@ -331,203 +349,55 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 \emph{2 à 3 pages}
 
 \begin{enumerate}%pour faire une liste numérotée
-    
-    \item Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. \\
-    {\color{blue} Dans cette section, nous allons présenter et analyser l'un des algorithmes principaux du projet : \texttt{vel\_step}. 
-    Pour cela, nous allons détailler 3 algorithmes essentiels : advection, diffusion et projection.
-    \texttt{vel\_step} est l'algorithme qui fait évoluer la vitesse du fluide à chaque itération de la simulation.
 
-    \begin{verbatim}
-    Algorithme : vel_step
-        Début
-            ajouter_source(N, u, u_prev, dt)
-            ajouter_source(N, v, v_prev, dt)
-
-            Echanger u et u_prev
-            diffuse(N, 1, u, u_prev, visc, dt)
-            Echanger v et v_prev
-            diffuse(N, 2, v, v_prev, visc, dt)
-
-            project(N, u, v, u_prev, v_prev)
-
-            Echanger u et u_prev, Echanger v et v_prev
-            advect(N, 1, u, u_prev, u_prev, v_prev, dt)
-            advect(N, 2, v, v_prev, u_prev, v_prev, dt)
-
-            project(N, u, v, u_prev, v_prev)
-        Fin
-    \end{verbatim}
-
-    }
+%3.1        GAËLLE  -  SATINE  -  SAURANE
+\item Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. Attention : il s'agit ici de choisir 1 ou 2 algorithmes intéressants, et non pas de présenter tous les algorithmes implémentés.
 
     \subsection*{L'Advection}
     \subsection*{La Diffusion}
-    {\color{WildStrawberry}
-    Comme l'advection, la diffusion est un processus physique qui décrit la propagation d'une substance.
-    Nous avons donc choisit de l'implementer en pseudocode comme suit :
-
-    \begin{verbatim}
-    fonction DIFFUSE(N, x, x0, diff, dt)
-        a ← dt × diff × N²
-
-        pour k de 1 à 20 faire
-            pour i de 1 à N faire
-                pour j de 1 à N faire
-                    x[i,j] ← ( x0[i,j]
-                            + a × ( x[i-1,j] + x[i+1,j]
-                                    + x[i,j-1] + x[i,j+1] ) )
-                            / (1 + 4a)
-                fin pour
-            fin pour
-
-            appliquer_conditions_aux_limites(x)
-        fin pour
-
-        retourner x
-    fin 
-    \end{verbatim}
-
-    L'algorithme de diffusion utilise l'equation aux deriées partielle
-    qui suit :
-    \begin{equation*}
-    \frac{\partial x}{\partial t} = D \nabla^2 x
-    \end{equation*}
-
-    où :
-    \begin{itemize}
-        \item $x$ est la quantité diffusée (densité, température),
-        \item $D$ est le coefficient de diffusion,
-        \item $\nabla^2$ est le Laplacien.
-    \end{itemize}
-
-    En utilisant la discretisation utiliser par Jos Stam on obtient :
-
-    \begin{equation*}
-    x^{t+1} = x^t + \Delta t \, D \, \nabla^2 x^{t+1}
-    \end{equation*}
-
-    Ce choix est essentiel pour garantir la stabilité numérique, même pour de grands pas de temps.
-    
-    Sur une grille 2D, le Laplacien discret est approximé par :
-
-    \begin{equation*}
-    \nabla^2 x_{i,j} \approx x_{i-1,j} + x_{i+1,j} + x_{i,j-1} + x_{i,j+1} - 4x_{i,j}
-    \end{equation*}
-
-    En remplacant la formule de Jos Stam par l'approximation du Laplacien, on obtient :
-
-    \begin{equation*}
-    x_{i,j}^{t+1} =
-    \frac{x_{i,j}^{0} + a \left(
-    x_{i-1,j}^{t} + x_{i+1,j}^{t} + x_{i,j-1}^{t} + x_{i,j+1}^{t}
-    \right)}{1 + 4a}
-    \end{equation*}
-
-    avec :
-    \begin{equation*}
-    a = \Delta t \cdot D \cdot N^2
-    \end{equation*}
-
-
-    D'après Gauss-Seidel, l’équation précédente correspond à un système linéaire de la forme :
-    \begin{equation*}
-    (I - a \Delta)x = x_0
-    \end{equation*}
-
-    Ce système est résolu par une méthode itérative de Gauss-Seidel. Elle consiste à :
-    \begin{itemize}
-        \item parcourir la grille plusieurs fois,
-        \item mettre à jour chaque cellule immédiatement avec les nouvelles valeurs disponibles,
-        \item répéter jusqu’à convergence.
-    \end{itemize}
-
-    Cette méthode accélère la convergence et permet une simulation stable et efficace.
-
-    Ainsi, on peut interpréter la diffusion comme un processus qui rend les valeurs de plus en plus uniformes : 
-    Une zone où la quantité est très concentrée se diffuse progressivement vers les cellules voisines. 
-    Au fil des itérations, cela rend la répartition de plus en plus uniforme, ce qui est indispensable 
-    pour obtenir des simulations de fluides réalistes.
-
-    }
-
-    \subsection*{La Projection}
-    {\color{blue}Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente la décomposition de Hodge. 
-    C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible et qui 
-    force la vitesse à conserver la masse. C'est une propriété importante des fluides réels. \\ 
-    Visuellement, la projection force l'écoulement à avoir de meilleures courbes, et évite les écoulements en ligne droite. \\
-    La décomposition de Hodge nous dit que tout champ de vecteur de vitesse est la somme d'un champ conservant la masse et d'un champ de gradient.
-    L'idée est de rendre le champ de vitesse conservateur de masse lors de la dernière étape en soustrayant le champ de gradient du champ de vitesse actuel.\\
-    \begin{verbatim}
-Algorithme : Projection
-    Entrées : int N, float * u, float * v, float * div, float * p
-    Sorties : u et v modifiés pour être incompressibles
-
-    Début
-        h = 1.0 / N
-
-        # ÉTAPE 1 
-        Pour chaque cellule (i, j) de la grille :
-            div[i, j] = -0.5 * h * (u[i+1, j] - u[i-1, j] + v[i, j+1] - v[i, j-1])
-            p[i, j] = 0
-        Fin Pour
-        Appliquer les bords pour 'div' et 'p'
-
-        # ÉTAPE 2 
-        Répéter 20 fois :
-            Pour chaque cellule (i, j) de la grille :
-                p[i, j] = (div[i, j] + p[i-1, j] + p[i+1, j] + p[i, j-1] + p[i, j+1]) / 4
-            Fin Pour
-            Appliquer les bords pour 'p'
-        Fin Répéter
-
-        # ÉTAPE 3 : 
-        Pour chaque cellule (i, j) de la grille :
-            u[i, j] = u[i, j] - 0.5 * (p[i+1, j] - p[i-1, j]) / h
-            v[i, j] = v[i, j] - 0.5 * (p[i, j+1] - p[i, j-1]) / h
-        Fin Pour
-        Appliquer les bords pour 'u' et 'v'
-    Fin
-    \end{verbatim}
-    L'algorithme de projection est composé de 3 étapes : \\
-    \begin{itemize}
-        \item Etape 1 : calcul de la divergence : pour chaque cellule de la grille, on évalue la divergence discrète 
+    {\color{WildStrawberry}Comme l'advection, la diffusion est un processus 
+    physique qui décrit la propagation d'une substance 
+    (comme la chaleur ou la densité) à travers un fluide.
+    On peut modeliser la diffusion à l'aide de l'équation de diffusion suivante:
         \begin{equation}
-            {div}_{i,j} = -\frac{h}{2}(u_{i+1,j} - u_{i-1,j} + v_{i,j+1} - v_{i,j-1})
+            x_{i,j}^{t+1} = x_{i,j}^{t} + \alpha \left( 
+            (x_{i+1,j}^{t} - 2x_{i,j}^{t} + x_{i-1,j}^{t}) 
+            + (x_{i,j+1}^{t} - 2x_{i,j}^{t} + x_{i,j-1}^{t}) 
+        \right)
+    \end{equation}
+    Cette algorithme utilise la methode de resolution de l'equation
+     de diffusion par relaxation de Gauss-Seidel, qui consiste à iterer sur chaque cellule de la 
+     grille et à mettre à jour sa valeur en fonction des valeurs de ses voisins.
+    }
+    \subsection*{La Projection}
+    {\color{red}Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente la décomposition de Hodge. C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible, 
+    Cet algorithme force la vitesse à être conservatrice de masse, c'est à dire que le fluide ne peut pas être créé ou détruit. C'est une
+    propriété importante pour une simulation réaliste. Visuellement, la projection force l'écoulement à avoir de meilleures courbes, et évite les écoulements en ligne droite. \\
+    L'algorithme de projection est composé de 3 étapes :
+    \begin{itemize}
+        \item calcul de la divergence : pour chaque cllule de la grille, on évalue la divergence discrète :
+        \begin{equation}
+            {div}_{i,j} = -\frac{h}{2}left(u_{i+1,j} - u_{i-1,j}ight) + left(v_{i,j+1} - v_{i,j-1}ight)
         \end{equation}
-        où $h = 1/N$ est la taille d'une cellule de la grille, et $u$ et $v$ sont les composantes de la vitesse du fluide. \\
-        \item Etape 2 : résolution de l'équation de Poisson \\
+        où $h = 1/N$ est la taille d'une cellule de la grille, et $u$ et $v$ sont les composantes de la vitesse du fluide.
+        \item résolution de l'équation de Poisson : \\
         On résout itérativement l'équation $\nabla^2 p = div$ par 20 itérations de relaxation de Gauss-Seidel, où $p$ est un champ de pression :
         \begin{equation}
-            p_{i,j}^{(k+1)} = \frac{1}{4}({div}_{i,j} + p_{i+1,j}^{(k)} + p_{i-1,j}^{(k)} + p_{i,j+1}^{(k)} + p_{i,j-1}^{(k)} - div_{i,j})
+            p_{i,j}^{(k+1)} = \frac{1}{4}left({div}_{i,j} + p_{i+1,j}^{(k)} + p_{i-1,j}^{(k)} + p_{i,j+1}^{(k)} + p_{i,j-1}^{(k)} - div_{i,j}ight)
         \end{equation}
-        On réutilisa exactement le code de la diffusion pour assurer la cohérence du code et éviter les redondances. \\
-        \item Etape 3 : correction du champ de vitesse \\
+        On réutilisa exactement le code de la diffusion pour assurer la cohérence du code et éviter les redondances.
+        \item correction du champ de vitesse : \\
         pour chaque cellule de la grille, on corrige la vitesse en soustrayant le gradient du champ de pression :
-        \begin{align}
-            u'_{i,j} &= {u}_{i,j} - \frac{1}{2h} ( p_{i+1,j} - p_{i-1,j}) \\
-            v'_{i,j} &= {v}_{i,j} - \frac{1}{2h} ( p_{i,j+1} - p_{i,j-1})       
-        \end{align}
+        \begin{equation}
+            mathbf{u}'_{i,j} = \mathbf{u}_{i,j} - \frac{1}{2h} \begin{pmatrix} p_{i+1,j} - p_{i-1,j} \end{pmatrix}
+        \end{equation}
     \end{itemize}}
     
-\item Évaluer la complexité théorique en temps des algorithmes présentés \\
-    {\color{blue}Les algorithmes d'advection, de diffusion et de projection nous permettent de définir l'algorithme \texttt{vel\_step}.
-    Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent : 
+%3.2        GAËLLE  -  SATINE  -  SAURANE
+\item Évaluer la complexité théorique en temps des algorithmes présentés
     \begin{itemize}
-        \item Advection : 
-        \item Diffusion : \\
-            {\color{WildStrawberry}L’algorithme parcourt une grille de taille $N \times N$ à chaque itération, ce qui représente un coût de $N^2$. 
-            Comme le nombre d’itérations est constant (20), la complexité totale est en $\mathcal{O}(N^2)$.}
-        \item Projection : \\
-            L'algorithme de projection est composé de 3 étapes :
-            \begin{itemize}
-                \item Etape 1 : calcul de la divergence : $N^2$ opérations
-                \item Etape 2 : résolution de l'équation de Poisson : $20 \times N^2$ opérations
-                \item Etape 3 : correction du champ de vitesse : $N^2$ opérations
-            \end{itemize}
-            Ainsi, la complexité totale de l'algorithme de projection est en $\mathcal{O}(N^2)$.
-    \end{itemize} 
-    Ce qui nous donne une complexité totale de ... pour l'algorithme \texttt{vel\_step}.
-    }
+        \item complexité globale de update\_simulation
+    \end{itemize}
 
 \end{enumerate}
 
@@ -537,49 +407,17 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 
 \begin{enumerate}%pour faire une liste numérotée
 
+%4.1        
 \item Illustrer les performances ainsi que l'efficacité du logiciel implémenté à l'aide de graphiques.
 \begin{itemize}
 \item calcul de complexités en fonction de la taille de la grille, etc (plot sur python), nombre d'obstacles, étape d'avection/relaxation (changer les paramètres et comparer)
 \end{itemize}
 
+%4.2       SATINE -  AXEL
 \item Analyser (et comparer, si plusieurs) les performances des solutions implémentées.
 \begin{itemize}
 \item eulerien vs lagrangien (uniquement eulerien a été implémenté)
-\item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screenshot)
-    {\color{WildStrawberry}On peut voir l'évolution de notre projet a travers son evolution visuelle.
-    mais egalement c'est peformance en fonction de différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
-    }
-   \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/image de base.png}
-        \caption{Simulation avec un obstacle et toute les proprite du fluides non modifiées}
-    \end{figure}
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/densite 5_autre position.png}
-        \caption{Simulation avec 2 obstacles et une densité plus élevée(5)}
-    \end{figure}
-    
-    {\color{WildStrawberry}On constate une meillieur visibilite des obstacle et du fluide ainsi que sa direction.}
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/bicolor.png}
-        \caption{Simulation avec alternace etre le rouge et le bleu pour representer la chaleur du fluide}
-    \end{figure}
-
-    {\color{WildStrawberry} On remarque que le fluide sortant ce melange assez facilement en creant
-    des degradés de rouge et de bleu.}
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/line.png}
-        \caption{Simulation avec sortie du fluide en ligne horizontale}
-    \end{figure}
-    {\color{WildStrawberry} On constate un fort fluite remplissant vite le cadre comparer
-    au point des image au dessus.}
-
+\item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screens)
 \end{itemize}
 
 
@@ -588,107 +426,53 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \section{Gestion du Projet}
 \emph{ (1-2 pages)}
 \begin{enumerate}%pour faire une liste numérotée
+
+%5.1    SATINE
 \item 	Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).
 \begin{itemize}
     \item répartition des roles\\
-    {\color{WildStrawberry} Durant le projet, nous avons dans un premier temps travaillé ensemble
-        pour la mise en place de la grille de départ et la création du fluide
-        ainsi que pour l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite
-        décidé de nous répartir les tâches pour être plus efficace.
-        Ainsi, Gaelle a permis de déplacer le fluide dans diverses directions et a 
-        partir de divers points, Satine a
-        travailler sur les obstacles, Axel à généré le code ImGui afin de pouvoir 
-        modifier les différents paramètres du fluides(densité, couleur,...) et le Bluetooth, et Saurane a travailler 
-        sur la diffusion de la chaleur.
-    }
+    {\color{WildStrawberry}   Durant le project, nous avons dans un premier temps travailler ensemble
+pour la mise en place de la grille de départet la creation du fluide
+ainsi que pour l'affichage de celui ci. Une fois cette partie terminée, nous avons ensuite
+ décidé de nous répartir les tâches pour être plus efficace.
+ Ainsi, Gaelle a travailler sur les differents curseur avec Axel, Satine a
+ travailler sur les obstacles, Axel à egalement travailler sur le bleetooth, et Saurane a travailler 
+ sur la diffusion de la chaleur.}
  
-    \item diagramme de Gantt\\
-    {\color{WildStrawberry} Nous avons réalisé un diagramme de Gantt pour planifier les différentes étapes du projet.}
-
-
-\section*{Organisation du travail - Diagramme de Gantt}
-
-\begin{ganttchart}[
-    hgrid,
-    vgrid,
-    time slot format=isodate,
-    bar height=0.6
-]{2024-01-01}{2024-01-14}
-
-\gantttitlecalendar{day} \\
-
-\ganttbar[bar/.style={fill=Cyan}]{Travail collaboratif creation du fluide de depart}{2024-01-01}{2024-01-04} \\
-\ganttbar[bar/.style={fill=Cyan}]{Répartition des tâches}{2024-01-04}{2024-01-04} \\
-
-\ganttbar[bar/.style={fill=BrickRed}]{Creation de la diffusion chaud/froid}{2024-01-05}{2024-01-11} \\
-\ganttbar[bar/.style={fill=WildStrawberry}]{Creation des obstacles}{2024-01-05}{2024-01-11} \\
-\ganttbar[bar/.style={fill=Blue}]{Branche Axel}{2024-01-05}{2024-01-11} \\
-\ganttbar[bar/.style={fill=ForestGreen}]{Ajout de directions du fluides}{2024-01-05}{2024-01-11} \\
-
-\ganttbar[bar/.style={fill=Cyan}]{Fusion finale vers main}{2024-01-12}{2024-01-14}
-
-\end{ganttchart}
-
-\vspace{1cm}
-
-\textbf{Légende :}
-\begin{itemize}
-\item \textcolor{ForestGreen}{\rule{0.5cm}{0.3cm}} Gaelle
-\item \textcolor{WildStrawberry}{\rule{0.5cm}{0.3cm}} Satine
-\item \textcolor{Blue}{\rule{0.5cm}{0.3cm}} Axel
-\item \textcolor{BrickRed}{\rule{0.5cm}{0.3cm}} Saurane
-\item \textcolor{Cyan}{\rule{0.5cm}{0.3cm}} tout le monde (travail collaboratif sur la branche main)
-\end{itemize}
-
+    \item diagramme de gantt
     \item branches github, commits \\
-    {\color{WildStrawberry} Pour la mise en place d'un travail d'équipe
-        optimale, nous avons utilisé GitHub. Lorsque nous travaillions ensemble, 
-        nous nous placions sur la branche main afin que chacun puisse accéder 
-        à ce que les autres ont fait facilement, puis lorsque nous avons choisi 
-        de nous repartir les taches nous nous sommes tous mis à
-        travailler sur des branches différentes (Gaelle, Satine, Axel,Saurane)
-        afin de pouvoir travailler et enregistrer notre travaille
-        sans risquer de causer des conflits ou d'enregistrer quelque chose qui ne fonctionne pas.
-        Une fois notre programme complet nous le mettions alors sur le main afin que tout le monde puisse y accéder.
-        Nous avons également veillé à faire des commit réguliers et descriptifs 
-        pour suivre l'évolution du projet et faciliter la collaboration.
-    }
+    {\color{WildStrawberry} Pour la mise en place d'un travaille d'equipe
+    optimale, nous aveons utilisé github. Lorsque nous travaillions ensemble, 
+    nous nous placions sur la branche main afin que chacun puise acceder 
+    a ce que les autres ont fait facilement, puis lorsque nous avons choisit 
+    de nous repartir les taches nous nous sommes tous mis à
+    travailler sur des braches differentes (Gaelle, Satine,Axel,Saurane)
+    afin de pouvoir travailler et enregistrer notre travaille
+    sans risquer de causer des conflits ou d'enreistrer quelque chose qui ne fonctionne pas.
+    Une fois notre programme complet nous le metions alors sur le main afin que tous le monde puisse y acceder.}
 \end{itemize}
+
+%5.2    SAURANE - SATINE - AXEL
 \item	Discuter les changements majeurs effectués en cours de projet. 
 \begin{itemize}
 \item passage de la grille de départ à la nouvelle grille (pourquoi?)
 \item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce
     que ça a impacté les autres modules ? pourquoi? comment ?\\
     {\color{WildStrawberry} 
-      Pour la creation d'obstacle, il a fallut dans un premier temps réadapter la fonction
-        qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles,
-        ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle
-        ou la fuite du fluide à travers les bords), ou encore des problèmes de dépendance entre
-        les différents obstacles lorsque nous avons voulu ajouter plusieurs obstacles mobiles.
-        De plus, l'implémentation d'obstacles ayant une autre forme que la boule ( le premier obstacle programmer)
-        pose de nombreux problèmes notamment dans la partie de délimitation du fluide 
-        ou encore dans la partie d'affichage.\\
-
-        Pour résoudre ces problèmes il a fallu revoir le code en changeant la façon de voir
-        les obstacles mais également en les implémentant de manière différente.
-        Ainsi, les obstacles ont été rangés dans une liste afin que chaque obstacle
-        soit reconnaissable et manipulable facilement. Ils sont ainsi sélectionnés à partir
-        de cette liste lorsqu'il faut les afficher, et c'est le dernier obstacle de la liste
-        qui est supprimé lorsque l'on désire en retirer un. Cette organisation a également permis
-        de mieux gérer les interactions entre plusieurs obstacles et de réduire les conflits
-        lors de leurs déplacements.\\
-
-        Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et leur gestion
-        dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
+      Pour les creation d'obstacle, il a fallut dans un premier temps readapter la fonction
+      qui delimiter les bord du fluides afin que celui ci prenne en compte l'object
+      ce qui a crer de nombreux probleme (la disparition du fluide a travers l'obstacle ou la fuite du fluide a travers les bords).
+      ou encore des probleme de dependance entre les diferents obstacles lorsque que nous avons voulu
+      ajouter plusieurs obstacles mobile. De plus, l'implementation d'obstacle ayant une autre forme
+      que la boule pose de nombreux probleme notamment dans la partie de delimitation du fluides ou encore dans la partie d'affichage.
+      Pour resoudre ces probleme il a fallut revoir le code en changement la facon de voir 
+      les obstacles mais également en les implementant de maniere differente.
+      Ainsi, les obstacle ont ete ranger une une liste afin que le premier obstacle soit reconnaisable
+      et ceux ci sont ainsi selectionner a partir du premier de la liste lorsqu'il fuat
+      les afficher et c'est le dernier obstacles qui est effacer lorsque l'on desire e retirer un.
     }   
 
-\item implémentation de la fenetre pour rentrer les paramètres \\
-{\color{blue}
-Un autre changement majeur a été l'implémentation d'une fenêtre intéractive pour modifier en temps réel
-les paramètres de la simulation. \\ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui limitait les possibilités d'expérimentation, 
-mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas de connaissances en programmation. \\
-
-}
+\item implémentation de la fenetre pour rentrer les paramètresuu
 \end{itemize}
 \end{enumerate}
 
@@ -698,28 +482,22 @@ mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas d
 	Les perspectives du projet décrivent ce que l’on pourrait ajouter, modifier, réécrire afin d’améliorer le projet. 
 
 \begin{enumerate}
-    \item Fonctionnalités rélisées qui étaient présentent dans le cahier des charges \\
-    {\color{blue}Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
-
+%6.1     SAURANE
+    \item Fonctionnalités réalisées qui étaient présentent dans le cahier des charges 
     \begin{itemize}
-        \item L'interface graphique composée de la fenêtre d'affichage du fluide : \\
-            Cette interface graphique est bien présente dans notre projet et elle correspond presque
-            à l'identique à ce que nous avions imaginé au départ.
-        \item possibilité d'agir sur le fluide avec des curseurs : \\
-            Nous avons en effet la possibilité de modofier les paramêtres du fluide en temps réel,
-            cependant, nous avons finalement opté pour des boutons et des champs de saisie plutôt que des curseurs. Ce choix
-            a été assez naturel car il nous permet d'étre plus précis dans le choix des paramêtres, tels que la densité ou la vitesse. 
-        \item possibilité d'ajouter des obstacles : \\
-            Cette fonctionnalité a fini par être l'une des principales de notre projet, et elle permet de rendre la simulation plus ludique
-            et plus réaliste.
-
+        \item interface graphique avec une fenêtre d'affichage du fluide et des curseurs
+        \item simulation du fluide en 2D
+        \item possibilité d'agir sur le fluide avec des curseurs
+        \item possibilité d'ajouter des obstacles
     \end{itemize}
-    }
-    \item Fonctionnalités non rélisées qui étaient présentent dans le cahier des charges
+%6.2
+    \item Fonctionnalités non réalisées qui étaient présentent dans le cahier des charges
     \begin{itemize}
-        \item possibilité de controler le fluide à distance via un smartphone (bluetooth)
+        \item possibilité de contrôler le fluide à distance via un smartphone (bluetooth)
         \item intégrer un mode musique qui fait réagir de fluide en focntion du son
     \end{itemize}
+    
+%6.3   AXEL
 \item Perspecvtives du projet pour la suite : ce qu'on aurait pu implémenter avec plus de temps.
 \begin{itemize}
     \item lagrangien
