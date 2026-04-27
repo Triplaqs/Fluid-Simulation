@@ -65,15 +65,13 @@ Université de Montpellier.}
         \item intéraction utilisateur.\\
             {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
                 de la faculté des sciences de Montpellier.\\
-                L'objectif de ce project est de simmuler un fluide en 2D interactif en temps reel.
-                Pour cela, nous avons choist d'implementer la methode
-                de Jos Stam, "Stable Fluids", qui permet de simuler un 
+                L'objectif de ce projet est de simuler un fluide interactif en 2D en temps reel.
+                Pour cela, nous avons choisi d'implémenter la méthode
+                de Jos Stam "Stable Fluids", qui permet de simuler un 
                 fluide de manière stable et rapide.\\
                 Nous avons également implémenté une interface graphique pour 
-                visualiser en temps réél l'évolution de notre projet et le fait 
-                de pouvoir intéragir avec celui-ci, notament grace a creation 
-                d'obstacle clicables et la possiblilite de modifier en temps reel 
-                different paramètres du fluide.}
+                visualiser en temps réel l'évolution du fluide et pour intéragir avec celui-ci. Cette intéraction est possible grâce à la création 
+                d'obstacles clicables et la possibilité de modifier en temps réel les différents paramètres du fluide.}
     \end{itemize}
 
 %1.2		SAURANE
@@ -82,19 +80,17 @@ Université de Montpellier.}
         {\color{blue}Nous avons choisi ce projet car il nous a parru être le plus adapté à nos compétences, étant donné notre parcours
         en double licence mathématiques et informatique. En effet, nous avons rapidement compris les concepts de base de la simulation, ce qui nous
         a permis d'implémenter la méthode de Jos Stam "Stable Fluids". \\
-        Nous avons également aimé l'idée d'implémenter une interface graphique pour visualiser en temps réél l'évolution de notre projet et le fait de pouvoir intéragir avec celui-ci. 
-        De plus, c'est avec ce projet que nous avons découvert le langage c++ et la bibliothèque OpenGl, qui sont des outils etentiels pour la simulaiton de fluides 
+        Nous avons également aimé l'idée d'implémenter une interface graphique pour observer l'évolution du fluide. 
+        De plus, c'est avec ce projet que nous avons découvert le langage c++ et la bibliothèque OpenGl, qui sont des outils essentiels dans la simulaiton de fluides 
         mais aussi dans de nombreux domaines tels que les jeux vidéos, la météorologie ou l'environnment.}
-
 
 %1.3	    SAURANE
 \item	Présenter les différentes approches possibles pour la résolution du problème, et en particulier celle choisie.
 
-        {\color{blue} Pour implémenter la simulation de fluides en 2D, 2 méthodes sont possibles : la méthode eulérienne ou la méthode lagrangienne.
-        La méthode eulérienne consiste à représenter le fluide dans une grille fixe, dans laquelle on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc.
-        La méthode lagrangienne consiste à représenter le fluide à l'aide de particules, c'est à dire que chaque particule contient les propriétés du fluide donc celui-ci est représenté comme
-        à l'aide de particules.}\\
-        {\color{blue}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémeenter et moins couteuse en complexité. La méthode 
+        {\color{blue} Pour implémenter la simulation de fluides en 2D, deux méthodes sont possibles : la méthode eulérienne et la méthode lagrangienne.
+        La méthode eulérienne consiste à représenter le fluide dans une grille fixe, où l'on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc. \\
+        La méthode lagrangienne consiste, quant à elle, à représenter le fluide à l'aide de particules, c'est à dire que chaque particule contient les propriétés du fluide.}\\
+        {\color{blue}Pour l'implémentation de ce projet, nous avons choisi la méthode eulérienne, qui est plus simple à implémenter et moins coûteuse en complexité. La méthode 
         lagrangienne peut rapidement exploser en temps de calcul en fonction du nombre de particules.}
 
 %1.4           GAËLLE  
