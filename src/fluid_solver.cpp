@@ -1,3 +1,5 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <stdio.h>
 #include "fluides.h"
 #include "matrix.h"
@@ -73,10 +75,21 @@ void advect ( int N, int b, float * d, float * d0, float * u, float * v, float d
 }
 
 void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt )
-{
-    add_source ( N, x, x0, dt );
-    SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
-    SWAP ( x0, x ); advect ( N, 0, x, x0, u, v, dt );
+{//================================== MESURES ==================================
+    if (mesure && obstacleCountCircle==0) { // on s'assure qu'on ait bien la valeur qu'on souhaite mesurer en place avant de commencer
+        float dep_tps = glfwGetTime();
+        add_source ( N, x, x0, dt );
+        SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
+        SWAP ( x0, x ); advect ( N, 0, x, x0, u, v, dt );
+        float end_tps = glfwGetTime();
+        float dT = end_tps - dep_tps;
+        printf("Dens_step time: %f\n", dT);
+        mesure = false; // on arrête de print pour pas spam le terminal
+    } else{
+        add_source ( N, x, x0, dt );
+        SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
+        SWAP ( x0, x ); advect ( N, 0, x, x0, u, v, dt );
+    }
 }
 
 void project ( int N, float * u, float * v, float * p, float * div )

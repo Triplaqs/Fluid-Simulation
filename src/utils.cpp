@@ -92,7 +92,7 @@ std::vector<float> dens_blue_prev;
 
 
 //pour faire des mesures de temps d'algos
-extern bool mesure = true;
+bool mesure = true;
 
 
 Grid cells;      // vecteur des cellules (tableau)
