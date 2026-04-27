@@ -604,6 +604,23 @@ Algorithme : Projection
     Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent : 
     \begin{itemize}
         \item Advection : 
+        L'algorithme d'advection met à jour la valeur 
+        de la densité ou la vitesse pour chaque cellule de la grille.
+        L'algorithme parcourt donc toute la grille de taille $N \times N$ avec une double
+        boucle \emph{for}, ce qui représente $N^2$ cellules.\\
+        Pour chaque cellule, l'algorithme : 
+        \begin{itemize}
+            \item détermine la position d'origine du fluide
+            \item effectue une interpolation
+            \item met à jour la valeur de la desnité ou vitesse
+        \end{itemize}
+        Toutes ces opérations sont réalisées en temps constant ($\mathcal{O}(1)$)
+        pour chaque cellule. Alors avec la double boucle, on obtient 
+        un coût total de $N^2 \times \mathcal{O}(1) = \mathcal{O}(N^2)$.\\
+        A la fin de l'algorithme, il y a un appel à la fonction
+        \emph{set\_bnd} qui a une complexité $\mathcal{O}(N^2)$.\\
+        La complexité finale de l'algorithme \emph{advection} est donc : \\
+        $\mathcal{O}(N^2) + \mathcal{O}(N^2) = \mathcal{O}(N^2)$.
         \item Diffusion : \\
             {\color{WildStrawberry}L’algorithme parcourt une grille de taille $N \times N$ à chaque itération, ce qui représente un coût de $N^2$. 
             Comme le nombre d’itérations est constant (20), la complexité totale est en $\mathcal{O}(N^2)$.}
