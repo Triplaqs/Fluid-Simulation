@@ -5,6 +5,13 @@ project(FluidSimulation C CXX)
 
 # ---- Package imports
 find_package(glfw3 REQUIRED)
+find_package(PkgConfig QUIET)
+
+# Try to find SDL2 with pkg-config if PkgConfig is available
+if(PkgConfig_FOUND)
+    pkg_check_modules(SDL2 sdl2)
+    pkg_check_modules(SDL2_MIXER SDL2_mixer)
+endif()
 
 #à ajouter quand ils seront incorporés au projet et qu'on pourra les demander
 #find_package(SDL2 REQUIRED)
@@ -49,7 +56,14 @@ target_include_directories(out PRIVATE
 # Link libraries
 target_link_libraries(out glad glfw)
 
-#target_link_libraries(out
-#    SDL2::SDL2
-#    SDL2_mixer::SDL2_mixer
-#)
+
+# Link SDL2 only if found
+if(SDL2_FOUND)
+    target_link_libraries(out ${SDL2_LIBRARIES})
+    target_include_directories(out PRIVATE ${SDL2_INCLUDE_DIRS})
+endif()
+if(SDL2_MIXER_FOUND)
+    target_link_libraries(out ${SDL2_MIXER_LIBRARIES})
+    target_include_directories(out PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
+endif()
+

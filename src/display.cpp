@@ -149,14 +149,14 @@ void initObstacleRenderer()
     "uniform vec2 u_center;\n"
     "uniform float u_radius;\n"
     "uniform float u_edge;\n"
+    "uniform vec3 u_innerColor;\n"
+    "uniform vec3 u_outerColor;\n"
     "void main(){\n"
     "  float d = distance(v_pos, u_center);\n"
     "  float alpha = 1.0 - smoothstep(u_radius - u_edge, u_radius + u_edge, d);\n"
     "  if (alpha <= 0.001) discard;\n"
-    "  vec3 inner = vec3(1.0, 0.75, 0.80);" // centre rose clair
-    "  vec3 outer = vec3(0.70, 0.30, 0.50);" // bord rose foncé
     "  float t = clamp(d / u_radius, 0.0, 1.0);\n"
-    "  vec3 col = mix(inner, outer, t);\n"
+    "  vec3 col = mix(u_innerColor, u_outerColor, t);\n"
     "  FragColor = vec4(col, alpha);\n"
     "}\n";
 
@@ -208,6 +208,11 @@ void drawObstacleNDC(float cx, float cy, float radius)
     float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
     if (loc_e >= 0) glUniform1f(loc_e, edge);
 
+    GLint loc_inner = glGetUniformLocation(obstacleProgram, "u_innerColor");
+    GLint loc_outer = glGetUniformLocation(obstacleProgram, "u_outerColor");
+    if (loc_inner >= 0) glUniform3f(loc_inner, 1.0f, 0.75f, 0.80f);
+    if (loc_outer >= 0) glUniform3f(loc_outer, 0.70f, 0.30f, 0.50f);
+
     // smooth alpha via blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -223,17 +228,16 @@ void drawHeartNDC(float cx, float cy, float radius)
 {
     const int SEG = 128;
     std::vector<float> verts;
-    verts.reserve((SEG+2)*2);
+    verts.reserve((SEG + 2) * 2);
     verts.push_back(cx);
     verts.push_back(cy);
 
     for (int s = 0; s <= SEG; ++s) {
         float t = (float)s / (float)SEG * 2.0f * 3.14159265f;
         float xt = 16.0f * powf(sinf(t), 3);
-        float yt = 13.0f * cosf(t) - 5.0f * cosf(2.0f*t) - 2.0f * cosf(3.0f*t) - cosf(4.0f*t);
-        // normaliser vers [-1,1]
-        float nx = xt / 17.0f; // x in [-16,16]
-        float ny = yt / 17.0f; // y in [-17,13]
+        float yt = 13.0f * cosf(t) - 5.0f * cosf(2.0f * t) - 2.0f * cosf(3.0f * t) - cosf(4.0f * t);
+        float nx = xt / 17.0f;
+        float ny = yt / 17.0f;
         float x = cx + nx * radius;
         float y = cy + ny * radius;
         verts.push_back(x);
@@ -258,6 +262,57 @@ void drawHeartNDC(float cx, float cy, float radius)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, SEG+2);
+
+    glDisable(GL_BLEND);
+    glBindVertexArray(0);
+}
+
+void drawHexagramNDC(float cx, float cy, float radius)
+{
+    // hexagramme comme l'union de deux triangles équilatéraux.
+    const float PI = 3.14159265358979323846f;
+    const float angleUp = PI * 0.5f;
+    const float angleDown = -PI * 0.5f;
+
+    std::vector<float> verts;
+    verts.reserve(12);
+
+    // triangle pointant vers le haut
+    for (int k = 0; k < 3; ++k) {
+        float a = angleUp + k * 2.0f * PI / 3.0f;
+        verts.push_back(cx + cosf(a+0.5) * radius);
+        verts.push_back(cy + sinf(a+0.5) * radius);
+    }
+
+    // triangle pointant vers le bas
+    for (int k = 0; k < 3; ++k) {
+        float a = angleDown + k * 2.0f * PI / 3.0f;
+        verts.push_back(cx + cosf(a+0.5) * radius);
+        verts.push_back(cy + sinf(a+0.5) * radius);
+    }
+
+    glUseProgram(obstacleProgram);
+    glBindVertexArray(obstacleVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, obstacleVBO);
+    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_DYNAMIC_DRAW);
+
+    GLint loc_c = glGetUniformLocation(obstacleProgram, "u_center");
+    GLint loc_r = glGetUniformLocation(obstacleProgram, "u_radius");
+    GLint loc_e = glGetUniformLocation(obstacleProgram, "u_edge");
+    if (loc_c >= 0) glUniform2f(loc_c, cx, cy);
+    if (loc_r >= 0) glUniform1f(loc_r, radius);
+    float edge = fmaxf(0.5f / (float)N, radius * 0.02f);
+    if (loc_e >= 0) glUniform1f(loc_e, edge);
+
+    GLint loc_inner = glGetUniformLocation(obstacleProgram, "u_innerColor");
+    GLint loc_outer = glGetUniformLocation(obstacleProgram, "u_outerColor");
+    if (loc_inner >= 0) glUniform3f(loc_inner, 0.880000f, 0.220000f, 0.650000f); //#AB0258  rose cerise
+    if (loc_outer >= 0) glUniform3f(loc_outer, 0.670588f, 0.007843f, 0.345098f); // dégradé plus clair
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glDisable(GL_BLEND);
     glBindVertexArray(0);

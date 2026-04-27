@@ -1,0 +1,226 @@
+% Une ligne commentaire débute par le caractère « % »
+
+\documentclass[a4paper]{article}
+
+% Options possibles : 10pt, 11pt, 12pt (taille de la fonte)
+%                     oneside, twoside (recto simple, recto-verso)
+%                     draft, final (stade de développement)
+
+\usepackage[utf8]{inputenc}   % LaTeX, comprends les accents !
+\usepackage[T1]{fontenc}      % Police contenant les caractères français
+\usepackage[french]{babel}  
+\usepackage{fullpage}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+\usepackage{xcolor}
+
+
+\usepackage{graphicx}  % pour inclure des images
+
+%\pagestyle{headings}        % Pour mettre des entêtes avec les titres
+                              % des sections en haut de page
+
+ \title{  Simulation de fluides en 2D\\         % Les paramètres du titre : titre, auteur, date
+  Projet de programmation 2}          
+\author{ Axel, Gaëlle, Satine, Saurane\\
+  \emph{L3 informatique}\\
+  Faculté des Sciences\\
+Université de Montpellier.}
+\date{2025-2026}             
+
+
+
+\begin{document}
+
+\maketitle                    % Faire un titre utilisant les données
+                              % passées à \title, \author et \date
+
+%\begin{center}               % pour centrer 
+ % \includegraphics[scale=1]{}   % insertion d'une image
+%\end{center}
+
+\begin{abstract}     % Résumé du travail
+
+  \emph{Description très succinte du problème et des différentes étapes de réalisation :
+  Création d'une interface graphique de simulation de fluides en 2D 
+  avec laquelle on peut intéragir pour observer l'évolution du fluide.}
+
+\end{abstract}
+\newpage
+%\dominitoc  % initializer les minitoc
+\tableofcontents
+\newpage
+\section*{Introduction} % Commencer une section, * permet de ne pas numéroté l'introduction
+\emph{1-2 pages}
+	%Présentation du Sujet (1-2 pages) 
+\begin{itemize}%pour faire une liste à puces
+
+\item Présenter le problème étudié et le contexte dans lequel le projet se positionne : \\
+Le but de ce projet est de simuler un fluide en 2D. Pour cela, nous avons choist d'implementer la methode
+de Jos Stam, "Stable Fluids", qui permet de simuler un fluide de manière stable et rapide.
+Notre projet consiste à créer une interface graphique de simulation de fluides en 2D. Cette
+interface permet à l'utilisateur d'intéragir en modifiant les paramètres de la simuulation
+afin d'observer l'évolution du fluide. Ce projet s'inscrit dans le cadre de notre licence en 
+informatique avec l'UE Projet De Programmation 2 pour laquelle nous avons pu choisir un sujet 
+parmi une liste donnée, et nous avons choisi celui-ci : la simulation de fluides en 2D.
+
+\item Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde 
+de l'informatique : 
+
+Etant tous les quatres des étudiants en double licence maths-info, lors du 
+choix du projet, celui-ci nous a paru le plus intéressant et le plus adapté à nos compétences.
+Dans le monde de l'informatique, la simulation de fluides est présente dans de nombreux domaines,
+notamment dans les jeux vidéos, la météorologie, l'environnement, la medecine, etc. 
+
+La simulation des fluides est un sujet important dans diverse domaine que cesoit
+en biologie a travers la simulation de flux sanguin, en physique pour la simulation de l'air 
+ou dans l'ingénierie.il est est utilisé dans de nombreux domaines, faisant ainsi de ce sujet
+un sujet d'étude intéressant pour les étudiants en informatique.
+choisir ce sujet etait pour nous une evidence car il nous permet de mette 
+en avant nos connaissance en informatique mais egalement celle aquit durant 
+notre licence de mathematiques tout en y apportant de nouvelle conaisance
+et une plus grande ouverture d'esprit grace a ces nobreuse notion de phisique.
+
+\item	Présenter les différentes approches possibles pour la résolution du problème, et en 
+particulier celle choisie : 
+{\color {red} A REDIGER (Saurane)
+
+2 approches sont possibles : ce qu'on a fait, ou alors faire le truc des particules.
+On aurait pu faire la simulation avec le truc des particules pour de meilleurs performances
+et une physique plus proche de la rélité, mais on a commencé par faire la simulation avec une 
+grille. On a discuté vers la fin du projet de passer aux particules mais on a finalement réussi 
+à obtenir un résultat plutot satisfaisant en restant sur la grille (meme si le résultat ne colle 
+donc pas parfaitement à la réalité).
+}
+
+\item Donner le cahier des charges détaillé : 
+......
+
+
+\end{itemize}
+
+\section{Technologies utilisées}
+\emph{1-2 pages}
+\begin{itemize}
+\item Langages et bibliothèques : présenter les langages de programmation et les outils utilisés
+\item Intéret de ces choix : justifier l'intéret et les choix de ces langages 
+\end{itemize}
+
+
+\section{Conception, Modélisation, Implémentation} 
+\emph{8 à 15 pages}
+
+Il se peut que la conception du logiciel (3) et l'analyse algorithmique (4) aient un poids 
+différent dans votre projet. Les points décrits ci-dessous seront ainsi plus ou moins développés 
+en fonction du travail réalisé en accord avec l'encadrant. 
+\begin{enumerate}%pour faire une liste numérotée
+\item Présenter les développements logiciel réalisés dans le cadre du projet : \\
+...
+
+\item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser 
+le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme 
+des classes : \\
+...
+
+\item  Décrire les fonctionnalités de l'interface graphique implémentée (si votre logiciel 
+dispose d'une interface graphique) : \\
+{\color{red}A REDIGER (Saurane)
+
+Notre interface graphique permet à l'utilisateur de vosualiser la simulation de fluides en 2D. 
+L'interface permet de modifier les paramètres graphiques du fluide, tels que la densité, la vitesse, 
+la direction, etc, mais aussi la position du fluide ainsi que le/les obstables présents et le mode 
+de simulation choisi (point ou ligne).
+Possibilité pour l'utilisateur de changer la forme de l'obstable. Par défault un cercle
+est généré, on peut le déplacer avec la souris ou le supprimer avec le bouton "Obstable : ON/OFF", ou 
+en appuyant sur O. On peut aussi changer la forme de cet obstable avec le bouton "Shape : Circle/Heart".
+}
+
+\item Décrire le format des données en entrée ou encore les conventions utilisées pour les entrées 
+de vos programmes. Décrire les procédures de lecture et validation des entrées :\\
+...
+
+\item Statistiques : nombre de modules/composantes/classes/scripts développés. Nombre de lignes 
+de code :\\
+...
+
+
+\end{enumerate}
+
+\section{Algorithmes et Structures de Données}
+\emph{2 à 3 pages}
+\begin{enumerate}%pour faire une liste numérotée
+\item 	Présenter les principales structures de données définies dans le cadre du projet.\\
+      Dans le cadre de notre projet, nous avons défini plusieurs structures de données pour représenter les différentes composantes
+      Ces diefferntes composantes sont ranger dans trois principales classes : 
+      la classe "main", la classe "fluidRender" et la classe "display".
+      Dans la classe "main" on retrouve la bases du code ainsi que l'affichage
+      de celui ci.
+      La classe "fluidRender" contient notament les fonctions de calcul du fluides
+      ainsi que celle delimitant les bort de ceui ci.
+      Enfin la classe "display" contient les fonctions d'affichage du fluides ou encore 
+      des differents obstacles.
+\item 	Présenter les principaux algorithmes implémentés. En illustrer le fonctionnement avec des exemples. 
+Attention : il s'agit ici de choisir 1 ou 2 algorithmes intéressants, et non pas de présenter tous les algorithmes implémentés : \\
+...
+\item 	Évaluer la complexité théorique en temps des algorithmes présentés :\\
+...
+\end{enumerate}
+
+\section{Analyse des résultats }
+\emph{2 à 4 pages}
+L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moins importante dans votre projet comme pour les deux points précédent, cette section devra donc être développée en conséquence.
+
+\begin{enumerate}%pour faire une liste numérotée
+\item 	Illustrer les performances ainsi que l'efficacité du logiciel implémenté à l'aide de graphiques.
+\item Analyser (et comparer, si plusieurs) les performances des solutions implémentées.
+\item	Présenter les bancs d'essais (ou les procédures utilisées pour la génération des données) utilisés pour les tests du logiciel.
+\end{enumerate}
+
+\section{Gestion du Projet}
+\emph{ (1-2 pages)}
+\begin{enumerate}%pour faire une liste numérotée
+\item Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).
+\item	Discuter les changements majeurs effectués en cours de projet :
+Durant le projet, nous avons du faire face a plusieurs changement majeur notamment 
+dans la partie de l'implémentation du projet. En effet, 
+nous avions commencer ce project en implementant une grille ainsi que
+diverse fonction telle que celle afiichant les vecteurs
+mais au moment de l'implementation du fluides naus avaons du tout revoir
+car les premier essaie ne nous permetait pas d'obtenir le resultat escompté. 
+Nous avons ainsi du revoir notre code en implementant la methode de Jos Stam.
+\\
+\\
+Une fois cette methode implementé nous avons decider de nous partager diverse 
+tache afin d'etre des plus efficace. Ainsi, chacun d'etre nous a rencotré des
+difficulter.
+pour les creation d'obstacle, il a fallut dans un premier temps readapter la fonction
+qui delimiter les bord du fluides afin que celui ci prenne en compte l'object
+ce qui a crer de nombreux probleme (la disparition du fluide a travers l'obstacle ou la fuite du fluide a travers les bords).
+ou encore des probleme de dependance entre les diferents obstacles lorsque que nous avons voulu
+ajouter plusieurs obstacles mobile. De plus, l'implementation d'obstacle ayant une autre forme
+que la boule pose de nombreux probleme notamment dans la partie de delimitation du fluides ou encore dans la partie d'affichage.
+Pour resoudre ces probleme il a fallut revoir le code en changement la facon de voir 
+les obstacles mais également en les implementant de maniere differente.
+Ainsi, les obstacle ont ete ranger une une liste afin que le premier obstacle soit reconnaisable
+et ceux ci sont ainsi selectionner a partir du premier de la liste lorsqu'il fuat
+les afficher et c'est le dernier obstacles qui est effacer lorsque l'on desire e retirer un.
+
+\end{enumerate}
+
+\section{Bilan et Conclusions}
+
+	Indiquer les fonctionnalités mises en œuvre par rapport au cahier des charges de départ, les points ouvertes.
+	Les perspectives du projet décrivent ce que l’on pourrait ajouter, modifier, réécrire afin d’améliorer le projet. 
+	
+\begin{thebibliography}{9}
+\bibitem{texbook}
+Donald E. Knuth (1986) \emph{The \TeX{} Book}, Addison-Wesley Professional.
+
+\bibitem{lamport94}
+Leslie Lamport (1994) \emph{\LaTeX: a document preparation system}, Addison
+Wesley, Massachusetts, 2nd ed.
+\end{thebibliography}
+
+
+
+\end{document}
+
