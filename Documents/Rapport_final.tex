@@ -154,7 +154,28 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
 %2.2      GAËLLE
 \item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL)) \\
-    {\color{olive}Dans cette section, nous allons présenter les
+    {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
+    Le diagramme UML (voir figure5) suivant décrit l’organisation du projet.
+    Nous pouvons clairement distinguer les principaux modules :
+    \begin{itemize}
+    \item Données : module qui regroupe les structures représentant la grille, les cellules et les particules (nous 
+    vons également inclu la classe Simulation pour des raisons de clarté);
+    \item Fluid Solver : qui implémente les étapes de la simulation ;
+    \item Zone de rendu : ce module permet l'affichage en OpenGL ;
+    \item Fenêtre de paramètres : interface Imgui  ;
+    \item Interaction utilisateur : ce module traite les actions du clavier ou de la souris ;
+    \item Gestion des obstacles : il a pour but de réunir ce qui touche aux obstacles, la création et le déplacement de ceux-ci.
+    \end{itemize}
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/diag_uml.drawio.png}
+        \caption{Diagramme UML}
+        \label{diagUML}
+    \end{figure}
+    Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.}
+    
+
+{\color{olive}Dans cette section, nous allons présenter les
     différents composants de l'affichage et de l'interface de notre projet.
     L'interface finale repose sur plusieurs éléments, l'affichage d'une grille 
     de chaleur, la visualisation du fluide, un panneau de paramètres et
@@ -215,17 +236,27 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     {\color{olive}L'affichage possède également un suystème de gestion des obstacles.
     L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurss.
     Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer
-    son impact sur la simulation. \\
+    son impact sur la simulation.} \\
+
+    {\color{WildStrawberry} Je suis satine et voici mon paragraphe sur les obstacles !} \\
+
+    \subsection*{Mode point/ligne}
     Deux modes d'injection du fluide sont également possible, un mode \emph{point} 
     où la densité et les forces sont appliqués sur une seule cellule et un mode \emph{ligne} où l'injection 
-    est répartie syr l'ensemble des cellules entre deux points. 
-    \\ Enfin un mode d'affichage thermique permet de visualiser la chaleur.}
+    est répartie syr l'ensemble des cellules entre deux points. \\
+    {\color{olive} Je suis Gaelle et voici mon paragraphe sur le mode point/ligne!} \\
+
+
+
+    \subsection*{Gestion de la chaleur}
+    Enfin un mode d'affichage thermique permet de visualiser la chaleur.
+    {\color{blue} je suis saurane et voici mon paragraphe sur le module chaleur !}
 
     
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol3.png}
-        \caption{Quatrième version : ajout d'un obstacle.}
+        \caption{Quatrième version : interaction chaleur/obstacles.}
         \label{evolution4}
     \end{figure}
 
@@ -234,29 +265,10 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
 
 %2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
-\item Présenter les principaux modules du logiciel développé dans le cadre du projet. Utiliser le langage UML pour la modélisation : donner le diagramme de cas d'utilisation et le diagramme des classes.
+\item LES PARTIES SUIVANTES SONT A DEPLACER AU DESSUS
 
-    {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
-    Le diagramme UML (voir figure5) suivant décrit l’organisation du projet.
-    Nous pouvons clairement distinguer les principaux modules :
-    \begin{itemize}
-    \item Données : module qui regroupe les structures représentant la grille, les cellules et les particules (nous 
-    vons également inclu la classe Simulation pour des raisons de clarté);
-    \item Fluid Solver : qui implémente les étapes de la simulation ;
-    \item Zone de rendu : ce module permet l'affichage en OpenGL ;
-    \item Fenêtre de paramètres : interface Imgui  ;
-    \item Interaction utilisateur : ce module traite les actions du clavier ou de la souris ;
-    \item Gestion des obstacles : il a pour but de réunir ce qui touche aux obstacles, la création et le déplacement de ceux-ci.
-    \end{itemize}
-     \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/diag_uml.drawio.png}
-        \caption{Diagramme UML}
-        \label{diagUML}
-    \end{figure}
-    Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.}
-    \begin{itemize}
-
+    
+\begin{itemize}
 %PARTIE A
 \label{2.3 - Partie A}
     \item PARTIE A : terminé, bien implémenté
