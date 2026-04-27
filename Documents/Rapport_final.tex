@@ -312,6 +312,9 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
         \label{evolution4b}
     \end{figure}
     \item chaleur (saurane)
+    {\color{blue}
+    Implémentation de la chaleur.
+    }
     \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
      de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
     unique, soit le long d’une ligne définie par deux coordonnées dans la grille (soit 4 points).
@@ -437,7 +440,6 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
         \item $D$ est le coefficient de diffusion,
         \item $\nabla^2$ est le Laplacien.
     \end{itemize}
-
     En utilisant la discretisation utiliser par Jos Stam on obtient :
 
     \begin{equation*}
