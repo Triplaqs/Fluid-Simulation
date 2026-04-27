@@ -682,7 +682,13 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
         dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
     }   
 
-\item implémentation de la fenetre pour rentrer les paramètresuu
+\item implémentation de la fenetre pour rentrer les paramètres \\
+{\color{blue}
+Un autre changement majeur a été l'implémentation d'une fenêtre intéractive pour modifier en temps réel
+les paramètres de la simulation. \\ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui limitait les possibilités d'expérimentation, 
+mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas de connaissances en programmation. \\
+
+}
 \end{itemize}
 \end{enumerate}
 
@@ -692,14 +698,23 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 	Les perspectives du projet décrivent ce que l’on pourrait ajouter, modifier, réécrire afin d’améliorer le projet. 
 
 \begin{enumerate}
-    \item Fonctionnalités rélisées qui étaient présentent dans le cahier des charges 
-    \begin{itemize}
-        \item interface graphique avec une fenetre d'affichage du fluide et des curseurs
-        \item simulation du fluide en 2D
-        \item possibilité d'agir sur le fluide avec des curseurs
-        \item possibilité d'ajouter des obstacles
-    \end{itemize}
+    \item Fonctionnalités rélisées qui étaient présentent dans le cahier des charges \\
+    {\color{blue}Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
 
+    \begin{itemize}
+        \item L'interface graphique composée de la fenêtre d'affichage du fluide : \\
+            Cette interface graphique est bien présente dans notre projet et elle correspond presque
+            à l'identique à ce que nous avions imaginé au départ.
+        \item possibilité d'agir sur le fluide avec des curseurs : \\
+            Nous avons en effet la possibilité de modofier les paramêtres du fluide en temps réel,
+            cependant, nous avons finalement opté pour des boutons et des champs de saisie plutôt que des curseurs. Ce choix
+            a été assez naturel car il nous permet d'étre plus précis dans le choix des paramêtres, tels que la densité ou la vitesse. 
+        \item possibilité d'ajouter des obstacles : \\
+            Cette fonctionnalité a fini par être l'une des principales de notre projet, et elle permet de rendre la simulation plus ludique
+            et plus réaliste.
+
+    \end{itemize}
+    }
     \item Fonctionnalités non rélisées qui étaient présentent dans le cahier des charges
     \begin{itemize}
         \item possibilité de controler le fluide à distance via un smartphone (bluetooth)
