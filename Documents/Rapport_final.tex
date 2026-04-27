@@ -243,47 +243,11 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
     \subsection*{Gestion des obstacles }
     {\color{olive}L'affichage possède également un suystème de gestion des obstacles.
-    L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurss.
+    L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurs.
     Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer
     son impact sur la simulation.} \\
 
-    {\color{WildStrawberry} Je suis satine et voici mon paragraphe sur les obstacles !} \\
-
-    \subsection*{Mode point/ligne}
-    Deux modes d'injection du fluide sont également possible, un mode \emph{point} 
-    où la densité et les forces sont appliqués sur une seule cellule et un mode \emph{ligne} où l'injection 
-    est répartie syr l'ensemble des cellules entre deux points. \\
-    {\color{olive} Je suis Gaelle et voici mon paragraphe sur le mode point/ligne!} \\
-
-
-
-    \subsection*{Gestion de la chaleur}
-    Enfin un mode d'affichage thermique permet de visualiser la chaleur.
-    {\color{blue} je suis saurane et voici mon paragraphe sur le module chaleur !}
-
-    
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol3.png}
-        \caption{Quatrième version : interaction chaleur/obstacles.}
-        \label{evolution4}
-    \end{figure}
-
-
-
-
-
-%2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
-\item LES PARTIES SUIVANTES SONT A DEPLACER AU DESSUS
-
-    
-\begin{itemize}
-%PARTIE A
-\label{2.3 - Partie A}
-    \item PARTIE A : terminé, bien implémenté
-
-    \item obstacle (satine)\\
-            {\color{WildStrawberry} 
+                {\color{WildStrawberry} 
                 Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
                 en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. 
                 Nous pouvions également afficher ou non cet obstacle à l'aide d'un \textbf{bouton on/off} qui nous rammener a 
@@ -329,6 +293,8 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
                 perpendiculaire à sa surface. Cette information est essentielle pour simuler correctement 
                 les phénomènes de réflexion et de rebond du fluide. Ainsi, le fluide réagit 
                 de manière cohérente à la forme des obstacles, rendant la simulation realiste et représentatif.
+                Voici ci-dessous une illustration de l'ajout de plusieurs obstacles dans la simulation 
+                (ici deux cercles, deux cœurs et une étoile à 6 branches) :
             } 
     \begin{figure}[H]
         \centering
