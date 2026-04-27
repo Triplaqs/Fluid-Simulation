@@ -15,6 +15,8 @@
 \usepackage{amsmath} 
 \usepackage{pgfgantt}
 
+\newcommand{\axel}[1]{{\color{violet} #1 }}
+
 
 \usepackage{graphicx}  % pour inclure des images
 
@@ -58,7 +60,7 @@ Université de Montpellier.}
 \item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
     \begin{itemize}
         \item projet en licence informatique L3
-        \item méthode de Jos Stam "Stable FLuids"
+        \item méthode de Jos Stam "Stable Fluids"
         \item simulation d'un fluide en temps réel
         \item intéraction utilisateur.\\
             {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
@@ -138,7 +140,6 @@ Université de Montpellier.}
     \item Imgui (facile d'utilisation)
 \end{itemize}
 
-\newcommand{\axel}[1]{{\color{violet} #1 }}
 
 %============================== AXEL 1 =======================================
 \axel{Pour notre projet, nous hésitions entre du C++ et du Python ; nous avons opté pour du C++ pour un typage plus fort et une meilleure gestion de ce qu'il se passe en mémoire et en interne plus généralement.\\
@@ -260,6 +261,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 \label{2.3 - Partie A}
     \item PARTIE A : terminé, bien implémenté
     \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
+%============================== AXEL 2 =======================================
     \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
     
     Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
@@ -348,18 +350,23 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     \item calcul d'une simulation, le fluide, physique 
 %PARTIE B
     \item PARTIE B :\\
+    
+\label{2.3 - Partie B}
 \end{itemize}
 
 \axel{Bluetooth, Semi-Lagrangien, Multi-threading\\}
 
+%============================== AXEL 3 =======================================
 \axel{Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas poussé vers l’opérationnalité totale. Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées, malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.\\
 
 Nous avons aussi envisagé, pour enrichir notre simulation, d'implémenter une simulation parrallèle de Semi-Lagrangien. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est grossièrement un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille).\\
 
-Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL, mais nous n'avons pu faire aboutir cette option par faute de temps.\\}
+Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.\\}
+
 %2.4      AXEL
 \item Décrire les fonctionnalités de l'interface graphique implémentée (champs de simulation, bouton, affichage de l'obstacle).
 
+%============================== AXEL 4 =======================================
 \axel{Notre panneau d'interaction avec la simulation permet de mettre la main sur un panel de parties arbitraires de notre simulation. Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en personnalisation. De ce fait, nous pouvons (entre autres) modifier la densité du fluide, sa force, sa direction, la disposition du/des points de départs sa couleur aussi. Nous avons aussi des obstacles que nous pouvons ajouter, on peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic avec déplacement de la souris.\\}
 \begin{itemize}
     \item description des boutons et des interactions possibles
@@ -372,6 +379,13 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
     \item grille composée de cellules
     \item cellules contiennent les paramètres de la simulation (densité, chaleur, vitesse)
     \item expliquer ce que représentent ces paramètres
+    
+%============================== AXEL 5 =======================================
+\axel{Notre encodage des données se fait majoritairement via des flottants. Le fluide se décompose en plusieurs données physiques (densité,
+ pression, viscosité, \emph{etc...}) que l'on encode via des flottants et que l'on stock dans une structure Cell (cellule) dont on forme un
+ vecteur d'ensemble dans une structure Grid (grille). Dans ce genre de structure on implémente des attributs-méthodes de tailles en integers. On perfectionne notre diversité de simulation avec des conditions Booléenne pour savoir si oui ou non, on affiche un obstacle, si oui ou non on a plusieurs points de fuites, \emph{etc ...}\\
+ 
+  }
 
 %2.6     SAURANE
 \end{itemize}
@@ -717,12 +731,17 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 \end{itemize}
 
 %5.2    SAURANE - SATINE - AXEL
-\item	Discuter les changements majeurs effectués en cours de projet. 
+\item	Discuter les changements majeurs effectués en cours de projet. \\
 \begin{itemize}
-\item passage de la grille de départ à la nouvelle grille (pourquoi?)
+\item passage de la grille de départ à la nouvelle grille (pourquoi?)\\
+
+%============================== AXEL 6 =======================================
+
+\axel{ Nous avons au cours de notre projet du réadapter notre structure, en effet, nous avions préparé une grille d'essai pour tester 		notre affichage, mais lorsqu'il a fallu confronter notre prototype aux besoins du papier \emph{Stable Fluids} de Jos Stam, nous nous sommes rendu compte de besoin supplémentaires. Certains algorithmes du papier allaient avoir besoin d'échanger un certain paramètre de toutes les cellules  et notre structure ne nous le permettaient pas. Nous avons donc revu l'organisation. Nouvelles méthodes, nouveaux attributs, \emph{Setters}/  \emph{Getters} plus efficace, \emph{etc...} }\\
+
 \item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce
     que ça a impacté les autres modules ? pourquoi? comment ?\\
-    {\color{WildStrawberry} 
+{\color{WildStrawberry} 
       Pour la creation d'obstacle, il a fallut dans un premier temps réadapter la fonction
         qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles,
         ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle
@@ -743,9 +762,9 @@ L'analyse expérimentale sera faites dans cette section.   Elle sera plus ou moi
 
         Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et leur gestion
         dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
-    }   
+    }   \\
 
-\item implémentation de la fenetre pour rentrer les paramètres \\
+\item implémentation de la fenêtre pour rentrer les paramètres \\
 {\color{blue}
 Un autre changement majeur a été l'implémentation d'une fenêtre intéractive pour modifier en temps réel
 les paramètres de la simulation. \\ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui limitait les possibilités d'expérimentation, 
@@ -788,12 +807,23 @@ mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas d
     \end{itemize}
 
 %6.3   AXEL
-\item Perspecvtives du projet pour la suite : ce qu'on aurait pu implémenter avec plus de temps.
+\item Perspectives du projet pour la suite : ce qu'on aurait pu implémenter avec plus de temps.
 \begin{itemize}
-    \item lagrangien
+    \item Semi - lagrangien
     \item autres fonctionnalités possibles avec les obstacles, etc
 \end{itemize}
 \end{enumerate}
+
+%============================== AXEL 7 =======================================
+
+\axel{Comme mentionné dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}, les perspectives d'évolutions pour la suite du projet sont ces choses auxquelles nous avons songé, que nous avons essayé d'implémenter mais qui nous n'avons pas su faire aboutir. Parmi elles on peut compter :\\
+
+$\bullet$ \textbf{\underline{Une meilleure interactivité :}} Nous reprendrions l'application et le code de transmission de données et de gestion des ports afin de rendre cette fonctionnalité opérationnelle.\\
+
+$\bullet$ \textbf{\underline{Du Semi-Lagrangien :}} Nous achèverions notre implémentation du Semi-Lagrangien en intégrant la structure des particules à la mise à jour de la simulation et à l'affichage en Shader. On choisirait soit un bouton de choix entre l'Eulerien et le Semi-Lagrangien soit de superposer les deux, voir de les faire interagir, ce qui demanderait de faire des choix d'affichage en Shader et/ou de la gestion de contact.\\
+
+$\bullet$ \textbf{\underline{Une meilleure résolution :}} Nous finirions d'implémenter et d'utiliser OpenMP pour paralléliser nos calculs de mise à jour de simulation afin de se permettre d'en faire plus. En réduisant le temps de calcul, on pourrait se permettre d'augmenter le nombre de cellule tout en gardant le même nombre d'images calculées par seconde, nous permettant d'ajouter une meilleure définition à la simulation (étant actuellement de 100 cellules par 100 cellules).\\
+}
 
 \begin{thebibliography}{9}
 \bibitem{texbook}
