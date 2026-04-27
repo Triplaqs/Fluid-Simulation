@@ -313,7 +313,16 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     \end{figure}
     \item chaleur (saurane)
     {\color{blue}
-    Implémentation de la chaleur.
+    Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. 
+    Ce paramètre est représenté par une valeur numérique qui peut être positive (indiquant une source chaude) ou négative (indiquant une source froide). \\
+    Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui permet à l'utilisateur de choisir si le fluide injecté est chaud ou froid.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/bicolor.png}
+        \caption{Affichage chaud/froid}
+        \label{chaleur1}
+    \end{figure}
+    Sur cette image, on peut voir l'état d
     }
     \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
      de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
