@@ -1,6 +1,12 @@
 # Dossiers de build
 /build/
 
+# Dossiers de Intelij
+/.idea/
+
+# Fichiers de configuration
+imgui.ini
+
 # Fichiers temporaires
 *.o
 *.obj
