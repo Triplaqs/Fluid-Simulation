@@ -336,6 +336,40 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
         \caption{Ajout de plusieurs obstacles.}
         \label{evolution4b}
     \end{figure}
+
+    \subsection*{Mode point/ligne}
+    Deux modes d'injection du fluide sont également possible, un mode \emph{point} 
+    où la densité et les forces sont appliqués sur une seule cellule et un mode \emph{ligne} où l'injection 
+    est répartie syr l'ensemble des cellules entre deux points. \\
+    {\color{olive} Je suis Gaelle et voici mon paragraphe sur le mode point/ligne!} \\
+
+
+
+    \subsection*{Gestion de la chaleur}
+    Enfin un mode d'affichage thermique permet de visualiser la chaleur.
+    {\color{blue} je suis saurane et voici mon paragraphe sur le module chaleur !}
+
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol3.png}
+        \caption{Quatrième version : interaction chaleur/obstacles.}
+        \label{evolution4}
+    \end{figure}
+
+%2.3    SAURANE  -  GAËLLE  -  SATINE  -  AXEL  
+\item LES PARTIES SUIVANTES SONT A DEPLACER AU DESSUS
+
+    
+\begin{itemize}
+%PARTIE A
+\label{2.3 - Partie A}
+    \item PARTIE A : terminé, bien implémenté
+    \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
+%============================== AXEL 2 =======================================
+    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
+    
+    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
     \item chaleur (saurane)
     {\color{blue}
     Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. 
