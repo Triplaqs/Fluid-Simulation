@@ -236,11 +236,10 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
     \subsection*{Gestion des obstacles }
     {\color{olive}L'affichage possède également un suystème de gestion des obstacles.
-    L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurss.
+    L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurs.
     Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer
     son impact sur la simulation.} \\
 
-    {\color{WildStrawberry} Je suis satine et voici mon paragraphe sur les obstacles !} \\
                 {\color{WildStrawberry} 
                 Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
                 en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. 
@@ -287,6 +286,8 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
                 perpendiculaire à sa surface. Cette information est essentielle pour simuler correctement 
                 les phénomènes de réflexion et de rebond du fluide. Ainsi, le fluide réagit 
                 de manière cohérente à la forme des obstacles, rendant la simulation realiste et représentatif.
+                Voici ci-dessous une illustration de l'ajout de plusieurs obstacles dans la simulation 
+                (ici deux cercles, deux cœurs et une étoile à 6 branches) :
             } 
     \begin{figure}[H]
         \centering
