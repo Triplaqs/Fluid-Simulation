@@ -90,6 +90,11 @@ std::vector<float> dens_red_prev;
 std::vector<float> dens_blue;
 std::vector<float> dens_blue_prev;
 
+
+//pour faire des mesures de temps d'algos
+extern bool mesure = true;
+
+
 Grid cells;      // vecteur des cellules (tableau)
 Grid cellsNext;  // next state
 

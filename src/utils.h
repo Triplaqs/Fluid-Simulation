@@ -77,6 +77,8 @@ extern std::vector<float> dens, dens_prev;
 extern std::vector<float> dens_red, dens_red_prev;
 extern std::vector<float> dens_blue, dens_blue_prev;
 
+//pour faire des mesures de temps d'algos
+extern bool mesure;
 
 
 //définition de la macro
