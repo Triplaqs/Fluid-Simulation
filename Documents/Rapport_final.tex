@@ -57,7 +57,7 @@ Université de Montpellier.}
 \begin{itemize}%pour faire une liste à puces
 
 %1.1		SATINE
-\item Présenter le problème étudié et le contexte dans lequel le projet se positionne.
+\item Présenter le problème étudier et le contexte dans lequel le projet se positionne.
             {\color{WildStrawberry} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3 
                 de la faculté des sciences de Montpellier.\\
                 L'objectif de ce projet est de simuler un fluide interactif en 2D en temps reel.
@@ -144,7 +144,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 
 %2.2      GAËLLE
 \item Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL)) \\
-    {\color{green} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
+    {\color{olive} Dans cette partie nous allons nous intérresser à l'architecture de notre projet.\\
     Le diagramme UML (voir figure5) suivant décrit l’organisation du projet.
     Nous pouvons clairement distinguer les principaux modules :
     \begin{itemize}
@@ -158,7 +158,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     \end{itemize}
      \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{../PJ_proj/diag_uml.drawio.png}
+        \includegraphics[width=0.9\textwidth]{../PJ_proj/diag_uml.drawio.png}
         \caption{Diagramme UML}
         \label{diagUML}
     \end{figure}
@@ -294,10 +294,18 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     \end{figure}
 
     \subsection*{Mode point/ligne}
-    Deux modes d'injection du fluide sont également possible, un mode \emph{point} 
-    où la densité et les forces sont appliqués sur une seule cellule et un mode \emph{ligne} où l'injection 
-    est répartie syr l'ensemble des cellules entre deux points. \\
-    {\color{olive} Je suis Gaelle et voici mon paragraphe sur le mode point/ligne!} \\
+    {\color{olive} Dans l’interface il y a un paramètre permettant
+     de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
+    unique, soit le long d’une ligne définie par deux coordonnées dans la grille (soit 4 points).
+    \\
+    En mode point, la densité et les forces sont appliquées uniquement à la cellule 
+    correspondant à la position sélectionnée.
+    \\ 
+    En mode ligne : nous déterminons simplement le nombre d’étapes nécessaires pour relier les deux 
+    points $(i_0,j_0),(i_1,j_1)$ en utilisant que le nombre d'étapes nécessaire est : \\
+    $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simplement toutes les cellules situées 
+    entre les deux positions sélectionnées, en suivant le segment qui les relie. 
+    Chaque cellule rencontrée reçoit la densité et la force, ce qui permet de créer une source linéaire.}
 
 
 
@@ -350,19 +358,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 \begin{itemize}
 %PARTIE A
 \label{2.3 - Partie A}
-    
-    \item Point ou ligne : {\color{green}Nous avons ajouté dans l’interface un paramètre permettant
-     de choisir la forme de la source de fluide. L’utilisateur peut injecter le fluide soit en un point
-    unique, soit le long d’une ligne définie par deux coordonnées dans la grille (soit 4 points).
-    \\
-    En mode point, la densité et les forces sont appliquées uniquement à la cellule 
-    correspondant à la position sélectionnée.
-    \\ 
-    En mode ligne : nous déterminons simplement le nombre d’étapes nécessaires pour relier les deux 
-    points $(i_0,j_0),(i_1,j_1)$ en utilisant que le nombre d'étapes nécessaire est : \\
-    $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simplement toutes les cellules situées 
-    entre les deux positions sélectionnées, en suivant le segment qui les relie. 
-    Chaque cellule rencontrée reçoit la densité et la force, ce qui permet de créer une source linéaire.}
+
     \item calcul d'une simulation, le fluide, physique 
 %PARTIE B
     \item PARTIE B :\\
@@ -450,6 +446,84 @@ Le projet est organisé en plusieurs modules, tels que le module de gestion des 
 
     }
     \subsection*{L'Advection}
+
+{\color{olive}L’advection est un processus physique qui décrit le transport d’une quantité 
+(densité, chaleur ou vitesse) par le fluide.L’advection déplace l’information en suivant le mouvement du 
+fluide. Dans notre simulation, nous utilisons l’approche \emph{semi-lagrangienne} introduite.
+
+L’équation de l'advection est  :
+
+
+\[
+\frac{\partial x}{\partial t} + \mathbf{u} \cdot \nabla x = 0,
+\]
+
+
+où $x$ est la quantité transportée et $\mathbf{u} = (u,v)$ le champ de vitesse.  
+L’idée est de déterminer, pour chaque cellule $(i,j)$, la position d’où provient le fluide 
+arrivé à cet endroit au temps $t + \Delta t$. On remonte donc le long du champ de vitesse :
+
+
+\[
+x' = i - \Delta t \cdot N \cdot u(i,j), \qquad
+y' = j - \Delta t \cdot N \cdot v(i,j).
+\]
+
+
+
+Comme $(x',y')$ n’est généralement pas un point entier de la grille, on utilise une 
+\emph{interpolation bilinéaire} entre les quatre cellules voisines pour estimer la valeur 
+transportée. 
+
+\subsubsection*{Pseudo-code de l'advection}
+
+\begin{verbatim}
+fonction ADVECT(N, b, d, d0, u, v, dt)
+
+    dt0 ← dt × N
+
+    pour i de 1 à N faire
+        pour j de 1 à N faire
+
+            # 1. Remonter le long du champ de vitesse
+            x ← i - dt0 × u[i,j]
+            y ← j - dt0 × v[i,j]
+
+            # 2. Contraindre la position dans la grille
+            si x < 0.5 alors x ← 0.5
+            si x > N + 0.5 alors x ← N + 0.5
+            si y < 0.5 alors y ← 0.5
+            si y > N + 0.5 alors y ← N + 0.5
+
+            i0 ← floor(x)
+            i1 ← i0 + 1
+            j0 ← floor(y)
+            j1 ← j0 + 1
+
+            # 3. Coefficients d’interpolation
+            s1 ← x - i0
+            s0 ← 1 - s1
+            t1 ← y - j0
+            t0 ← 1 - t1
+
+            # 4. Interpolation bilinéaire
+            d[i,j] ←
+                s0 × ( t0 × d0[i0,j0] + t1 × d0[i0,j1] ) +
+                s1 × ( t0 × d0[i1,j0] + t1 × d0[i1,j1] )
+
+        fin pour
+    fin pour
+
+    appliquer_conditions_aux_limites(d)
+
+fin fonction
+\end{verbatim}
+
+L’advection semi-lagrangienne peut être vue comme un déplacement de matière : 
+au lieu de pousser la matière vers l’avant, on cherche d’où elle provient et on la pousse dans la direction continue. 
+
+Visuellement, l’advection est responsable du mouvement du fluide.}
+
     \subsection*{La Diffusion}
     {\color{WildStrawberry}
     Comme l'advection, la diffusion est un processus physique qui décrit la propagation d'une substance.
