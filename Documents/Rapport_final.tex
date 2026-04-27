@@ -202,7 +202,14 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
     \label{figure1}
     \end{figure}
 
-    \axel {Je suis axel et voici mon paragraphe sur l'affichage de la grille de chaleur ! }\\
+    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le 
+    principe d'une grille dont chaque cellule possède ses paramètres locaux. 
+    Nous avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque 
+    paramètre comme attribu.\\
+    
+    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie 
+    à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure 
+    unique de référence accessible depuis n'importe quel module du projet.}\\
 
     \subsection*{Simulation du fluide (cf \hyperref[figure2]{figure2})}
     {\color{olive}La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time
@@ -274,11 +281,7 @@ Une fois en C++ sur OpenGL, nous avons établi des prémices d'interactivité vi
 %PARTIE A
 \label{2.3 - Partie A}
     \item PARTIE A : terminé, bien implémenté
-    \item grille de départ (axel) (description des modules dans l'état actuel/final du projet)
-%============================== AXEL 2 =======================================
-    \axel{Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Noyus avons donc implémenté notre grille avec un simple vecteur C++ de structure Cell avec chaque paramètre comme attribu.\\
-    
-    Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}\\
+
     \item obstacle (satine)\\
             {\color{WildStrawberry} 
                 Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, 
