@@ -38,6 +38,7 @@ Projet de programmation 2}
 %\begin{center}               % pour centrer
 % \includegraphics[scale=1]{}   % insertion d'une image
 %\end{center}
+<<<<<<< HEAD
 \begin{abstract}     % Résumé du travail
 Ce projet de simulation de fluides en 2D consiste à rendre de manière interactive et 
 en temps réel l'évolution d'un fluide dans une grille. Nous avons implémenté la 
@@ -46,24 +47,24 @@ avons développé une interface graphique pour visualiser et interagir avec la
 simulation. L'utilisateur peut ajouter des sources de fluide, créer des obstacles, et 
 modifier les paramètres du fluide en temps réel. 
 \end{abstract}
+=======
+>>>>>>> 4ccff5a (modif selon conseils de Marc)
 \newpage
 %\dominitoc  % initializer les minitoc
 \tableofcontents
 \newpage
 
 \section{Présentation du Sujet} % Commencer une section, * permet de ne pas numéroté l'introduction
-\remove{\emph{1-2 pages}}
 %Présentation du Sujet (1-2 pages)
 % \begin{itemize}%pour faire une liste à puces
 %1.1		SATINE
-\remove{Présenter le problème étudier et le contexte dans lequel le projet se positionne.}
 
 \satine{
     Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique L3  de la faculté des sciences de Montpellier. L'objectif de ce projet est de simuler un fluide de manière interactive en 2D en temps réel. Pour cela, nous avons choisi d'implémenter la méthode de Jos Stam "Stable Fluids" \cite{Stam99}, qui permet de simuler un fluide de manière stable et rapide. Nous avons également implémenté une interface graphique pour  visualiser en temps réel l'évolution du fluide et pour intéragir avec celui-ci. Cette intéraction est possible grâce à la création  d'obstacles clicables et la possibilité de modifier durant la simulation les différents paramètres du fluide.
 }
 
 %1.2		SAURANE
-\remove{Motiver l'intérêt du problème étudié par rapport à votre parcours d'études et au monde de l'informatique.}
+
 
 \sauranne {
     \replace{Nous avons choisi ce projet car il nous a paru être le plus adapté à nos compétences, étant donné notre parcours en double licence mathématiques et informatique}{Étant donné notre parcours en double licence mathématique et informatique, ce projet est bien adapté à nos compétences}. En effet, nous avons \add{pu} rapidement comprendre les concepts de base de la simulation, ce qui nous a permis d'implémenter la méthode de Jos Stam "Stable Fluids" \cite{Stam99}.
@@ -72,7 +73,6 @@ modifier les paramètres du fluide en temps réel.
 }
 
 %1.3	    SAURANE
-\remove{Présenter les différentes approches possibles pour la résolution du problème, et en particulier celle choisie.}
 
 \sauranne {
     \replace{Pour implémenter la simulation de fluides en 2D, deux méthodes sont possibles}{Principalement trois familles de méthodes existent pour implémenter une simulation de fluide} : les méthodes eulériennes, les méthodes lagrangiennes \add{, et les méthodes semi-lagrangiennes, qui sont des hybrides des deux précédentes}. Les méthodes eulériennes consistent à représenter le fluide dans une grille \remove{fixe}, où l'on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc. \add{Chaque cellule represente une portion du fluide, encodant les propriétés du fluide dans une région en un instant $t$.}
@@ -86,14 +86,13 @@ Les méthodes lagrangiennes consistent, quant à elles, à représenter le fluid
 }
 
 %1.4           GAËLLE
-\remove{Donner le cahier des charges détaillé}
 
 \gaelle {
-    Le cahier des charges du projet, réalisé en décembre 2025, fixait le cadre de développement, et définissait les objectifs, les contraintes et les fonctionnalités (minimales) à implémenter. Vous trouverez à la suite une synthése de celui-ci.
+    Le cahier des charges du projet, réalisé en décembre 2025, fixait le cadre de développement, et définissait les objectifs, les contraintes et les fonctionnalités (minimales) à implémenter. Vous trouverez à la suite une synthèse de celui-ci.
 \begin{itemize}
         \item Le projet consistait à développer un rendu interactif permettant la visualisation et la manipulation en temps réel d'une simulation de fluide en 2D. Comme précisé lors de la réunion avec notre responsable de projet, la simulation devait être interactive et comporter une interface graphique. Nous avions fait le choix de développer ce projet en C++ avec un affichage en OpenGL.
         \item L'objectif principal était d'obtenir une zone de rendu avec, d'un coté la simulation, et de l'autre une fenêtre de gestion des paramètres. Lors de la première réunion nous avions également déterminé le périmètre du projet. Nous avions décidé que la simulation reposerait sur une approche Eulerienne du fluide dans une grille 2D de taille $100 \times 100$.
-        \item Nous avions également pensé aux fonctionnalités que nous pourrions rajouter comme la connexion bluetooth à un téléphone permettant de gérer la simulation ou encore l'ajout de musique en fonction des forces du fluide. Enfin, nous avions imaginé une organisation modulaire (calcul du fluide, interactions, affichage), permettant une répartition optimale des tâches \add{et un découpage plus propre de notre code}. 
+        \item Nous avions également pensé aux fonctionnalités que nous pourrions rajouter comme la connexion bluetooth à un téléphone permettant de gérer la simulation ou encore l'ajout de musique en fonction des forces du fluide. Enfin, nous avions imaginé une organisation modulaire (calcul du fluide, interactions, affichage), permettant une répartition optimale des tâches et un découpage plus propre de notre code. 
 \end{itemize}
 }
 % \end{itemize}
@@ -101,8 +100,7 @@ Les méthodes lagrangiennes consistent, quant à elles, à représenter le fluid
 
 
 
-\section{Développements Logiciel : Conception, Modélisation, Implémentation}\label{sec:developpements}
-\remove{\emph{8 à 15 pages}}
+\section{Développements Logiciel : Conception, Modélisation, Implémentation}
 % \begin{enumerate} %pour faire une liste numérotée
 %2.1         AXEL
 \subsection{Technologies utilisées}
@@ -125,12 +123,11 @@ Les méthodes lagrangiennes consistent, quant à elles, à représenter le fluid
 
 %=============================================================================
 %2.2      GAËLLE
-\remove{Présenter les développements logiciel réalisés dans le cadre du projet. (fenetre, zone de rendu et panneau de parametres, et zone de rendu (shader, openGL))}
 \subsection{Développements logiciel réalisés}
 \gaelle {
     Dans cette partie nous allons nous intéresser à l'architecture de notre projet.
     
-Le diagramme UML (\replace{voir figure5}{Figure~\ref{diagUML}}) suivant décrit \add{brièvement} l'organisation du projet \add{que nous décrirons en détails par la suite}. Nous pouvons clairement distinguer les principaux modules :
+Le diagramme UML ({Figure~\ref{diagUML}}) suivant décrit brièvement l'organisation du projet que nous décrirons en détails par la suite. Nous pouvons clairement distinguer les principaux modules :
 \begin{itemize}
         \item Données : module qui regroupe les structures représentant la grille, les cellules et les particules (nous
     vons également inclu la classe Simulation pour des raisons de clarté);
@@ -144,11 +141,12 @@ Le diagramme UML (\replace{voir figure5}{Figure~\ref{diagUML}}) suivant décrit 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{../PJ_proj/diag_uml.drawio.png}
-    \caption{Diagramme UML \add{de notre projet. Les flèches indiquent ..., les pointillés décrivent ... }}
+    \caption{Diagramme UML de notre projet}
     \label{diagUML}
 \end{figure}
 
-Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation.
+Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation, les flèches indiquent des agrégations si le losange est vide,
+ou des compositions si le losange est plein, les pointillés décrivent des dépendances.
 }
 
 \gaelle {
@@ -158,18 +156,42 @@ Ce diagramme permet de visualiser les dépendances entre modules et la structure
 \subsubsection{Affichage d'une grille de chaleur}
 \comment{}{Les références aux figures doivent être dans le texte, pas dans les titres.}
 \gaelle {
-    Nous avons mis en place un affichage sous forme de grille de chaleur \add{(Figure~\ref{figure1})}. Pour mettre en place cet affichage, chaque cellule de la grille est associée à une valeur (dans \replace{notre}{ce} cas, cette valeur représente une température). Nous utlisons différentes teintes de rouge afin de représenter visuellement les variations de température : une cellule très chaude apparaît plus rouge, tandis qu'une cellule voisine un peu moins chaude aura une teinte moins rouge. Cet affichage permet de visualiser \replace{(de manière plutôt intuitive)}{intuitivement} l'évolution d'un champ scalaire.
+    Nous avons mis en place un affichage sous forme de grille de chaleur \add{(Figure~\ref{figure1})}. Pour mettre 
+    en place cet affichage, chaque cellule de la grille est associée à une valeur, dans ce cas, 
+    cette valeur représente une température. Nous utilisons différentes teintes de rouge afin de
+     représenter visuellement les variations de température : 
+    une cellule très chaude apparaît plus rouge, tandis qu'une cellule voisine un peu moins chaude aura une teinte 
+    moins rouge. Cet affichage permet de visualiser intuitivement l'évolution d'un champ scalaire. 
+
+    L’évolution de la chaleur sur la grille suit ce principe : à chaque itération, la 
+    chaleur se propage progressivement vers les cellules voisines.
+    Concrètement, une zone chaude a tendance à s’étaler autour d’elle.
+    les taches rouges se déplacent, s’étirent et se mélangent au fil du temps, ce qui 
+    permet de visualiser facilement comment la température se diffuse dans le fluide.
 
     \comment{}{Évitez le texte entre parenthèse. Les parenthèses servent à décrire quelque chose qui n'est pas si important dans un texte. Par exemple "(reset, update, etc.)" qu'on retrouve 2 paragraphes plus bas.}
 
     \comment{}{Comment la chaleur évolue ? "Diffusion", "mélange avec ses voisins", etc.}
 }
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../PJ_proj/step1_grille_chal.png}
+    \caption{Affichage d'une grille de chaleur. Le rouge représente les points les plus chauds et le bleu les plus froids.} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \label{figure1_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../PJ_proj/step2.png}
+    \caption{Affichage d'une grille de chaleur évolution 2 au cours du temps.} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \label{figure1}
+\end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/carte_chaleur.png}
-    \caption{Affichage d'une grille de chaleur. \add{Le rouge représente ... le bleu représente ... La température dans la région centrale s'uniformise plus vite que les bords ...} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}}
-    \label{figure1}
+    \caption{Affichage d'une grille de chaleur, évolution 3 au cours du temps} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \label{figure1_3}
 \end{figure}
 
 \axel{
@@ -318,8 +340,14 @@ La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simu
 \subsubsection{Mode point/ligne}
 \comment{}{Section "Interface Utilisateur" ?}
 \gaelle {
-    \replace{Dans l'interface il y a un paramètre permettant de choisir la forme de la source de fluide}{Le choix est donné à l'utilisateur de la forme de la source du fluide}. L'utilisateur peut injecter le fluide \add{provenant} soit en un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille \remove{(soit 4 points)}.
+    Le choix est donné à l'utilisateur de la forme de la source du fluide. L'utilisateur peut injecter le fluide provenant soit d'un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille soit quatre scalaires (voir figure ...).
 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/segment.png}
+        \caption{Injection du fluide selon un segment}
+        \label{ligne}
+    \end{figure}
     \comment{}{4 scalaires, non ? Ajouter un screenshot pour être plus clair.}
 
 En mode point, la densité et les forces sont appliquées uniquement à la cellule correspondant à la position sélectionnée.
@@ -450,7 +478,6 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
 % \end{enumerate}
 
 \section{Algorithmes et Structures de Données}
-\remove{\emph{2 à 3 pages}}
 % \begin{enumerate}%pour faire une liste numérotée
 %3.1        GAËLLE  -  SATINE  -  SAURANE
 \subsection{Principaux algorithmes utilisés}
@@ -485,20 +512,20 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
 
 \subsubsection{Advection}
 \gaelle {
-L'advection est un processus physique qui décrit le transport d'une quantité (densité, chaleur ou vitesse) par le fluide.L'advection déplace l'information en suivant le mouvement du fluide. Dans \replace{notre simulation}{le travail de Jos Stam \cite{Stam99}}, nous utilisons l'approche \emph{semi-lagrangienne} introduite. L'équation de l'advection est  :
+L'advection est un processus physique qui décrit le transport d'une quantité (densité, chaleur ou vitesse) par 
+le fluide.L'advection déplace l'information en suivant le mouvement du fluide. Selon le travail de Jos Stam 
+\cite{Stam99}, nous utilisons l'approche \emph{semi-lagrangienne} introduite. L'équation de l'advection est  :
 \[
     \frac{\partial x}{\partial t} + \mathbf{u} \cdot \nabla x = 0,
 \]
-où $x$ est la quantité transportée et $\mathbf{u} = (u,v)$ le champ de vitesse. L'idée est de déterminer, pour chaque cellule $(i,j)$, la position d'où provient le fluide arrivé à cet endroit au temps $t + \Delta t$. On remonte donc le long du champ de vitesse :
-\[
-    x' = i - \Delta t \cdot N \cdot u(i,j), \qquad y' = j - \Delta t \cdot N \cdot v(i,j).
-\]
+où $x$ est la quantité transportée et $\mathbf{u} = (u,v)$ le champ de vitesse. 
+L'idée est de déterminer, pour chaque cellule $(i,j)$, la position d'où provient le fluide arrivé à cet
+ endroit au temps $t + \Delta t$. On remonte donc le long du champ de vitesse.
 \comment{}{C'est quoi "N" ? Le nombre de lignes/colonnes. Pourquoi il est inclut ici ? Si c'est pas facile à expliquer, donc je conseille de le retirer des formules. (elles restent correctes, promis)}
 
 Comme $(x',y')$ n'est généralement pas un point entier de la grille, on utilise une \emph{interpolation bilinéaire} entre les quatre cellules voisines pour estimer la valeur transportée.
 }
 
-\remove{\paragraph{Pseudo-code de l'advection}}
 \begin{verbatim}
     fonction ADVECT(N, b, d, d0, u, v, dt)
 
@@ -540,6 +567,22 @@ Comme $(x',y')$ n'est généralement pas un point entier de la grille, on utilis
 
     fin fonction
 \end{verbatim}
+
+\gaelle{L’algorithme d’advection prend en entrée plusieurs paramètres :
+
+\begin{itemize}
+    \item $N$ : la taille de la grille (la simulation est définie sur une grille $N \times N$) ;
+    \item $b$ : un paramètre indiquant le type de bord à appliquer (bord droit, gauche, haut, bas);
+    \item $d$ : le tableau dans lequel on écrit la nouvelle valeur advectée ;
+    \item $d_0$ : le tableau contenant les valeurs de la quantité au pas de temps précédent ;
+    \item $u$ et $v$ : les composantes horizontale et verticale du champ de vitesse ;
+    \item $dt$ : le pas de temps utilisé pour remonter le long du champ de vitesse.
+\end{itemize}
+
+Ces paramètres permettent à l’algorithme de déterminer d’où provient la quantité transportée, 
+de calculer la nouvelle valeur par interpolation, puis d’appliquer les conditions de bord. En effet,
+si la matière arrive sur le bord droit, le mouvement du fluide n'est pas le même que le bord droit, gauche ou haut.}
+
 
 \comment{}{Pareil, décris les entrées et ce qu'elles représentent.}
 
@@ -702,10 +745,15 @@ pour chaque cellule de la grille, on corrige la vitesse en soustrayant le gradie
 \subsection{Complexité théorique en temps des algorithmes présentés}
 
 \sauranne {
-    Les algorithmes d'advection, de diffusion et de projection nous permettent de définir l'algorithme \texttt{vel\_step}. Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent :
+    Les algorithmes d'advection, de diffusion et de projection nous permettent de définir l'algorithme 
+    \texttt{vel\_step}. Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent :
 
+    \gaelle{Dans cette section, nous notons $N$ le nombre de cellules totales de la grille.}
 \paragraph{Advection.}
-L'algorithme d'advection met à jour la valeur de la densité ou la vitesse pour chaque cellule de la grille. L'algorithme parcourt donc toute la grille de taille $N \times N$ avec une double boucle \emph{for}, ce qui représente $N^2$ cellules.
+L'algorithme d'advection met à jour la valeur de la densité ou la vitesse pour chaque 
+cellule de la grille. L'algorithme parcourt donc l'ensemble des
+$N$ cellules de la grille à l'aide d'une 
+boucle \emph{for}.
 
 Pour chaque cellule, l'algorithme
 \begin{itemize}
@@ -713,45 +761,47 @@ Pour chaque cellule, l'algorithme
     \item effectue une interpolation
     \item met à jour la valeur de la desnité ou vitesse
 \end{itemize}
-Toutes ces opérations sont réalisées en temps constant ($\mathcal{O}(1)$) pour chaque cellule. Alors avec la double boucle, on obtient un coût total de $N^2 \times \mathcal{O}(1) = \mathcal{O}(N^2)$.
+Toutes ces opérations sont réalisées en temps constant 
+($\mathcal{O}(1)$) pour chaque cellule. 
+Comme l'algorithme parcourt les $N$ cellules de la grille, 
+le coût total est $\mathcal{O}(N)$.
 
-A la fin de l'algorithme, il y a un appel à la fonction \emph{set\_bnd} qui a une complexité $\mathcal{O}(N^2)$.
+A la fin de l'algorithme, il y a un appel à la fonction
+\emph{set\_bnd} qui parcourt elle
+aussi les $N$ cellules et a une complexité
+  $\mathcal{O}(N)$.
 
 La complexité finale de l'algorithme \emph{advection} est donc : 
 
-$$\mathcal{O}(N^2) + \mathcal{O}(N^2) = \mathcal{O}(N^2)$$.
+$$\mathcal{O}(N) + \mathcal{O}(N) = \mathcal{O}(N)$$.
 
 \paragraph{Diffusion.}
-\satine{L'algorithme parcourt une grille de taille $N \times N$ à chaque itération, ce qui représente un coût de $N^2$.
-Comme le nombre d'itérations est constant (20), la complexité totale est en $\mathcal{O}(N^2)$.
+\satine{L'algorithme parcourt l'ensemble
+des $N$ cellules de la grille à chaque itération,
+ ce qui représente un coût de $\mathcal{O}(N)$.
+Comme le nombre d'itérations est constant (20), 
+la complexité totale est en $\mathcal{O}(N)$.
 }
 
 \paragraph{Projection.}
 L'algorithme de projection est composé de 3 étapes :
 \begin{itemize}     
-    \item Etape 1 : calcul de la divergence : $N^2$ opérations  
+    \item Etape 1 : calcul de la divergence : $N$ opérations  
     \item Etape 2 : résolution de l'équation de Poisson : $20 \times N^2$ opérations     
-    \item Etape 3 : correction du champ de vitesse : $N^2$ opérations
+    \item Etape 3 : correction du champ de vitesse : $N$ opérations
 \end{itemize}
 
-Ainsi, la complexité totale de l'algorithme de projection est en $\mathcal{O}(N^2)$.
+Ainsi, la complexité totale de l'algorithme de projection est en $\mathcal{O}(N)$.
 
-Ce qui nous donne une complexité totale de $\mathcal{O}(N^2 + N^2 + N^2) = \mathcal{O}(N^2)$ pour l'algorithme \texttt{vel\_step}.
+Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O}(N)$ pour l'algorithme \texttt{vel\_step}.
 }
 \comment{}{Je recommande d'utiliser N=nombre de cellules plutôt que N=nombre de lignes. (donc juste diviser toutes les complexités par N)}
 % \end{enumerate}
 
 
 \section{Analyse des résultats }
-\remove{\emph{2 à 4 pages}}
-\remove{L'analyse expérimentale sera faites dans cette section. Elle sera plus ou moins importante dans votre projet comme pour les deux points précédent, cette section devra donc être développée en conséquence.}
 
 % \begin{enumerate}%pour faire une liste numérotée
-\remove{Illustrer les performances ainsi que l'efficacité du logiciel implémenté à l'aide de graphiques.}
-
-\begin{itemize}
-    \item calcul de complexités en fonction de la taille de la grille, etc (plot sur python), nombre d'obstacles, étape d'avection/relaxation (changer les paramètres et comparer)
-\end{itemize}
 
 \remove{Analyser (et comparer, si plusieurs) les performances des solutions implémentées.}
 \begin{itemize}
@@ -912,10 +962,20 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 %6.2
 \subsection{Fonctionnalités non-réalisées présentent dans le cahier des charges}
 
-\begin{itemize}
-  \item possibilité de controler le fluide à distance via un smartphone (bluetooth)
-  \item intégrer un mode musique qui fait réagir de fluide en focntion du son
-\end{itemize}
+\gaelle{Dans le cahier des charges initial, nous avions envisagé d’ajouter une fonctionnalité permettant 
+de faire réagir la simulation à un signal sonore comme la musique. L’idée était d’utiliser la fréquence 
+d’un flux audio (musique ou microphone) pour influencer certains paramètres du fluide, comme 
+la densité injectée, la force appliquée ou encore la couleur. Cette approche aurait permis de créer 
+une visualisation dynamique du fluide, synchronisée avec la musique.
+
+Nous avions commencé à étudier plusieurs bibliothèques audio (notamment \texttt{SFML Audio} 
+et \texttt{PortAudio}) afin d’extraire en temps réel des informations simples comme le volume 
+instantané. Cependant, cette fonctionnalité nécessitait un traitement du signal plus avancé 
+(FFT, filtrage, normalisation), ainsi qu’une intégration avec la boucle de simulation. 
+Faute de temps, nous n’avons pas pu mettre en place cette idée.
+
+Cette fonctionnalité reste néanmoins une piste intéressante pour enrichir la simulation.}
+
 
 
 %6.3   AXEL
