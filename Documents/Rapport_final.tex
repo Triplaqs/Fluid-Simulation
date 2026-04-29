@@ -4,7 +4,16 @@
 % draft, final (stade de développement)
 \usepackage[utf8]{inputenc}   % LaTeX, comprends les accents !
 \usepackage[T1]{fontenc}      % Police contenant les caractères français
-\usepackage[french]{babel}
+\usepackage[provide=*]{babel}
+\babelprovide[main]{french}
+\addto\captionsfrench{
+  \renewcommand{\refname}{Références}
+  \renewcommand{\bibname}{Bibliographie}
+  \renewcommand{\figurename}{Figure}
+  \renewcommand{\tablename}{Tableau}
+  \renewcommand{\contentsname}{Table des matières}
+}
+
 \usepackage{fullpage}
 %\usepackage{xcolor}
 \usepackage{hyperref} %pour les liens
@@ -13,10 +22,10 @@
 \usepackage{amsmath}
 \usepackage{pgfgantt}
 \usepackage{easyReview}
-\newcommand{\comment}[2]{}
-\newcommand{\replace}[2]{#1}
-\newcommand{\add}[1]{#1}
-\newcommand{\remove}[1]{}
+%\newcommand{\comment}[2]{}
+%\newcommand{\replace}[2]{#1}
+%\newcommand{\add}[1]{#1}
+%\newcommand{\remove}[1]{}
 \newcommand{\axel}[1]{{\color{violet} #1 }}
 \newcommand{\satine}[1]{{\color{WildStrawberry} #1 }}
 \newcommand{\sauranne}[1]{{\color{blue} #1 }}
@@ -38,17 +47,6 @@ Projet de programmation 2}
 %\begin{center}               % pour centrer
 % \includegraphics[scale=1]{}   % insertion d'une image
 %\end{center}
-<<<<<<< HEAD
-\begin{abstract}     % Résumé du travail
-Ce projet de simulation de fluides en 2D consiste à rendre de manière interactive et 
-en temps réel l'évolution d'un fluide dans une grille. Nous avons implémenté la 
-méthode de Jos Stam "Stable Fluids" \cite{Stam99} pour simuler le fluide, et nous 
-avons développé une interface graphique pour visualiser et interagir avec la 
-simulation. L'utilisateur peut ajouter des sources de fluide, créer des obstacles, et 
-modifier les paramètres du fluide en temps réel. 
-\end{abstract}
-=======
->>>>>>> 4ccff5a (modif selon conseils de Marc)
 \newpage
 %\dominitoc  % initializer les minitoc
 \tableofcontents
@@ -75,7 +73,12 @@ modifier les paramètres du fluide en temps réel.
 %1.3	    SAURANE
 
 \sauranne {
-    \replace{Pour implémenter la simulation de fluides en 2D, deux méthodes sont possibles}{Principalement trois familles de méthodes existent pour implémenter une simulation de fluide} : les méthodes eulériennes, les méthodes lagrangiennes \add{, et les méthodes semi-lagrangiennes, qui sont des hybrides des deux précédentes}. Les méthodes eulériennes consistent à représenter le fluide dans une grille \remove{fixe}, où l'on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc. \add{Chaque cellule represente une portion du fluide, encodant les propriétés du fluide dans une région en un instant $t$.}
+    \replace{Pour implémenter la simulation de fluides en 2D, deux méthodes sont possibles}{Principalement trois familles de méthodes existent pour 
+    implémenter une simulation de fluide} : les méthodes eulériennes, les méthodes lagrangiennes \add{, et les méthodes semi-lagrangiennes, qui 
+    sont des hybrides des deux précédentes}. Les méthodes eulériennes 
+    \phantomsection
+    \label{part:eulerienne}
+consistent à représenter le fluide dans une grille \remove{fixe}, où l'on stocke les différentes propriétés du fluide, telles que la densité, la chaleur, la vitesse, etc. \add{Chaque cellule represente une portion du fluide, encodant les propriétés du fluide dans une région en un instant $t$.}
 
 Les méthodes lagrangiennes consistent, quant à elles, à représenter le fluide à l'aide de \add{nombreuses} particules, \replace{c'est à dire que chaque particule contient les propriétés du fluide}{représentant les gouttes ou molécules du fluides. L'ensemble de ces particules déterminent les propriétés du fluide}.
 }
@@ -140,8 +143,8 @@ Le diagramme UML ({Figure~\ref{diagUML}}) suivant décrit brièvement l'organisa
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{../PJ_proj/diag_uml.drawio.png}
-    \caption{Diagramme UML de notre projet}
+    \includegraphics[width=0.9\textwidth]{../PJ_proj/diag_uml.png}
+    \caption{Diagramme UML de notre projet} 
     \label{diagUML}
 \end{figure}
 
@@ -154,45 +157,41 @@ ou des compositions si le losange est plein, les pointillés décrivent des dép
 }
 
 \subsubsection{Affichage d'une grille de chaleur}
-\comment{}{Les références aux figures doivent être dans le texte, pas dans les titres.}
 \gaelle {
-    Nous avons mis en place un affichage sous forme de grille de chaleur \add{(Figure~\ref{figure1})}. Pour mettre 
+    Nous avons mis en place un affichage sous forme de grille de chaleur (Figure~\ref{figure1_1}). Pour mettre 
     en place cet affichage, chaque cellule de la grille est associée à une valeur, dans ce cas, 
     cette valeur représente une température. Nous utilisons différentes teintes de rouge afin de
      représenter visuellement les variations de température : 
     une cellule très chaude apparaît plus rouge, tandis qu'une cellule voisine un peu moins chaude aura une teinte 
     moins rouge. Cet affichage permet de visualiser intuitivement l'évolution d'un champ scalaire. 
 
-    L’évolution de la chaleur sur la grille suit ce principe : à chaque itération, la 
-    chaleur se propage progressivement vers les cellules voisines.
-    Concrètement, une zone chaude a tendance à s’étaler autour d’elle.
-    les taches rouges se déplacent, s’étirent et se mélangent au fil du temps, ce qui 
-    permet de visualiser facilement comment la température se diffuse dans le fluide.
-
-    \comment{}{Évitez le texte entre parenthèse. Les parenthèses servent à décrire quelque chose qui n'est pas si important dans un texte. Par exemple "(reset, update, etc.)" qu'on retrouve 2 paragraphes plus bas.}
-
-    \comment{}{Comment la chaleur évolue ? "Diffusion", "mélange avec ses voisins", etc.}
 }
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/step1_grille_chal.png}
-    \caption{Affichage d'une grille de chaleur. Le rouge représente les points les plus chauds et le bleu les plus froids.} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \caption{Affichage d'une grille de chaleur. Le rouge représente les points les plus chauds et le bleu les plus froids.} 
     \label{figure1_1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/step2.png}
-    \caption{Affichage d'une grille de chaleur évolution 2 au cours du temps.} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \caption{Affichage d'une grille de chaleur évolution 2 au cours du temps.}  
     \label{figure1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/carte_chaleur.png}
-    \caption{Affichage d'une grille de chaleur, évolution 3 au cours du temps} \comment{}{Si vous avez 2 images avant/après, ça permet de voir une évolution. Une seule, c'est pas vraiment une évolution}
+    \caption{Affichage d'une grille de chaleur, évolution 3 au cours du temps} 
     \label{figure1_3}
 \end{figure}
+
+\gaelle{L’évolution de la chaleur sur la grille suit ce principe : à chaque itération, la 
+    chaleur se propage progressivement vers les cellules voisines.
+    Concrètement, une zone chaude a tendance à s’étaler autour d’elle.
+    les taches rouges se déplacent, s’étirent et se mélangent au fil du temps, ce qui 
+    permet de visualiser facilement comment la température se diffuse dans le fluide.}
 
 \axel{
     Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Nous avons donc implémenté notre grille avec un simple \add{std::}vecteur C++ de structure Cell avec chaque paramètre comme attribut.
@@ -204,14 +203,16 @@ ou des compositions si le losange est plein, les pointillés décrivent des dép
 \comment{Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}{Attention, ce n'est pas le cas dans votre diagramme UMl. Vous pouvez dire que vous l'avez divisée en deux parties : "Grid" et "Simulation".}
 }
 
-\subsubsection{Simulation du fluide (voir Figure~\ref{figure2})}
-\comment{}{Déplacer la référence à l'image et la placer dans le texte}
+\subsubsection{Simulation du fluide}
 
 \comment{}{Section à merger avec celle au-dessus ? }
 \gaelle {
-    La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \add{\cite{Stam03}} qui nous a permit d'avoir un \replace{beau rendu}{rendu dynamique} en 2D. Le fluide est représenté sur une grille Eulerienne 
-    (voir section \comment{....}{Pour se référer à une section, vous pouvez ajouter un '$\backslash$label$\{$sec:nom-de-la-section$\}$' sous une $\backslash$section ou $\backslash$subsection|, puis s'y référer avec "Section$\sim\backslash$ref$\{$sec:nom-de-la-section$\}$". Par exemple : "Section~\ref{sec:interface-utilisateur}"}). 
-    Dans cette grille, chaque cellule stocke des informations phyiques comme la densité ou la vitesse \add{sous forme de scalaire (\texttt{float}) ou de vecteur (paire de \texttt{float})}. A chaque itération de la simulation, ces données sont mis à jour grâce aux méthodes physiques comme l'advection, la diffusion ou la projection \add{que nous présenterons en détails dans la partie ...}. La zone de rendu affiche donc la densité du fluide en temps réel.
+    La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permit 
+    d'avoir un rendu dynamique en 2D. Le fluide est représenté sur une grille Eulerienne 
+    (voir partie~\ref{part:eulerienne}). 
+    Dans cette grille, chaque cellule stocke des informations phyiques comme la densité ou la vitesse sous forme de scalaire (\texttt{float}) ou 
+    de vecteur (paire de \texttt{float}). A chaque itération de la simulation, ces données sont mis à jour grâce aux méthodes physiques comme 
+    l'advection, la diffusion ou la projection que nous présenterons en détails dans la section~\ref{sec:algos} . La zone de rendu affiche donc la densité du fluide en temps réel.
 }
 
 \begin{figure}[H]
@@ -223,7 +224,9 @@ ou des compositions si le losange est plein, les pointillés décrivent des dép
 
 \subsubsection{Gestion des obstacles }
 \gaelle {
-L'affichage possède également un suystème de gestion des obstacles. L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurs \add{Reference à la figure}. Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
+L'affichage possède également un suystème de gestion des obstacles. L'utilisateur peut activer ou désactiver 
+les obstacles, changer leur forme ou en ajouter plusieurs (voir Figure~\ref{evolution4c}). Chaque obstacle peut être 
+déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
 } 
 \comment{}{Attention, gardez le même style. Ici, je conseille de retirer le gras du texte.}
 
@@ -348,7 +351,6 @@ La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simu
         \caption{Injection du fluide selon un segment}
         \label{ligne}
     \end{figure}
-    \comment{}{4 scalaires, non ? Ajouter un screenshot pour être plus clair.}
 
 En mode point, la densité et les forces sont appliquées uniquement à la cellule correspondant à la position sélectionnée.
 
@@ -477,7 +479,7 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
 }
 % \end{enumerate}
 
-\section{Algorithmes et Structures de Données}
+\section{Algorithmes et Structures de Données}\label{sec:algos}
 % \begin{enumerate}%pour faire une liste numérotée
 %3.1        GAËLLE  -  SATINE  -  SAURANE
 \subsection{Principaux algorithmes utilisés}
@@ -521,7 +523,7 @@ le fluide.L'advection déplace l'information en suivant le mouvement du fluide. 
 où $x$ est la quantité transportée et $\mathbf{u} = (u,v)$ le champ de vitesse. 
 L'idée est de déterminer, pour chaque cellule $(i,j)$, la position d'où provient le fluide arrivé à cet
  endroit au temps $t + \Delta t$. On remonte donc le long du champ de vitesse.
-\comment{}{C'est quoi "N" ? Le nombre de lignes/colonnes. Pourquoi il est inclut ici ? Si c'est pas facile à expliquer, donc je conseille de le retirer des formules. (elles restent correctes, promis)}
+
 
 Comme $(x',y')$ n'est généralement pas un point entier de la grille, on utilise une \emph{interpolation bilinéaire} entre les quatre cellules voisines pour estimer la valeur transportée.
 }
@@ -583,8 +585,6 @@ Ces paramètres permettent à l’algorithme de déterminer d’où provient la 
 de calculer la nouvelle valeur par interpolation, puis d’appliquer les conditions de bord. En effet,
 si la matière arrive sur le bord droit, le mouvement du fluide n'est pas le même que le bord droit, gauche ou haut.}
 
-
-\comment{}{Pareil, décris les entrées et ce qu'elles représentent.}
 
 \gaelle{
 L'advection semi-lagrangienne peut être vue comme un déplacement de matière : au lieu de pousser la matière vers l'avant, on cherche d'où elle provient et on la pousse dans la direction continue. Visuellement, l'advection est responsable du mouvement du fluide.
@@ -787,7 +787,7 @@ la complexité totale est en $\mathcal{O}(N)$.
 L'algorithme de projection est composé de 3 étapes :
 \begin{itemize}     
     \item Etape 1 : calcul de la divergence : $N$ opérations  
-    \item Etape 2 : résolution de l'équation de Poisson : $20 \times N^2$ opérations     
+    \item Etape 2 : résolution de l'équation de Poisson : $20 \times N$ opérations     
     \item Etape 3 : correction du champ de vitesse : $N$ opérations
 \end{itemize}
 
@@ -795,7 +795,6 @@ Ainsi, la complexité totale de l'algorithme de projection est en $\mathcal{O}(N
 
 Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O}(N)$ pour l'algorithme \texttt{vel\_step}.
 }
-\comment{}{Je recommande d'utiliser N=nombre de cellules plutôt que N=nombre de lignes. (donc juste diviser toutes les complexités par N)}
 % \end{enumerate}
 
 
