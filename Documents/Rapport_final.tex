@@ -195,21 +195,6 @@ Ce diagramme permet de visualiser les dépendances entre modules et la structure
     \label{figure2}
 \end{figure}
 
-
-\subsubsection{Panneau de paramètres (voir Figure~\ref{figure3})}
-\comment{}{À déplacer dans la section "Interface Utilisateur" ?}
-\gaelle {
-    Notre affichage comporte un panneau de paramètres développé avec ImGui. Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité, la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation qui met à jour la grille. Ce panneau peut être affiché ou masqué en pressant la touchant \texttt{h}.
-}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol2.png}
-    \caption{Troisième version : ajout d'un panneau de paramètres.}
-    \label{figure3}
-\end{figure}
-
-
 \subsubsection{Gestion des obstacles }
 \gaelle {
 L'affichage possède également un suystème de gestion des obstacles. L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurs \add{Reference à la figure}. Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
@@ -274,7 +259,7 @@ Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui perme
     \label{chaleur1}
 \end{figure}
 
-\replace{Sur cette image}{Dans la figure \ref{chaleur1}}, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes, mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. 
+Dans la figure \ref{chaleur1}, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes, mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. 
 
 
 \begin{figure}[H]
@@ -284,7 +269,7 @@ Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui perme
     \label{chaleur2}
 \end{figure}
 
-\replace{Ici}{Dans la figure \ref{chaleur2}}, on observe la simulation après de nombreuses itérations et on peut voir que le mélange est beaucoup plus homogène. On obtientcomme un voile violet, symbolisant une température tiède assez uniforme, avec quelques zones plus chaudes (rouge) ou plus froides (bleu). 
+Dans la figure \ref{chaleur2}, on observe la simulation après de nombreuses itérations et on peut voir que le mélange est beaucoup plus homogène. On obtientcomme un voile violet, symbolisant une température tiède assez uniforme, avec quelques zones plus chaudes (rouge) ou plus froides (bleu). 
 
 Ce mode d'affichage thermique peut être combiné avec les obstacles : 
 
@@ -310,8 +295,7 @@ On peut déplacer le cercle pour mélanger les différentes zones de temparature
 % \label{2.3 - Partie B}
 % \end{itemize}
 \axel{
-    \replace{Bluetooth, Semi-Lagrangien, Multi-threading}
-    {\subsubsection{Modules en cours de développement}}
+    \subsubsection{Modules en cours de développement}
 }
 
 % ============================== AXEL 3 =======================================
@@ -335,11 +319,27 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 \label{sec:interface-utilisateur}
 % ============================== AXEL 4 =======================================
 \axel{
-    Notre panneau d'interaction avec la simulation permet de mettre la main sur \replace{un panel de parties arbitraires}{de nombreuses variables} de notre simulation. Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en personnalisation \add{Ajouter une image avec ces différents inputs}. De ce fait, nous pouvons (entre autres) modifier la densité du fluide, sa force, sa direction, la disposition du/des points de départs sa couleur aussi. Nous avons aussi des obstacles que nous pouvons ajouter, on peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic avec déplacement de la souris.
+    Notre panneau d'interaction avec la simulation permet de mettre la main sur 
+    de nombreuses variables de la simulation. 
+    Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une 
+    valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en 
+    personnalisation. 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol2.png}
+        \caption{Troisième version : ajout d'un panneau de paramètres.}
+        \label{figure3}
+    \end{figure}
+
+    \gaelle {
+        Notre affichage comporte un panneau de paramètres développé avec ImGui. Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité, la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation qui met à jour la grille. Ce panneau peut être affiché ou masqué en pressant la touchant \texttt{h}.
+    }
+    
+    Nous avons aussi des obstacles que nous pouvons ajouter, supprimer ou déplacer.
+    On peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic ou déplacement de la souris.
 }
-\begin{itemize}
-    \item description des boutons et des interactions possibles
-\end{itemize}
+
 %2.5       AXEL
 \subsection{Format des données d'entrée}
 \begin{itemize}
