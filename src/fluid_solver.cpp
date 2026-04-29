@@ -69,16 +69,18 @@ void advect ( int N, int b, float * d, float * d0, float * u, float * v, float d
             s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
             d[IX(i,j)] = s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+
             s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
-            printf("x: %f, y: %f, IX(i, j): %d, i : %d, j: %d, i0: %d, j0: %d, s0: %f, t0: %f, s1: %f, t1: %f, dt0: %f, N: %d\n", x, y, IX(i, j), i, j, i0, j0, s0, t0, s1, t1, dt0, N);
+            //DEBUG !!!
+            //printf("x: %f, y: %f, IX(i, j): %d, i : %d, j: %d, i0: %d, j0: %d, s0: %f, t0: %f, s1: %f, t1: %f, dt0: %f, N: %d\n", x, y, IX(i, j), i, j, i0, j0, s0, t0, s1, t1, dt0, N);
         }
     }
     set_bnd ( N, b, d );
-    printf("x: %f, y: %f\n", d[IX(1,1)], d[IX(1,2)]);
+    //DEBUG !!!!
+    //printf("x: %f, y: %f\n", d[IX(1,1)], d[IX(1,2)]);
 }
 
 void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt )
 {//================================== MESURES ==================================
-    if (mesure){//} && obstacleCountCircle==0) { // on s'assure qu'on ait bien la valeur qu'on souhaite mesurer en place avant de commencer
+    if (mesure && false){//} && obstacleCountCircle==0) { // on s'assure qu'on ait bien la valeur qu'on souhaite mesurer en place avant de commencer
         float dep_tps = glfwGetTime();
         add_source ( N, x, x0, dt );
         SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
