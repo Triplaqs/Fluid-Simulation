@@ -35,7 +35,12 @@ Projet de programmation 2}
 % \includegraphics[scale=1]{}   % insertion d'une image
 %\end{center}
 \begin{abstract}     % Résumé du travail
-\remove{Description très succincte du problème et des différentes étapes de réalisation}
+Ce projet de simulation de fluides en 2D consiste à rendre de manière interactive et 
+en temps réel l'évolution d'un fluide dans une grille. Nous avons implémenté la 
+méthode de Jos Stam "Stable Fluids" \cite{Stam99} pour simuler le fluide, et nous 
+avons développé une interface graphique pour visualiser et interagir avec la 
+simulation. L'utilisateur peut ajouter des sources de fluide, créer des obstacles, et 
+modifier les paramètres du fluide en temps réel. 
 \end{abstract}
 \newpage
 %\dominitoc  % initializer les minitoc
@@ -190,21 +195,6 @@ Ce diagramme permet de visualiser les dépendances entre modules et la structure
     \label{figure2}
 \end{figure}
 
-
-\subsubsection{Panneau de paramètres (voir Figure~\ref{figure3})}
-\comment{}{À déplacer dans la section "Interface Utilisateur" ?}
-\gaelle {
-    Notre affichage comporte un panneau de paramètres développé avec ImGui. Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité, la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation qui met à jour la grille. Ce panneau peut être affiché ou masqué en pressant la touchant \texttt{h}.
-}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol2.png}
-    \caption{Troisième version : ajout d'un panneau de paramètres.}
-    \label{figure3}
-\end{figure}
-
-
 \subsubsection{Gestion des obstacles }
 \gaelle {
 L'affichage possède également un suystème de gestion des obstacles. L'utilisateur peut activer ou désactiver les obstacles, changer leur forme ou en ajouter plusieurs \add{Reference à la figure}. Chaque obstacle peut être déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
@@ -321,7 +311,7 @@ La figure \ref{evolution4b} illustre l'ajout de plusieurs obstacles dans la simu
 \end{figure}
 
 
-\subsection{Mode point/ligne}
+\subsubsection{Mode point/ligne}
 \comment{}{Section "Interface Utilisateur" ?}
 \gaelle {
     \replace{Dans l'interface il y a un paramètre permettant de choisir la forme de la source de fluide}{Le choix est donné à l'utilisateur de la forme de la source du fluide}. L'utilisateur peut injecter le fluide \add{provenant} soit en un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille \remove{(soit 4 points)}.
@@ -336,7 +326,7 @@ $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simple
 
 }
 
-\subsection{Gestion de la chaleur}
+\subsubsection{Gestion de la chaleur}
 \comment{}{Section "Simulation" ?}
 \sauranne {
 Un mode d'affichage thermique permet de visualiser le fluide en fonction de sa température. Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. Ce paramètre est représenté par une valeur numérique qui peut être positive (indiquant une source chaude) ou négative (indiquant une source froide). 
@@ -350,7 +340,7 @@ Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui perme
     \label{chaleur1}
 \end{figure}
 
-\replace{Sur cette image}{Dans la figure \ref{chaleur1}}, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes, mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. 
+Dans la figure \ref{chaleur1}, on peut voir l'état de la simulation après avoir alterné entre une source chaude (rouge) et une source froide (bleue). On observe quelques zones où les couleurs se mélangent (degradés de violet) ce qui correspond à des zones plutôt tièdes, mais aussi des zones où les couleurs sont très marquées et ne se mélangent pas. 
 
 
 \begin{figure}[H]
@@ -360,7 +350,7 @@ Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui perme
     \label{chaleur2}
 \end{figure}
 
-\replace{Ici}{Dans la figure \ref{chaleur2}}, on observe la simulation après de nombreuses itérations et on peut voir que le mélange est beaucoup plus homogène. On obtientcomme un voile violet, symbolisant une température tiède assez uniforme, avec quelques zones plus chaudes (rouge) ou plus froides (bleu). 
+Dans la figure \ref{chaleur2}, on observe la simulation après de nombreuses itérations et on peut voir que le mélange est beaucoup plus homogène. On obtientcomme un voile violet, symbolisant une température tiède assez uniforme, avec quelques zones plus chaudes (rouge) ou plus froides (bleu). 
 
 Ce mode d'affichage thermique peut être combiné avec les obstacles : 
 
@@ -386,22 +376,22 @@ On peut déplacer le cercle pour mélanger les différentes zones de temparature
 % \label{2.3 - Partie B}
 % \end{itemize}
 \axel{
-    \replace{Bluetooth, Semi-Lagrangien, Multi-threading}{\subsection{Modules en cours de développement}}
+    \subsubsection{Modules en cours de développement}
 }
 
 % ============================== AXEL 3 =======================================
 \axel{
-Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas \replace{poussé vers l'opérationnalité totale}{pu finaliser par manque de temps}. 
+Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps. 
 \comment{}{Petit listing des 3 sous-modules}
 
-\subsubsection{Interface utilisateur sur smartphone}
-Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées\replace{, m}{. M}alheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
+\paragraph{Interface utilisateur sur smartphone}
+Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées. Malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
 \comment{}{Divise tes phrases, elles sont trop longues.}
 
-\subsubsection{Semi-Lagrangien}
-\replace{Nous avons aussi envisagé, pour enrichir notre simulation, d'implémenter une simulation parrallèle de Semi-Lagrangien}{Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne}. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois \add{physiques}) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est \replace{grossièrement}{principalement} un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
+\paragraph{Semi-Lagrangien}
+Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois \add{physiques}) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est \replace{grossièrement}{principalement} un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
 
-\subsubsection{Calcul parallèle}
+\paragraph{Calcul parallèle}
 Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.
 }
 
@@ -410,11 +400,27 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 \label{sec:interface-utilisateur}
 % ============================== AXEL 4 =======================================
 \axel{
-    Notre panneau d'interaction avec la simulation permet de mettre la main sur \replace{un panel de parties arbitraires}{de nombreuses variables} de notre simulation. Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en personnalisation \add{Ajouter une image avec ces différents inputs}. De ce fait, nous pouvons (entre autres) modifier la densité du fluide, sa force, sa direction, la disposition du/des points de départs sa couleur aussi. Nous avons aussi des obstacles que nous pouvons ajouter, on peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic avec déplacement de la souris.
+    Notre panneau d'interaction avec la simulation permet de mettre la main sur 
+    de nombreuses variables de la simulation. 
+    Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une 
+    valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en 
+    personnalisation. 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/simulation_evol2.png}
+        \caption{Troisième version : ajout d'un panneau de paramètres.}
+        \label{figure3}
+    \end{figure}
+
+    \gaelle {
+        Notre affichage comporte un panneau de paramètres développé avec ImGui. Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité, la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation qui met à jour la grille. Ce panneau peut être affiché ou masqué en pressant la touchant \texttt{h}.
+    }
+    
+    Nous avons aussi des obstacles que nous pouvons ajouter, supprimer ou déplacer.
+    On peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic ou déplacement de la souris.
 }
-\begin{itemize}
-    \item description des boutons et des interactions possibles
-\end{itemize}
+
 %2.5       AXEL
 \subsection{Format des données d'entrée}
 \begin{itemize}
