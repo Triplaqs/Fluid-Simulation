@@ -13,6 +13,10 @@
 \usepackage{amsmath}
 \usepackage{pgfgantt}
 \usepackage{easyReview}
+\newcommand{\comment}[2]{}
+\newcommand{\replace}[2]{#1}
+\newcommand{\add}[1]{#1}
+\newcommand{\remove}[1]{}
 \newcommand{\axel}[1]{{\color{violet} #1 }}
 \newcommand{\satine}[1]{{\color{WildStrawberry} #1 }}
 \newcommand{\sauranne}[1]{{\color{blue} #1 }}
@@ -97,7 +101,7 @@ Les méthodes lagrangiennes consistent, quant à elles, à représenter le fluid
 
 
 
-\section{Développements Logiciel : Conception, Modélisation, Implémentation}
+\section{Développements Logiciel : Conception, Modélisation, Implémentation}\label{sec:developpements}
 \remove{\emph{8 à 15 pages}}
 % \begin{enumerate} %pour faire une liste numérotée
 %2.1         AXEL
@@ -210,8 +214,9 @@ L'affichage possède également un suystème de gestion des obstacles. L'utilisa
         \caption{Bouton on/off pour gérer l'affichage d'un obstacle.}
         \label{evolution41}
     \end{figure}
+
     \satine{
-    On constate sur la figure \ref{evolution41} que l'obstacle agit sur le fluide et qu'il est activable ou non grâce au bouton on/off.
+    On constate sur la figure \ref{evolution4b} que l'obstacle agit sur le fluide et qu'il est activable ou non grâce au bouton on/off.
      Par la suite, nous avons rendu cet obstacle le plus interactif possible en offrant à l'utilisateur  la possibilité de le déplacer à l'aide du curseur de la souris.
 
     \comment{}{C'est quoi la fonction de gestion des bords ? Qu'est-ce que vous avez modifié dedans ? Au niveau programmation, ça demande quoi comme changements pour pouvoir déplacer un obstacle ? }
@@ -222,15 +227,15 @@ L'affichage possède également un suystème de gestion des obstacles. L'utilisa
     (par exemple réflexion ou annulation de la vitesse).\\
 
 Dans notre projet, cette fonction a été modifiée afin de prendre en compte la 
-présence d’obstacles à l’intérieur du fluide. A l'origine, seul les bords 
+présence d'obstacles à l'intérieur du fluide. A l'origine, seul les bords 
 du domaine était considérée. Nous avons donc adapté cette fonction pour traiter 
 également les cellules appartenant aux obstacles . Cela 
-implique de détecter si une cellule se situe à l’intérieur d’un obstacle ou à 
+implique de détecter si une cellule se situe à l'intérieur d'un obstacle ou à 
 proximité de son bord, puis de modifier le comportement du fluide en fonction de ses informations. 
 (par exemple en annulant la vitesse ou en appliquant une réflexion).\\
 
-Au niveau programmation, permettre le déplacement d’un obstacle nécessite plusieurs 
-modifications. Tout d’abord, il faut stocker les obstacles dans une structure de 
+Au niveau programmation, permettre le déplacement d'un obstacle nécessite plusieurs 
+modifications. Tout d'abord, il faut stocker les obstacles dans une structure de 
 données (ici une liste) contenant leurs paramètres (coordonnées, rayon, forme). Ensuite, 
 il est nécessaire de mettre à jour leur position à chaque intéraction de l'utilisateur 
 (par exemple le déplacement de la souris). Enfin, la simulation 
@@ -241,20 +246,21 @@ les coordonnées des cellules).\\
 De plus, afin de conserver un comportement physique cohérent, nous avons introduit 
 le calcul de la vitesse des obstacles en comparant leur position actuelle à celle de 
 la l'itération précédente. Cette information est utilisée pour influencer le fluide au 
-niveau des obstacles, ce qui permet d’obtenir des effets plus réalistes lors de leur 
+niveau des obstacles, ce qui permet d'obtenir des effets plus réalistes lors de leur 
 déplacement. \\
 
 Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer plusieurs obstacles simultanément, ainsi que de choisir leur forme parmi  un cercle, un cœur ou une étoile. Pour cela, nous avans implementer un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir  ajouter ou supprimer les differents obstacles. Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  
-ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité \comment{}{liste de quoi?}entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
+ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité \comment{}{liste de quoi?} entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
 et le premier obstacle suprimer sera le dernier obstacle crer).  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.
-     
+}
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.45\textwidth]{../PJ_proj/bouton+ou-.png}
         \caption{Bouton + ou - pour gérer l'affichage des obstacles.}
-        \label{evolution4b2}
+        \label{evolution4b}
     \end{figure}
-on constate bien que sur la figure \ref{evolution4b2} le nombre d'obstacles peut être ajusté dynamiquement grâce à ces boutons + ou - et de plus,
+\satine{
+on constate bien que sur la figure \ref{evolution4b} le nombre d'obstacles peut être ajusté dynamiquement grâce à ces boutons + ou - et de plus,
 il y a un curseur comptant le nombre d'obstacle present.
 Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$,  de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \] Ainsi, si $d < 0$, le point est à l'intérieur du disque (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
 
@@ -266,25 +272,23 @@ mais orientés differemment.}{???}
 Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion  des interactions entre le fluide et les obstacles. 
 En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la normale au bord de chaque obstacle, c'est-à-dire la direction  perpendiculaire à sa surface. 
 
-\\
-\\
 
 Dans notre simulation, la normale est utilisée principalement lors des interactions entre le fluide 
-et les bords des obstacles. Lorsque le fluide arrive au contact d’un obstacle, la normale permet de 
+et les bords des obstacles. Lorsque le fluide arrive au contact d'un obstacle, la normale permet de 
 déterminer comment la vitesse du fluide doit être modifiée, notamment pour simuler un phénomène de réflexion.\\
 
 Plus précisément, ce qui est réfléchi dans la simulation est la vitesse du fluide. Lorsqu’une 
-cellule de fluide arrive au voisinage d’un obstacle, sa vitesse est modifiée en fonction de la normale 
+cellule de fluide arrive au voisinage d'un obstacle, sa vitesse est modifiée en fonction de la normale 
 afin de produire un effet de rebond réaliste.\\
 
 La normale est calculée à partir de la fonction donnant la distance au bord de l’obstacle 
 (ici la fonction \texttt{obstacleSignedDistance}, elle revoie la distance entre le centre et le bord de l'obstacle). 
-On approxime le gradient de cette fonction à l’aide de différences finies :
+On approxime le gradient de cette fonction à l'aide de différences finies :
 \[
 n_x \approx \frac{d(x+\varepsilon, y) - d(x,y)}{\varepsilon}, \quad
 n_y \approx \frac{d(x, y+\varepsilon) - d(x,y)}{\varepsilon}
 \]
-où $d(x,y)$ représente la distance au bord de l’obstacle et $\varepsilon$ est une petite valeur. 
+où $d(x,y)$ représente la distance au bord de l'obstacle et $\varepsilon$ est une petite valeur. 
 Le vecteur obtenu est ensuite normalisé :
 \[
 \vec{n} = \frac{(n_x, n_y)}{\sqrt{n_x^2 + n_y^2}}
@@ -298,16 +302,16 @@ interaction réaliste. Cela entraînerait des comportements inadaptés, comme la
 à l'intérieur des objets ou des fuites à travers les bords, rendant la simulation incohérente.
 Il s'agit donc d'une information essentiel pour garentir une interaction coherente entre le fluide et les obstacles, et pour maintenir le réalisme de la simulation.\\
 \comment{}{La normale sert à quoi ? Quand est-ce que vous l'utilisez ? Qu'est ce qui est réfléchit dans la simulation ? Qu'est-ce qui se passerait si vous ne réflechissiez pas les choses ?}
-    
-La figure \ref{evolution4b} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
-}
+ 
+La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
+} 
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/tout_les_obstacles.png}
     \caption{Ajout de plusieurs obstacles.}
-    \label{evolution4b}
+    \label{evolution4c}
 \end{figure}
 
 
