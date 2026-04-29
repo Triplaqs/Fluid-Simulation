@@ -245,7 +245,7 @@ Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avon
 \end{figure}
 
 
-\subsection{Mode point/ligne}
+\subsubsection{Mode point/ligne}
 \comment{}{Section "Interface Utilisateur" ?}
 \gaelle {
     \replace{Dans l'interface il y a un paramètre permettant de choisir la forme de la source de fluide}{Le choix est donné à l'utilisateur de la forme de la source du fluide}. L'utilisateur peut injecter le fluide \add{provenant} soit en un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille \remove{(soit 4 points)}.
@@ -260,7 +260,7 @@ $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simple
 
 }
 
-\subsection{Gestion de la chaleur}
+\subsubsection{Gestion de la chaleur}
 \comment{}{Section "Simulation" ?}
 \sauranne {
 Un mode d'affichage thermique permet de visualiser le fluide en fonction de sa température. Pour implémenter la chaleur dans notre simulation, nous avons ajouté un paramètre "chaleur" à chaque cellule de la grille. Ce paramètre est représenté par une valeur numérique qui peut être positive (indiquant une source chaude) ou négative (indiquant une source froide). 
@@ -310,22 +310,23 @@ On peut déplacer le cercle pour mélanger les différentes zones de temparature
 % \label{2.3 - Partie B}
 % \end{itemize}
 \axel{
-    \replace{Bluetooth, Semi-Lagrangien, Multi-threading}{\subsection{Modules en cours de développement}}
+    \replace{Bluetooth, Semi-Lagrangien, Multi-threading}
+    {\subsubsection{Modules en cours de développement}}
 }
 
 % ============================== AXEL 3 =======================================
 \axel{
-Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas \replace{poussé vers l'opérationnalité totale}{pu finaliser par manque de temps}. 
+Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps. 
 \comment{}{Petit listing des 3 sous-modules}
 
-\subsubsection{Interface utilisateur sur smartphone}
-Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées\replace{, m}{. M}alheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
+\paragraph{Interface utilisateur sur smartphone}
+Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées. Malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
 \comment{}{Divise tes phrases, elles sont trop longues.}
 
-\subsubsection{Semi-Lagrangien}
-\replace{Nous avons aussi envisagé, pour enrichir notre simulation, d'implémenter une simulation parrallèle de Semi-Lagrangien}{Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne}. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois \add{physiques}) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est \replace{grossièrement}{principalement} un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
+\paragraph{Semi-Lagrangien}
+Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois \add{physiques}) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est \replace{grossièrement}{principalement} un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
 
-\subsubsection{Calcul parallèle}
+\paragraph{Calcul parallèle}
 Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.
 }
 
