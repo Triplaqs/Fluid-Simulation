@@ -212,23 +212,104 @@ L'affichage possède également un suystème de gestion des obstacles. L'utilisa
 \comment{}{Attention, gardez le même style. Ici, je conseille de retirer le gras du texte.}
 
 \satine{
-     Dans un premier temps, nous avons implémenté la création d'un \textbf{unique obstacle}, en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un \textbf{bouton on/off} \add{Ajouter une image de ce bouton et ajouter une référence à la figure} qui nous rammener a  l'utlisation ou non de la fonction lancant la creation de l'obstacle.  Par la suite, nous avons rendu cet obstacle le plus \textbf{interactif} possible en offrant à l'utilisateur  la possibilité de le déplacer à l'aide du curseur de la souris.
+     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off \add{Ajouter une image de ce bouton et ajouter une référence à la figure} qui nous rammener a  l'utlisation ou non de la fonction lancant la creation de l'obstacle.  
+}
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/bouton_on_off.png}
+        \caption{Bouton on/off pour gérer l'affichage d'un obstacle.}
+        \label{evolution41}
+    \end{figure}
+    \satine{
+    On constate sur la figure \ref{evolution41} que l'obstacle agit sur le fluide et qu'il est activable ou non grâce au bouton on/off.
+     Par la suite, nous avons rendu cet obstacle le plus interactif possible en offrant à l'utilisateur  la possibilité de le déplacer à l'aide du curseur de la souris.
 
     \comment{}{C'est quoi la fonction de gestion des bords ? Qu'est-ce que vous avez modifié dedans ? Au niveau programmation, ça demande quoi comme changements pour pouvoir déplacer un obstacle ? }
+   
+    Nous avons donc dans un premier temps adapter la fonction de gestion des bords.
+    Cette fonction est une partie essentielle de la simulation, car elle permet de définir le comportement du fluide aux limites du domaine. 
+    Elle sert notamment à empêcher le fluide de sortir de la zone simulée et à gérer les interactions avec les parois, en imposant certaines conditions sur les vitesses 
+    (par exemple réflexion ou annulation de la vitesse).\\
 
-Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer  \textbf{plusieurs obstacles simultanément}, ainsi que de choisir leur forme parmi  un \textbf{cercle}, un \textbf{cœur} ou une \textbf{étoile}. Pour cela, nous avans implementer un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir  ajouter ou supprimer les differents obstacles. Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité \add{Liste de priorité pour quoi ?}.  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.
+Dans notre projet, cette fonction a été modifiée afin de prendre en compte la 
+présence d’obstacles à l’intérieur du fluide. A l'origine, seul les bords 
+du domaine était considérée. Nous avons donc adapté cette fonction pour traiter 
+également les cellules appartenant aux obstacles . Cela 
+implique de détecter si une cellule se situe à l’intérieur d’un obstacle ou à 
+proximité de son bord, puis de modifier le comportement du fluide en fonction de ses informations. 
+(par exemple en annulant la vitesse ou en appliquant une réflexion).\\
 
-Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$,  de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \] Ainsi, si $d < 0$, le point est à l'intérieur \replace{de la boule}{du disque} (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
+Au niveau programmation, permettre le déplacement d’un obstacle nécessite plusieurs 
+modifications. Tout d’abord, il faut stocker les obstacles dans une structure de 
+données (ici une liste) contenant leurs paramètres (coordonnées, rayon, forme). Ensuite, 
+il est nécessaire de mettre à jour leur position à chaque intéraction de l'utilisateur 
+(par exemple le déplacement de la souris). Enfin, la simulation 
+doit être recalculée en tenant compte de ces nouvelles positions, ce qui implique de 
+mettre à jour les calculs de collision et les conditions aux bords en temps réel (il a notament fallut utiliser Imgui afin de recuperer
+les coordonnées des cellules).\\
 
-Pour des formes plus complexes comme le cœur, nous utilisons une \replace{représentation}{forme paramétrique} définie à l'aide d'un paramètre  $t \in [0, 2\pi]$ : \[ x(t) = 16 \sin^3(t) \] \[ y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t) \] \cite{heartCurve}. Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner  correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.
+De plus, afin de conserver un comportement physique cohérent, nous avons introduit 
+le calcul de la vitesse des obstacles en comparant leur position actuelle à celle de 
+la l'itération précédente. Cette information est utilisée pour influencer le fluide au 
+niveau des obstacles, ce qui permet d’obtenir des effets plus réalistes lors de leur 
+déplacement. \\
 
-\comment{De même, le triangle est conçu à partir de deux triangles equilatéraux.}{???}
+Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer plusieurs obstacles simultanément, ainsi que de choisir leur forme parmi  un cercle, un cœur ou une étoile. Pour cela, nous avans implementer un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir  ajouter ou supprimer les differents obstacles. Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  
+ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité \comment{}{liste de quoi?}entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
+et le premier obstacle suprimer sera le dernier obstacle crer).  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.
+     
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\textwidth]{../PJ_proj/bouton+ou-.png}
+        \caption{Bouton + ou - pour gérer l'affichage des obstacles.}
+        \label{evolution4b2}
+    \end{figure}
+on constate bien que sur la figure \ref{evolution4b2} le nombre d'obstacles peut être ajusté dynamiquement grâce à ces boutons + ou - et de plus,
+il y a un curseur comptant le nombre d'obstacle present.
+Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$,  de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \] Ainsi, si $d < 0$, le point est à l'intérieur du disque (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
 
-Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion  des interactions entre le fluide et les obstacles. En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la \textbf{normale} au bord de chaque obstacle, c'est-à-dire la direction  perpendiculaire à sa surface. Cette information est essentielle pour simuler correctement  les phénomènes de réflexion et de rebond du fluide. Ainsi, le fluide réagit  de manière cohérente à la forme des obstacles, rendant la simulation realiste et représentatif. 
+Pour des formes plus complexes comme le cœur, nous utilisons une forme paramétrique définie à l'aide d'un paramètre  $t \in [0, 2\pi]$ : \[ x(t) = 16 \sin^3(t) \] \[ y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t) \] \cite{heartCurve}. Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner  correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.
 
+\comment{De même, l'étoile est conçu à partir de deux triangles équilatéraux centré en un meme point
+mais orientés differemment.}{???}
+
+Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion  des interactions entre le fluide et les obstacles. 
+En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la normale au bord de chaque obstacle, c'est-à-dire la direction  perpendiculaire à sa surface. 
+
+\\
+\\
+
+Dans notre simulation, la normale est utilisée principalement lors des interactions entre le fluide 
+et les bords des obstacles. Lorsque le fluide arrive au contact d’un obstacle, la normale permet de 
+déterminer comment la vitesse du fluide doit être modifiée, notamment pour simuler un phénomène de réflexion.\\
+
+Plus précisément, ce qui est réfléchi dans la simulation est la vitesse du fluide. Lorsqu’une 
+cellule de fluide arrive au voisinage d’un obstacle, sa vitesse est modifiée en fonction de la normale 
+afin de produire un effet de rebond réaliste.\\
+
+La normale est calculée à partir de la fonction donnant la distance au bord de l’obstacle 
+(ici la fonction \texttt{obstacleSignedDistance}, elle revoie la distance entre le centre et le bord de l'obstacle). 
+On approxime le gradient de cette fonction à l’aide de différences finies :
+\[
+n_x \approx \frac{d(x+\varepsilon, y) - d(x,y)}{\varepsilon}, \quad
+n_y \approx \frac{d(x, y+\varepsilon) - d(x,y)}{\varepsilon}
+\]
+où $d(x,y)$ représente la distance au bord de l’obstacle et $\varepsilon$ est une petite valeur. 
+Le vecteur obtenu est ensuite normalisé :
+\[
+\vec{n} = \frac{(n_x, n_y)}{\sqrt{n_x^2 + n_y^2}}
+\]
+
+Cette méthode permet d’obtenir une normale précise même pour des formes complexes comme le cœur 
+ou l’étoile.\\
+
+Si cette réflexion n’était pas mise en place, le fluide traverserait les obstacles sans 
+interaction réaliste. Cela entraînerait des comportements inadaptés, comme la disparition du fluide 
+à l'intérieur des objets ou des fuites à travers les bords, rendant la simulation incohérente.
+Il s'agit donc d'une information essentiel pour garentir une interaction coherente entre le fluide et les obstacles, et pour maintenir le réalisme de la simulation.\\
 \comment{}{La normale sert à quoi ? Quand est-ce que vous l'utilisez ? Qu'est ce qui est réfléchit dans la simulation ? Qu'est-ce qui se passerait si vous ne réflechissiez pas les choses ?}
-
-\replace{Voici ci-dessous une illustration de}{La figure \ref{evolution4b} illustre} l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
+    
+La figure \ref{evolution4b} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
 }
 
 
