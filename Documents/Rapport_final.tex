@@ -176,6 +176,10 @@ Le diagramme UML ({Figure~\ref{diagUML}}) suivant décrit brièvement l'organisa
 
 Ce diagramme permet de visualiser les dépendances entre modules et la structure de la simulation, les flèches indiquent des agrégations si le losange est vide,
 ou des compositions si le losange est plein, les pointillés décrivent des dépendances.
+Une composition de A vers B veut dire que la classe A
+possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est aussi. Une dépendance de A vers B signifie
+ que A dépend de B, c'est-à-dire que A utilise B pour fonctionner, B n'a pas besoin de A pour fonctionner. 
+ Une agrégation de A vers B veut dire que A utilise B mais B peut exister sans A.
 }
 
 \gaelle {
