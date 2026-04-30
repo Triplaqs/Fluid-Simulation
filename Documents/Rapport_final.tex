@@ -1087,7 +1087,7 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 % \end{enumerate}
 
 
-\section{Bilan et Conclusions}
+\section{Bilan}
 
 %6.1     SAURANE
 \subsection{Fonctionnalités rélisées présentent dans le cahier des charges}
@@ -1123,7 +1123,7 @@ Cette fonctionnalité reste néanmoins une piste intéressante pour enrichir la 
 
 
 %6.3   AXEL
-\subsection{Perspectives}
+\subsection{Perspectives}\label{sec:persp}
 \begin{itemize}
   \item Semi - lagrangien
   \item autres fonctionnalités possibles avec les obstacles, etc
@@ -1141,6 +1141,34 @@ Comme mentionné dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}, les
 \paragraph{Une meilleure résolution :} Nous finirions d'implémenter et d'utiliser OpenMP pour paralléliser nos calculs de mise à jour de simulation afin de se permettre d'en faire plus. En réduisant le temps de calcul, on pourrait se permettre d'augmenter le nombre de cellule tout en gardant le même nombre d'images calculées par seconde, nous permettant d'ajouter une meilleure définition à la simulation (étant actuellement de 100 cellules par 100 cellules).
 
 }
+
+\section{Conclusion générale}
+
+    \gaelle{Ce projet nous a permis d’aborder la simulation de fluides en 2D,
+    en mêlant des compétences en algorithmique, en programmation C++ et en développement graphique
+    avec OpenGL. Nous avons pu consolider des notions apprises au cours de notre licence
+    telles que la structuration d’un projet, l’utilisation de Git, ainsi que la mise en
+    œuvre d’algorithmes. Etant en double licence mathématiques-informatique, nous avons également 
+    pu utiliser nos connaissances mathématiques pour comprendre 
+    quelques formules physiques. Ces formules étaient importantes lors de l'implémenation des principaux 
+    algorithmes comme l’advection, la diffusion ou la projection.
+
+    Au-delà de l’aspect académique, ce projet, le premier pour nous car nous n'en avions pas 
+    en L2, nous a appris à organiser un travail d’équipe et à répartir les
+    responsabilités. 
+
+    Les perspectives que nous avons évoquées (voir section~\ref{sec:persp})ajout d’une méthode semi-lagrangienne, interface
+    mobile ou encore ajout de la musique, pourraient être mises en œuvre en
+    s’appuyant directement sur l’architecture actuelle. Par exemple, l’intégration d’un semi-lagrangien
+    pourrait se faire en ajoutant un module dédié au déplacement des particules. Notre projet est donc assez bien
+    construit pour que nous puissions continuer de le faire évoluer. 
+
+    Enfin, pour un lecteur débutant souhaitant reproduire ce projet, nous recommanderions de progresser
+    par étapes : commencer par afficher une grille simple, implémenter la desnsité avant la vitesse, tester
+    chaque module indépendamment, et ne pas chercher à tout optimiser dès le départ}
+
+
+
 \begin{thebibliography}{9}
 \bibitem{Stam99}
 Stam, J. (1999). Stable fluids. Proceedings of the 26th Annual Conference on Computer Graphics and Interactive Techniques, SIGGRAPH 1999, 121–128. https://doi.org/10.1145/311535.311548
