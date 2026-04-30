@@ -19,6 +19,8 @@
 \newcommand{\gaelle}[1]{{\color{olive} #1 }}
 \usepackage{graphicx}  % pour inclure des images
 \usepackage{subcaption}
+\usepackage{array}
+
 %\pagestyle{headings}        % Pour mettre des entêtes avec les titres               % des sections en haut de page
 \title{Simulation de fluides en 2D \\ % Les paramètres du titre : titre, auteur, date
 Projet de programmation 2}
@@ -518,9 +520,34 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
 
 \subsection{Statistiques}
 \sauranne {
-    En termes de statistiques, notre projet est composé de certaines classes principales : Cellule, Grille, Obstacle, etc. Il est composé de 22 fichiers (cpp et h), et contient plus de 2000 lignes de code. Le projet est organisé en plusieurs modules, tels que le module de gestion des obstacles, le module de gestion de la chaleur, etc.
+    En termes de statistiques, notre projet est composé de structures et classes principales : Cellule, Grille, Obstacle, ImageMatrix, etc. Il est composé de 22 fichiers (cpp et h), et contient environ 2000 lignes de code. Le projet est organisé en modules logiques facilitant la maintenance.
 
-    \comment{}{Ajouter un tableau avec les fichiers pour chaque module, et pour chaque fichier, son nombre de lignes.}
+    \begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|l|l|c|}
+    \hline
+    \textbf{Module} & \textbf{Fichier} & \textbf{Lignes} \\
+    \hline
+    \textbf{Physique} & fluid\_solver.cpp / .h & 139 + 13 \\
+     & fluides.cpp / .h & 169 + 34 \\
+    \hline
+    \textbf{Obstacles} & fluidRender.cpp / .h & 394 + 44 \\
+    \hline
+    \textbf{Interface} & main.cpp & 916 \\
+    \hline
+    \textbf{Rendu} & display.cpp / .h & 424 + 66 \\
+    \hline
+    \textbf{Système} & utils.cpp / .h & 127 + 245 \\
+     & matrix.cpp / .h & 87 + 45 \\
+    \hline
+    \textbf{Bluetooth} & interaction.cpp / .h & 52 + 16 \\
+    \hline
+    \textbf{Total} & \textbf{15 fichiers} & \textbf{2771} \\
+    \hline
+    \end{tabular}
+    \caption{Statistiques du projet : répartition des fichiers par module}
+    \end{table}
 }
 % \end{enumerate}
 
@@ -533,12 +560,12 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
      Dans cette section, nous allons présenter et analyser l'un des algorithmes principaux du projet : \texttt{vel\_step}. Pour cela, nous allons détailler 3 algorithmes essentiels : advection, diffusion et projection. \texttt{vel\_step} est l'algorithme qui fait évoluer la vitesse du fluide à chaque itération de la simulation.
 }
 \begin{verbatim}
-    Algorithme : vel_step
-        Début
+    fonction vel_step(N, u, v, u_prev, v_prev, dt, visc)
+        début
             ajouter_source(N, u, u_prev, dt)
             ajouter_source(N, v, v_prev, dt)
 
-            Echanger u et u_prev
+            échanger u et u_prev
 
             diffuse(N, 1, u, u_prev, visc, dt)
             Echanger v et v_prev
@@ -546,16 +573,24 @@ Notre encodage des données se fait majoritairement via des \replace{flottants}{
 
             project(N, u, v, u_prev, v_prev)
 
-            Echanger u et u_prev, Echanger v et v_prev
+            échanger u et u_prev, Echanger v et v_prev
             advect(N, 1, u, u_prev, u_prev, v_prev, dt)
             advect(N, 2, v, v_prev, u_prev, v_prev, dt)
 
             project(N, u, v, u_prev, v_prev)
-        Fin
+        fin
 \end{verbatim}
 
-\comment{}{On a besoin de savoir ce que ça fait, tout ça ! C'est quoi "N", "u", "v\_prev", "dt", etc...! Structure de données (scalaire, tableau de scalaire ?) et description ("vélocité précédente verticale/horizontale", "pas de temps" ?)}
-
+\sauranne{
+L'algorithme \texttt{vel\_step} prend en entrée les paramètres suivants :
+\begin{itemize}
+    \item $N$ : la taille de la grille (la simulation est définie sur une grille $N \times N$) ;
+    \item $u$ et $v$ : les tableaux représentant les composantes horizontale et verticale du champ de vitesse du fluide ;
+    \item $u_{\text{prev}}$ et $v_{\text{prev}}$ : les tableaux contenant les valeurs du champ de vitesse au pas de temps précédent (ou des champs intermédiaires) ;
+    \item $dt$ : le pas de temps utilisé pour l'évolution temporelle de la simulation ;
+    \item $visc$ : la viscosité du fluide, qui contrôle la diffusion du champ de vitesse.
+\end{itemize}
+}
 
 \subsubsection{Advection}
 \gaelle {
@@ -712,7 +747,8 @@ Cette méthode accélère la convergence et permet une simulation stable et effi
 
 \subsubsection{Projection}
 \sauranne {
-    Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme de projection implémente \comment{la décomposition de Hodge.}{Si vous le laissez, sachez que ça tombera sûrement en tant que question du jury à la soutenance, ça.} 
+    Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme 
+    de projection implémente la décomposition de Hodge.
     C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible et qui force la vitesse à conserver la masse. C'est une propriété importante des fluides réels. 
 
 Visuellement, la projection force l'écoulement à avoir de meilleures courbes, et évite les écoulements en ligne droite. 
@@ -721,42 +757,48 @@ La décomposition de Hodge nous dit que tout champ de vecteur de vitesse est la 
 }
 
 \begin{verbatim}
-    Algorithme : Projection
-        Entrées : int N, float * u, float * v, float * div, float * p
-        Sorties : u et v modifiés pour être incompressibles
+    fonction PROJECT(N, u, v, p, div)
+            h <- 1.0 / N
 
-        Début
-            h = 1.0 / N
-
-            # ÉTAPE 1
-            Pour chaque cellule (i, j) de la grille :
+            # Étape 1
+            pour chaque cellule (i, j) de la grille :
                 div[i, j] = -0.5 * h * (u[i+1, j] - u[i-1, j] + v[i, j+1] - v[i, j-1])
                 p[i, j] = 0
-            Fin Pour
-            Appliquer les bords pour 'div' et 'p'
+            fin pour
+            appliquer_conditions_aux_limites(div)
+            appliquer_conditions_aux_limites(p)
 
-            # ÉTAPE 2
-            Répéter 20 fois :
-                Pour chaque cellule (i, j) de la grille : 
+            # Étape 2
+            répéter 20 fois :
+                pour chaque cellule (i, j) de la grille : 
                     p[i, j] = (div[i, j]  + p[i-1, j] 
                               + p[i+1, j] + p[i, j-1] 
                               + p[i, j+1]) / 4
-                Fin Pour
-                Appliquer les bords pour 'p'
-            Fin Répéter
+                fin pour
+                appliquer_conditions_aux_limites(p)
+            fin répéter
 
-            # ÉTAPE 3 :
-            Pour chaque cellule (i, j) de la grille :
+            # Étape 3 :
+            pour chaque cellule (i, j) de la grille :
                 u[i, j] = u[i, j] - 0.5 * (p[i+1, j] - p[i-1, j]) / h
                 v[i, j] = v[i, j] - 0.5 * (p[i, j+1] - p[i, j-1]) / h
-            Fin Pour
-            Appliquer les bords pour 'u' et 'v'
-        Fin
+            fin pour
+            appliquer_conditions_aux_limites(u)
+            appliquer_conditions_aux_limites(v)
+        fin fonction
 \end{verbatim}
-\comment{}{Veillez à avoir un style visuel identique entre les pseudo-codes.}
 
 \sauranne{
-L'algorithme de projection est composé de 3 étapes : 
+
+L'algorithme de projection prend en entrée les paramètres suivants :
+\begin{itemize}
+    \item $N$ : la taille de la grille (la simulation est définie sur une grille $N \times N$) ;
+    \item $u$ et $v$ : les composantes horizontale et verticale du champ de vitesse ;
+    \item $p$ : un tableau représentant le champ de pression, utilisé pour corriger le champ de vitesse ;
+    \item $div$ : un tableau contenant la divergence du champ de vitesse initial.\\
+\end{itemize}
+
+Cet algorithme est composé de 3 étapes : 
 
 % \begin{itemize}
     \paragraph{Etape 1 :} calcul de la divergence : pour chaque cellule de la grille, on évalue la divergence discrète
@@ -846,8 +888,6 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \section{Analyse des résultats }
 
 % \begin{enumerate}%pour faire une liste numérotée
-
-\remove{Analyser (et comparer, si plusieurs) les performances des solutions implémentées.}
 \begin{itemize}
     \item eulerien vs lagrangien (uniquement eulerien a été implémenté)
     \item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screenshot)
@@ -903,7 +943,6 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \remove{\emph{ (1-2 pages)}}
 % \begin{enumerate}%pour faire une liste numérotée
 %5.1    SATINE
-\remove{Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).}
 
 \subsection{Répartition des roles}
 
@@ -986,8 +1025,6 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 
 
 \section{Bilan et Conclusions}
-\remove{Indiquer les fonctionnalités mises en œuvre par rapport au cahier des charges de départ, les points ouvertes. Les perspectives du projet décrivent ce que l'on pourrait ajouter, modifier, réécrire afin d'améliorer le projet.}
-% \begin{enumerate}
 
 %6.1     SAURANE
 \subsection{Fonctionnalités rélisées présentent dans le cahier des charges}
