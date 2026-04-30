@@ -343,10 +343,9 @@ L'affichage possède également un suystème de gestion des obstacles. L'utilisa
 les obstacles, changer leur forme ou en ajouter plusieurs (voir Figure~\ref{evolution4c}). Chaque obstacle peut être 
 déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
 } 
-\comment{}{Attention, gardez le même style. Ici, je conseille de retirer le gras du texte.}
-
+\\
 \satine{
-     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off \add{Ajouter une image de ce bouton et ajouter une référence à la figure} qui nous rammener a  l'utlisation ou non de la fonction lancant la creation de l'obstacle.  
+     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off qui nous rammener a  l'utlisation ou non de la fonction lancant la creation de l'obstacle.  
 }
      \begin{figure}[H]
         \centering
@@ -358,8 +357,6 @@ déplacé grâce au curseur de la souris, cela nous permet d'observer son impact
     \satine{
     On constate sur la figure \ref{evolution4b} que l'obstacle agit sur le fluide et qu'il est activable ou non grâce au bouton on/off.
      Par la suite, nous avons rendu cet obstacle le plus interactif possible en offrant à l'utilisateur  la possibilité de le déplacer à l'aide du curseur de la souris.
-
-    \comment{}{C'est quoi la fonction de gestion des bords ? Qu'est-ce que vous avez modifié dedans ? Au niveau programmation, ça demande quoi comme changements pour pouvoir déplacer un obstacle ? }
    
     Nous avons donc dans un premier temps adapter la fonction de gestion des bords.
     Cette fonction est une partie essentielle de la simulation, car elle permet de définir le comportement du fluide aux limites du domaine. 
@@ -390,7 +387,7 @@ niveau des obstacles, ce qui permet d'obtenir des effets plus réalistes lors de
 déplacement. \\
 
 Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer plusieurs obstacles simultanément, ainsi que de choisir leur forme parmi  un cercle, un cœur ou une étoile. Pour cela, nous avans implementer un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir  ajouter ou supprimer les differents obstacles. Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  
-ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité \comment{}{liste de quoi?} entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
+ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
 et le premier obstacle suprimer sera le dernier obstacle crer).  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.
 }
     \begin{figure}[H]
@@ -406,8 +403,8 @@ Afin de représenter précisément les différentes formes et leurs interactions
 
 Pour des formes plus complexes comme le cœur, nous utilisons une forme paramétrique définie à l'aide d'un paramètre  $t \in [0, 2\pi]$ : \[ x(t) = 16 \sin^3(t) \] \[ y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t) \] \cite{heartCurve}. Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner  correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.
 
-\comment{De même, l'étoile est conçu à partir de deux triangles équilatéraux centré en un meme point
-mais orientés differemment.}{???}
+De même, l'étoile est conçu à partir de deux triangles équilatéraux centré en un meme point
+mais orientés differemment.
 
 Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion  des interactions entre le fluide et les obstacles. 
 En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la normale au bord de chaque obstacle, c'est-à-dire la direction  perpendiculaire à sa surface. 
@@ -441,7 +438,7 @@ Si cette réflexion n’était pas mise en place, le fluide traverserait les obs
 interaction réaliste. Cela entraînerait des comportements inadaptés, comme la disparition du fluide 
 à l'intérieur des objets ou des fuites à travers les bords, rendant la simulation incohérente.
 Il s'agit donc d'une information essentiel pour garentir une interaction coherente entre le fluide et les obstacles, et pour maintenir le réalisme de la simulation.\\
-\comment{}{La normale sert à quoi ? Quand est-ce que vous l'utilisez ? Qu'est ce qui est réfléchit dans la simulation ? Qu'est-ce qui se passerait si vous ne réflechissiez pas les choses ?}
+
  
 La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
 } 
@@ -854,56 +851,72 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \end{itemize}
 
 \satine{
-    On peut voir l'évolution de notre projet a travers son evolution visuelle. mais egalement c'est peformance en fonction de différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
+    On peut voir l'évolution de notre projet a travers son evolution visuelle. Mais egalement c'est peformance en fonction des 
+    différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
 }
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/image de base.png}
     \caption{Simulation avec un obstacle et toute les proprite du fluides non modifiées}
+    \label{image_d_origine}
 \end{figure}
 
+\satine{
+    L'image \ref{image_d_origine} montre une simulation avec comme unique modification de parametre
+    l'ajout d'un obstacle. Cette simulation nous servira de base pour comparer les différentes modifications que nous allons apporter par la suite.
+    }
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/densite 5_autre position.png}
     \caption{Simulation avec 2 obstacles et une densité plus élevée(5)}
+    \label{image1}
 \end{figure}
 
 \satine{
-    On constate une meillieur visibilite des obstacle et du fluide ainsi que sa direction.
+    Dans le figure \ref{image1}, on constate une meilleure visibilité des obstacles et du fluide ainsi que sa direction comparer a la figure \ref{image_d_origine}.
+    dut a l'augmentation de la densité du fluide.
+    On constate notament mieux les interaction entre le fluide et l'obstacle ainsi 
+    que c'est divers changement de direction.
 }
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/bicolor.png}
     \caption{Simulation avec alternace etre le rouge et le bleu pour representer la chaleur du fluide}
+    \label{bicolor}
 \end{figure}
 
 \satine{
-    On remarque que le fluide sortant ce melange assez facilement en creant des degradés de rouge et de bleu.
+    Sur cette figure \ref{bicolor}, On remarque que le fluide sortant ce melange assez facilement en creant des degradés de rouge et de bleu.
+    Du au fait que le fluide chaud et froid se melange, on peut voir que les couleurs se melangent aussi pour representer la chaleur du fluide.
+    Cette implementation met en avant la diffusion de la chaleur dans le fluide, ainsi que les interactions entre les fluides chaud et froid.
+    De plus on constate une certaine symetrie de la simulation vis a vis de la diagonale.
 }
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/line.png}
-    \caption{Simulation avec sortie du fluide en ligne horizontale}
+    \caption{Simulation avec sortie du fluide en une ligne verticale}
+    \label{line}
 \end{figure}
 
 \satine{
-    On constate un fort fluite remplissant vite le cadre comparer au point des image au dessus.
+    Sur cette figure \ref{line}, on peut voir que le fluide sort en ligne droite verticale. 
+    Cette ligne commence vers le milieu de la grille et fini vers le bas. On constate que dans cette simulation,
+    le fluide monte vers lle haut car la direction de celui ci et la meme que dans la figure \ref{image_d_origine},
+    mais le le fluide est plus concentré et vivible que dans la figure \ref{image_d_origine} du a la sortie du fluide en ligne verticale.
+    Cela permet de voir netement la sortie du fluides.
 }
-\comment{}{C'est un peu mou de desccription tout ça...}
 % \end{itemize}
 % \end{enumerate}
 
 
 
 \section{Gestion du Projet}
-\remove{\emph{ (1-2 pages)}}
 % \begin{enumerate}%pour faire une liste numérotée
 %5.1    SATINE
-\remove{Présenter la gestion du projet et les documents de planification rédigés (par exemple, le diagramme de Gantt).}
 
 \subsection{Répartition des roles}
 
