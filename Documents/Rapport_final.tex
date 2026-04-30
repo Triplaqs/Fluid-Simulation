@@ -4,7 +4,15 @@
 % draft, final (stade de développement)
 \usepackage[utf8]{inputenc}   % LaTeX, comprends les accents !
 \usepackage[T1]{fontenc}      % Police contenant les caractères français
-\usepackage[french]{babel}
+\usepackage[provide=*]{babel}
+\babelprovide[main]{french}
+\addto\captionsfrench{
+  \renewcommand{\refname}{Références}
+  \renewcommand{\bibname}{Bibliographie}
+  \renewcommand{\figurename}{Figure}
+  \renewcommand{\tablename}{Tableau}
+  \renewcommand{\contentsname}{Table des matières}
+} 
 \usepackage{fullpage}
 %\usepackage{xcolor}
 \usepackage{hyperref} %pour les liens
