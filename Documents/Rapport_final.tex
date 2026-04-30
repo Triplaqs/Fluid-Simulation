@@ -142,21 +142,14 @@ vidéos, la météorologie ou l'environnement.
 % \begin{enumerate} %pour faire une liste numérotée
 %2.1         AXEL
 \subsection{Technologies utilisées}
-\begin{itemize}
-        \item langage de programmation : C++ (justification pour l'optimsation, etc)
-        \item openGL (affichage : api graphique)
-        \item Imgui (facile d'utilisation)
-\end{itemize}
 
 %============================== AXEL 1 =======================================
 \axel{
-    \comment{}{Ça, ça devait changer..!}
-    Pour notre projet, nous hésitions entre du C++ et du Python ; nous avons opté pour du C++ pour un typage plus fort et une meilleure gestion de ce qu'il se passe en mémoire et en interne plus généralement.
-    \comment{}{"De nombreux langages de programmation existent, néanmoins nous nous sommes orientés sur le langage C++ : en plus de proposer une importante puissance de calcul nécessaire pour la simulation de fluide, ce langage fortement typé nous oblige à collaborer avec plus de rigueur, ... bla bla bla ... "}
+    De nombreux langages de programmation existent, néanmoins nous nous sommes orientés sur le langage C++ : en plus de proposer une importante puissance de calcul nécessaire pour une simulation de fluide plus efficace, ce langage fortement typé nous oblige à collaborer avec plus de rigueur et nous impose une meilleure compréhension des structures de données utilisées.\\
 
-\replace{À partir de la nous avions deux options concernant l'API graphique : SFML et OpenGL}{Il existe plusieurs API graphiques pour l'affichage à l'écran, notamment OpenGL, Vulkan, SDL, SFML, etc}. Nous avons ici choisi OpenGL afin de pouvoir déléguer au GPU et parce que nous avions déjà quelques bases dans le langage (grâce à l'excellent cours Learn OpenGL de Joey De Vries \add{\cite{LearnOpenGL}}).
+Il existe plusieurs API graphiques pour l'affichage à l'écran, notamment OpenGL, Vulkan, SDL, SFML, etc. Nous avons ici choisi OpenGL afin de pouvoir déléguer au GPU et parce que nous avions déjà quelques bases dans le langage (grâce à l'excellent cours Learn OpenGL de Joey De Vries \add{\cite{LearnOpenGL}}).
 
-\remove{Une fois en C++ sur OpenGL,} nous avons établi des prémices d'interactivité via le terminal, avant de basculer sur IMGUI \replace{(voir le Github polyvalent de Ocornut)}{\cite{ImGUI}}, qui s'impose comme une référence en terme de panneau de contrôle interactif en OpenGL.
+Nous avons établi des prémices d'interactivité via le terminal, avant de basculer sur IMGUI \cite{ImGUI}, qui s'impose comme une référence en terme de panneau de contrôle interactif en OpenGL.
 }
 
 %=============================================================================
@@ -196,6 +189,8 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
 }
 
 \subsubsection{Affichage d'une grille de chaleur}
+\label{sec:Affichage d'une grille de chaleur}
+
 \gaelle {
     Nous avons mis en place un affichage sous forme de grille de chaleur (Figure~\ref{figure1_1}). Pour mettre 
     en place cet affichage, chaque cellule de la grille est associée à une valeur, dans ce cas, 
@@ -233,13 +228,9 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
     permet de visualiser facilement comment la température se diffuse dans le fluide.}
 
 \axel{
-    Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Nous avons donc implémenté notre grille avec un simple \add{std::}vecteur C++ de structure Cell avec chaque paramètre comme attribut.
+    Nous avons une simulation de fluide Eulérienne, qui fonctionne sur le principe d'une grille dont chaque cellule possède ses paramètres locaux. Nous avons donc implémenté notre grille avec un simple std::vecteur C++ de structure Cell avec chaque paramètre comme attribut. Une tableau unidimensionnel comme structure est plus facilement manipulable en mémoire par le CPU.
 
-    \comment{}{std::vector = tableau unidimensionnel (1D) -> car plus rapide sur le CPU pour faire des calculs.}
-
-    \comment{}{Ajouter une image du diagramme UML avec seulement "Simulation", "Grid" et "Cell", puis la référencer dans le texte.}
-
-\comment{Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}{Attention, ce n'est pas le cas dans votre diagramme UMl. Vous pouvez dire que vous l'avez divisée en deux parties : "Grid" et "Simulation".}
+%\comment{Cette grille possède ses propres méthodes (reset, update, \emph{etc...}). Nous l'avons définie à la base de notre arborescence d'inclusion de fichiers afin d'en faire un Singleton : structure unique de référence accessible depuis n'importe quel module du projet.}{Attention, ce n'est pas le cas dans votre diagramme UMl. Vous pouvez dire que vous l'avez divisée en deux parties : "Grid" et "Simulation".}
 }
 
 \subsubsection{Simulation du fluide}
@@ -483,6 +474,7 @@ La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simu
 
 \axel{
     \subsubsection{Modules en cours de développement}
+    \label{sec:Modules en cours de développement}
 }
 
 % ============================== AXEL 3 =======================================
@@ -497,19 +489,17 @@ Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avo
 \paragraph{Interface utilisateur sur smartphone}
 Parmi elles, nous avons une interactivité avec la simulation. Non pas avec IMGUI depuis la fenêtre OpenGL, mais avec une 
 application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont 
-été développées. Malheureusement sans qu'une connexion ne puisse être établie, et ce depuis plusieurs téléphones avec l'application 
-d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
-\comment{}{Divise tes phrases, elles sont trop longues.}
+été développées. Malheureusement sans qu'une connexion ne puisse être établie. Nous avons essayé d'établir une connexion depuis plusieurs téléphones d'OS différentes avec l'application couplés avec plusieurs ordinateurs sous Linux et Windows.
 
 \paragraph{Semi-Lagrangien}
 Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode 
 de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement 
-régi par des lois physiques) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie 
-\underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer 
+régi par des lois physiques) nous voulions utiliser notre grille déjà existante\\ (mentionnée dans la partie 
+\underline{\emph{\nameref{sec:Affichage d'une grille de chaleur}}}) afin d'y capturer 
 notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre 
 structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure 
 particules qui est principalement un vecteur de structure particule, relativement analogue à la structure Cell 
-(cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
+(cellules de la grille). Voir Diagramme UML du projet : \underline{\emph{\nameref{diagUML}}}.
 
 \paragraph{Calcul parallèle}
 Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.
@@ -1130,7 +1120,7 @@ Cette fonctionnalité reste néanmoins une piste intéressante pour enrichir la 
 
 % ============================== AXEL 7 =======================================
 \axel{
-Comme mentionné dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}, les perspectives d'évolutions pour la suite du projet sont ces choses auxquelles nous avons songé, que nous avons essayé d'implémenter mais qui nous n'avons pas su faire aboutir. Parmi elles on peut compter :
+Comme mentionné dans la partie \underline{\emph{\nameref{sec:Modules en cours de développement}}}, les perspectives d'évolutions pour la suite du projet sont ces choses auxquelles nous avons songé, que nous avons essayé d'implémenter mais qui nous n'avons pas su faire aboutir. Parmi elles on peut compter :
 
 \paragraph{Une meilleure interactivité :} Nous reprendrions l'application et le code de transmission de données et de gestion des ports afin de rendre cette fonctionnalité opérationnelle.
 
