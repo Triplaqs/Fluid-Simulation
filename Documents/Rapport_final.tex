@@ -306,7 +306,7 @@ Dans l'interface graphique, nous avons ajouté un bouton "Chaud/Froid" qui perme
 
 Quand on lance la simulation, le fluide est injecté par une source froide (bleue) par defaut (voir figure \ref{chaleur1}). C'est grâce au bouton Chaud/Froid que l'on peut alterner et obtenir une source chaude (rouge) (voir figure \ref{chaleur3}), 
 on pourra aussi remarquer que la direction a été changée arbitrairement.
-On peut observer que sur la figure \ref{chaleur1}, on a alterné déjà quelques fois entre les deux sources, ce qui explique la présence de quelques taches rouges et dégradés de violet.
+On peut observer que sur la figure \ref{chaleur1}, on a alterné déjà quelques fois entre les deux sources, ce qui explique la présence de quelques taches rouges et dégradés de violet.\\
 
 \begin{figure}[H]
     \centering
@@ -320,7 +320,7 @@ Dans la figure \ref{chaleur2}, on observe la simulation après de nombreuses it�
 En termes d'implémentation, chaque cellule de la grille contient un paramètre $température$ qui varie entre -1 (froid) et 1 (chaud). 
 La propagation de la chaleur se fait par diffusion, c'est à dire que chaque cellule prend comme valeur la température
 moyenne de ses voisins à chaque itération. \\
-La chaleur ne peut pas d'échapper des bords. Chaque cellule se diffuse uniquement avec ses voisins à l'intérieur de la grille.
+La chaleur ne peut pas s'échapper des bords, chaque cellule se diffuse uniquement avec ses voisins à l'intérieur de la grille.
 Aux bords, elle se mélange avec moins de cellules voisines, ce qui peut entrainer une accumulation de froid ou de chaud le long des bords.
 \\
 \\
@@ -334,20 +334,22 @@ Ce mode d'affichage thermique peut être combiné avec les obstacles :
 \end{figure}
 
 On peut déplacer le cercle pour mélanger les différentes zones de temparature. Dans cette simulation, on considère que les obstacles sont neutres en terme de température, 
-c'est à dire qu'ils n'ont pas d'effet de sur l'aspect thermique du fluide. Concrètement, dans l'implémentation, les obstacles sont comme des bords pour la chaleur : ils empêchent la chaleur de se diffuser à travers eux.
+c'est à dire qu'ils n'ont pas d'effet de sur l'aspect thermique du fluide. Concrètement, dans l'implémentation, les obstacles sont considérés comme des bords pour la chaleur : ils empêchent la chaleur de se diffuser à travers eux.
 
-Lorsqu'on déplace un obstacle, il déplace égalementles zones de chaleur avec lui, ce qui peut créer des effets de mélange intéressants.
+Lorsqu'on déplace un obstacle, il déplace également les zones de chaleur avec lui, ce qui peut créer des effets de mélange intéressants.
 }
 
 \subsubsection{Gestion des obstacles }
 \gaelle {
-L'affichage possède également un suystème de gestion des obstacles. L'utilisateur peut activer ou désactiver 
+L'affichage possède également un système de gestion des obstacles. L'utilisateur peut activer ou désactiver 
 les obstacles, changer leur forme ou en ajouter plusieurs (voir Figure~\ref{evolution4c}). Chaque obstacle peut être 
 déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
 } 
 \\
 \satine{
-     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notament la fonction de gestion des bords afin qu'elle reconnaise les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off qui nous rammener a  l'utlisation ou non de la fonction lancant la creation de l'obstacle.  
+     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notamment la fonction de gestion des 
+     bords afin qu'elle reconnaisse les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off qui 
+     nous ramenait à l'utilisation ou non de la fonction lançant la création de l'obstacle.  
 }
      \begin{figure}[H]
         \centering
@@ -358,39 +360,44 @@ déplacé grâce au curseur de la souris, cela nous permet d'observer son impact
 
     \satine{
     On constate sur la figure \ref{evolution4b} que l'obstacle agit sur le fluide et qu'il est activable ou non grâce au bouton on/off.
-     Par la suite, nous avons rendu cet obstacle le plus interactif possible en offrant à l'utilisateur  la possibilité de le déplacer à l'aide du curseur de la souris.
+    Par la suite, nous avons rendu cet obstacle le plus interactif possible en offrant à l'utilisateur la possibilité de le déplacer à l'aide de la souris.
    
-    Nous avons donc dans un premier temps adapter la fonction de gestion des bords.
+    Nous avons donc dans un premier temps adapté la fonction de gestion des bords.
     Cette fonction est une partie essentielle de la simulation, car elle permet de définir le comportement du fluide aux limites du domaine. 
-    Elle sert notamment à empêcher le fluide de sortir de la zone simulée et à gérer les interactions avec les parois, en imposant certaines conditions sur les vitesses 
-    (par exemple réflexion ou annulation de la vitesse).\\
+    Elle sert notamment à empêcher le fluide de sortir de la zone simulée et à gérer les interactions avec les bords, en imposant 
+    certaines conditions sur les vitesses (par exemple réflexion ou annulation de la vitesse).\\
 
 Dans notre projet, cette fonction a été modifiée afin de prendre en compte la 
 présence d'obstacles à l'intérieur du fluide. A l'origine, seul les bords 
-du domaine était considérée. Nous avons donc adapté cette fonction pour traiter 
-également les cellules appartenant aux obstacles . Cela 
+du domaine étaient considérés. Nous avons donc adapté cette fonction pour traiter 
+également les cellules appartenant aux obstacles. Cela 
 implique de détecter si une cellule se situe à l'intérieur d'un obstacle ou à 
-proximité de son bord, puis de modifier le comportement du fluide en fonction de ses informations. 
+proximité de son bord, puis de modifier le comportement du fluide en fonction de ces informations. 
 (par exemple en annulant la vitesse ou en appliquant une réflexion).\\
 
 Au niveau programmation, permettre le déplacement d'un obstacle nécessite plusieurs 
 modifications. Tout d'abord, il faut stocker les obstacles dans une structure de 
 données (ici une liste) contenant leurs paramètres (coordonnées, rayon, forme). Ensuite, 
-il est nécessaire de mettre à jour leur position à chaque intéraction de l'utilisateur 
+il est nécessaire de mettre à jour leurs positions à chaque intéraction de l'utilisateur 
 (par exemple le déplacement de la souris). Enfin, la simulation 
 doit être recalculée en tenant compte de ces nouvelles positions, ce qui implique de 
-mettre à jour les calculs de collision et les conditions aux bords en temps réel (il a notament fallut utiliser Imgui afin de recuperer
+mettre à jour les calculs de collision et les conditions aux bords en temps réel (il a notamment fallu utiliser Imgui afin de récupérer
 les coordonnées des cellules).\\
 
 De plus, afin de conserver un comportement physique cohérent, nous avons introduit 
 le calcul de la vitesse des obstacles en comparant leur position actuelle à celle de 
-la l'itération précédente. Cette information est utilisée pour influencer le fluide au 
+l'itération précédente. Cette information est utilisée pour influencer le fluide au 
 niveau des obstacles, ce qui permet d'obtenir des effets plus réalistes lors de leur 
 déplacement. \\
 
-Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer plusieurs obstacles simultanément, ainsi que de choisir leur forme parmi  un cercle, un cœur ou une étoile. Pour cela, nous avans implementer un curseur comptant le nombre d'obstacle par forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir  ajouter ou supprimer les differents obstacles. Les obstacles sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  
-ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité entre les differents obstacles (par exemple si 2 obstacle sont superposés, le premier a etre deplacer sera le premier obstacle afficher
-et le premier obstacle suprimer sera le dernier obstacle crer).  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles via une interface dédiée.
+Nous avons ensuite enrichi notre simulation en ajoutant la possibilité de gérer plusieurs obstacles simultanément, ainsi que de choisir 
+leur forme parmi un cercle, un cœur et une étoile. Pour cela, nous avons implementé un curseur comptant le nombre d'obstacle par 
+forme ainsi qu'un bouton +/- sur chaque forme possible afin de pouvoir ajouter ou supprimer les differents obstacles. Les obstacles 
+sont stockés dans une unique \textbf{liste} contenant leurs coordonnées (x, y), rayon et forme,  
+ce qui permet de les manipuler facilement (ajout, suppression, sélection et déplacement) tout en créant un ordre de priorité entre 
+les differents obstacles (par exemple si deux obstacle sont superposés, le premier a être deplacé sera le premier obstacle affiché
+et le premier obstacle supprimé sera le dernier obstacle créé).  L'utilisateur peut ainsi ajuster dynamiquement le nombre d'obstacles 
+via une interface dédiée.
 }
     \begin{figure}[H]
         \centering
@@ -399,17 +406,26 @@ et le premier obstacle suprimer sera le dernier obstacle crer).  L'utilisateur p
         \label{evolution4b}
     \end{figure}
 \satine{
-on constate bien que sur la figure \ref{evolution4b} le nombre d'obstacles peut être ajusté dynamiquement grâce à ces boutons + ou - et de plus,
-il y a un curseur comptant le nombre d'obstacle present.
-Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions mathématiques permettant, pour chaque point $(x,y)$,  de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \] Ainsi, si $d < 0$, le point est à l'intérieur du disque (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
 
-Pour des formes plus complexes comme le cœur, nous utilisons une forme paramétrique définie à l'aide d'un paramètre  $t \in [0, 2\pi]$ : \[ x(t) = 16 \sin^3(t) \] \[ y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t) \] \cite{heartCurve}. Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner  correctement le cœur dans la simulation. Cette approche permet d'obtenir une forme realiste et cohérente.
+On constate bien que sur la figure \ref{evolution4b} le nombre d'obstacle peut être ajusté dynamiquement grâce aux boutons + ou - et 
+il y a un curseur comptant le nombre d'obstacle présent.
+Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions 
+mathématiques permettant, pour chaque point $(x,y)$, de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  
+Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \].
+Ainsi, si $d < 0$, le point est à l'intérieur du disque (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le 
+fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
 
-De même, l'étoile est conçu à partir de deux triangles équilatéraux centré en un meme point
-mais orientés differemment.
+Pour des formes plus complexes comme le cœur, nous utilisons une forme paramétrique définie à l'aide d'un paramètre  
+$t \in [0, 2\pi]$ : \[ x(t) = 16 \sin^3(t) \] \[ y(t) = 13\cos(t) - 5\cos(2t) - 2\cos(3t) - \cos(4t) \] \cite{heartCurve}. 
+Ces coordonnées sont ensuite normalisées, redimensionnées et translatées afin de positionner correctement le cœur dans la simulation. 
+Cette approche permet d'obtenir une forme réaliste et cohérente.
 
-Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion  des interactions entre le fluide et les obstacles. 
-En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la normale au bord de chaque obstacle, c'est-à-dire la direction  perpendiculaire à sa surface. 
+De même, l'étoile est conçue à partir de deux triangles équilatéraux centré en un meme point mais orientés differemment.
+
+Enfin, pour améliorer le plus possible le réalisme de la simulation, nous avons mis en place une gestion des interactions entre le fluide 
+et les obstacles. 
+En utilisant en particulier, la fonction \texttt{obstacleNormal} qui  permet de calculer la normale au bord de chaque obstacle, c'est-à-dire 
+la direction perpendiculaire à sa surface. 
 
 
 Dans notre simulation, la normale est utilisée principalement lors des interactions entre le fluide 
@@ -439,10 +455,12 @@ ou l’étoile.\\
 Si cette réflexion n’était pas mise en place, le fluide traverserait les obstacles sans 
 interaction réaliste. Cela entraînerait des comportements inadaptés, comme la disparition du fluide 
 à l'intérieur des objets ou des fuites à travers les bords, rendant la simulation incohérente.
-Il s'agit donc d'une information essentiel pour garentir une interaction coherente entre le fluide et les obstacles, et pour maintenir le réalisme de la simulation.\\
+Il s'agit donc d'une implémentation essentiel pour garantir une interaction cohérente entre le fluide et les obstacles, et 
+pour maintenir le réalisme de la simulation.\\
 
  
-La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile à 6 branches) :
+La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simulation  (ici deux cercles, deux cœurs et une étoile 
+à 6 branches) :
 } 
 
 
@@ -459,15 +477,29 @@ La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simu
 
 % ============================== AXEL 3 =======================================
 \axel{
-Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps. 
-\comment{}{Petit listing des 3 sous-modules}
+Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps :
+\begin{itemize}
+    \item une interface utilisateur sur smartphone
+    \item la méthode semi-lagrangienne
+    \item une approche de calcul parallèle (multi-processing)
+\end{itemize}
 
 \paragraph{Interface utilisateur sur smartphone}
-Parmi elles, nous avons une interactivité avec la simulation non pas avec IMGUI depuis la fenêtre OpenGL mais avec une application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont été développées. Malheureusement sans qu'une connexion ne puisse être établie, et ceux depuis plusieurs téléphones avec l'application d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
+Parmi elles, nous avons une interactivité avec la simulation. Non pas avec IMGUI depuis la fenêtre OpenGL, mais avec une 
+application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont 
+été développées. Malheureusement sans qu'une connexion ne puisse être établie, et ce depuis plusieurs téléphones avec l'application 
+d'OS différentes couplés avec plusieurs ordinateurs sous Linux et Windows.
 \comment{}{Divise tes phrases, elles sont trop longues.}
 
 \paragraph{Semi-Lagrangien}
-Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement régi par des lois \add{physiques}) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie \underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure particules qui est \replace{grossièrement}{principalement} un vecteur de structure particule, relativement analogue à la structure Cell (cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
+Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode 
+de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement 
+régi par des lois physiques) nous voulions utiliser notre grille déjà existante (mentionnée dans la partie 
+\underline{\emph{\nameref{2.3 - Partie A}}}\add{Voir dans un commentaire au-dessus comment se référer à une autre section}) afin d'y capturer 
+notre simulation Lagrangienne de quelques particules. Une revisite de notre structure fût effective, nous avons redéfini notre 
+structure-Singleton (référence, accessible de partout) en Structure Simulation : qui contient une structure grille, et notre nouvelle structure 
+particules qui est principalement un vecteur de structure particule, relativement analogue à la structure Cell 
+(cellules de la grille). \add{Référence à l'UML, ou ajout d'une figure avant/après de votre UML.}
 
 \paragraph{Calcul parallèle}
 Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.
@@ -509,7 +541,11 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 
 % ============================== AXEL 5 =======================================
 \axel{
-Notre encodage des données se fait majoritairement via des \replace{flottants}{scalaires}. Le fluide se décompose en plusieurs données physiques (densité, pression, viscosité, \emph{etc...}) que l'on encode via des flottants et que l'on stock dans une structure Cell (cellule) dont on forme un vecteur d'ensemble dans une structure Grid (grille). Dans ce genre de structure on implémente des attributs-méthodes de tailles en \replace{integers}{entiers}. On perfectionne notre diversité de simulation avec des conditions booléenne pour savoir si oui ou non, on affiche un obstacle, si oui ou non on a plusieurs points de fuites, \emph{etc ...}
+Notre encodage des données se fait majoritairement via des scalaires. Le fluide se décompose en plusieurs données physiques (densité, 
+pression, viscosité, \emph{etc...}) que l'on encode via des flottants et que l'on stock dans une structure Cell (cellule) dont on forme 
+un vecteur d'ensemble dans une structure Grid (grille). Dans ce genre de structure on implémente des attributs-méthodes de tailles en 
+entiers. On perfectionne notre diversité de simulation avec des conditions booléenne pour savoir si oui ou non, on affiche un obstacle, 
+si oui ou non on a plusieurs points de fuites, \emph{etc ...}
 
 }
 %2.6     SAURANE
