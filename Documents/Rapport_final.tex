@@ -12,6 +12,7 @@
   \renewcommand{\figurename}{Figure}
   \renewcommand{\tablename}{Tableau}
   \renewcommand{\contentsname}{Table des matières}
+  \renewcommand{\abstractname}{Résumé}
 } 
 \usepackage{fullpage}
 %\usepackage{xcolor}
@@ -242,8 +243,6 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
 }
 
 \subsubsection{Simulation du fluide}
-
-\comment{}{Section à merger avec celle au-dessus ? }
 \gaelle {
     La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permit 
     d'avoir un rendu dynamique en 2D. Le fluide est représenté sur une grille Eulerienne 
@@ -261,7 +260,6 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
 \end{figure}
 
 \subsubsection{Mode point/ligne}
-\comment{}{Section "Interface Utilisateur" ?}
 \gaelle {
     Le choix est donné à l'utilisateur de la forme de la source du fluide. L'utilisateur peut injecter le fluide provenant soit d'un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille soit quatre scalaires (voir figure ...).
 
