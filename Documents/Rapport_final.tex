@@ -29,6 +29,9 @@
 \usepackage{graphicx}  % pour inclure des images
 \usepackage{subcaption}
 \usepackage{array}
+\setlength{\parindent}{15pt}
+\setlength{\parskip}{0pt}
+
 
 %\pagestyle{headings}        % Pour mettre des entêtes avec les titres               % des sections en haut de page
 \title{Simulation de fluides en 2D \\ % Les paramètres du titre : titre, auteur, date
@@ -59,20 +62,16 @@ modifier les paramètres du fluide en temps réel.
 \tableofcontents
 \newpage
 
-\section{Présentation du Sujet} % Commencer une section, * permet de ne pas numéroté l'introduction
-%Présentation du Sujet (1-2 pages)
-% \begin{itemize}%pour faire une liste à puces
-%1.1		SATINE
+\section{Présentation du Sujet} 
 
-
-    Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique 
+\hspace*{\parindent} Ce projet de programmation 2 a été réalisé dans le cadre de la licence informatique 
     L3  de la faculté des sciences de Montpellier. L'objectif de ce projet est de 
     simuler un fluide de manière interactive en 2D en temps réel. Pour cela, nous 
     avons choisi d'implémenter la méthode de Jos Stam "Stable Fluids", qui permet de 
     simuler un fluide de manière stable et rapide. Nous avons également implémenté une 
     interface graphique pour  visualiser en temps réel l'évolution du fluide et pour 
-    intéragir avec celui-ci. Cette intéraction est possible grâce à la création  
-    d'obstacles clicables et la possibilité de modifier durant la simulation les 
+    intéragir avec celui-ci. Cette interaction est possible grâce à la création  
+    d'obstacles cliquables et la possibilité de modifier durant la simulation les 
     différents paramètres du fluide.
 
 
@@ -145,7 +144,7 @@ vidéos, la météorologie ou l'environnement.
 
 %============================== AXEL 1 =======================================
 
-    De nombreux langages de programmation existent, néanmoins nous nous sommes orientés sur le langage C++ : en plus de proposer une importante puissance de calcul nécessaire pour une simulation de fluide plus efficace, ce langage fortement typé nous oblige à collaborer avec plus de rigueur et nous impose une meilleure compréhension des structures de données utilisées.\\
+\hspace*{\parindent} De nombreux langages de programmation existent, néanmoins nous nous sommes orientés sur le langage C++ : en plus de proposer une importante puissance de calcul nécessaire pour une simulation de fluide plus efficace, ce langage fortement typé nous oblige à collaborer avec plus de rigueur et nous impose une meilleure compréhension des structures de données utilisées.\\
 
 Il existe plusieurs API graphiques pour l'affichage à l'écran, notamment OpenGL, Vulkan, SDL, SFML, etc. Nous avons ici choisi OpenGL afin de pouvoir déléguer au GPU et parce que nous avions déjà quelques bases dans le langage (grâce à l'excellent cours Learn OpenGL de Joey De Vries \add{\cite{LearnOpenGL}}).
 
@@ -156,7 +155,7 @@ Nous avons établi des prémices d'interactivité via le terminal, avant de basc
 %2.2      GAËLLE
 \subsection{Développements logiciel réalisés}
 
-    Dans cette partie nous allons nous intéresser à l'architecture de notre projet.
+\hspace*{\parindent} Dans cette partie nous allons nous intéresser à l'architecture de notre projet.
     
 Le diagramme UML ({Figure~\ref{diagUML}}) suivant décrit brièvement l'organisation du projet que nous décrirons en détails par la suite. Nous pouvons clairement distinguer les principaux modules :
 \begin{itemize}
@@ -192,7 +191,7 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
 \label{sec:Affichage d'une grille de chaleur}
 
 
-    Nous avons mis en place un affichage sous forme de grille de chaleur (Figure~\ref{figure1_1}). Pour mettre 
+\hspace*{\parindent} Nous avons mis en place un affichage sous forme de grille de chaleur (Figure~\ref{figure1_1}). Pour mettre 
     en place cet affichage, chaque cellule de la grille est associée à une valeur, dans ce cas, 
     cette valeur représente une température. Nous utilisons différentes teintes de rouge afin de
      représenter visuellement les variations de température : 
@@ -235,7 +234,7 @@ L’évolution de la chaleur sur la grille suit ce principe : à chaque itérati
 
 \subsubsection{Simulation du fluide}
 
-    La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permit 
+\hspace*{\parindent} La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permit 
     d'avoir un rendu dynamique en 2D. Le fluide est représenté sur une grille Eulerienne 
     (voir partie~\ref{part:eulerienne}). 
     Dans cette grille, chaque cellule stocke des informations phyiques comme la densité ou la vitesse sous forme de scalaire (\texttt{float}) ou 
@@ -252,7 +251,7 @@ L’évolution de la chaleur sur la grille suit ce principe : à chaque itérati
 
 \subsubsection{Mode point/ligne}
 
-    Le choix est donné à l'utilisateur de la forme de la source du fluide. L'utilisateur peut injecter le fluide provenant soit d'un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille soit quatre scalaires (voir figure ...).
+\hspace*{\parindent} Le choix est donné à l'utilisateur de la forme de la source du fluide. L'utilisateur peut injecter le fluide provenant soit d'un point unique, soit le long d'une ligne définie par deux coordonnées dans la grille soit quatre scalaires (voir figure ...).
 
     \begin{figure}[H]
         \centering
@@ -271,7 +270,7 @@ $step = max(|i_1 - i_0|,|j_1 - j_0|)$. Lors ces étapes, nous parcourons, simple
 
 \subsubsection{Gestion de la chaleur}
 
-Un mode d'affichage thermique permet de visualiser le fluide en fonction de sa 
+\hspace*{\parindent} Un mode d'affichage thermique permet de visualiser le fluide en fonction de sa 
 température. Pour implémenter la chaleur dans notre simulation, nous avons ajouté 
 un paramètre "chaleur" à chaque cellule de la grille. Ce paramètre est représenté 
 par une valeur numérique qui peut être positive (indiquant une source chaude) ou 
@@ -342,7 +341,7 @@ Lorsqu'on déplace un obstacle, il déplace également les zones de chaleur avec
 
 \subsubsection{Gestion des obstacles }
 
-L'affichage possède également un système de gestion des obstacles. L'utilisateur peut activer ou désactiver 
+\hspace*{\parindent} L'affichage possède également un système de gestion des obstacles. L'utilisateur peut activer ou désactiver 
 les obstacles, changer leur forme ou en ajouter plusieurs (voir Figure~\ref{evolution4c}). Chaque obstacle peut être 
 déplacé grâce au curseur de la souris, cela nous permet d'observer son impact sur la simulation.
 
@@ -412,7 +411,7 @@ On constate bien que sur la figure \ref{evolution4b} le nombre d'obstacle peut �
 il y a un curseur comptant le nombre d'obstacle présent.
 Afin de représenter précisément les différentes formes et leurs interactions avec le fluide,  nous avons implémenté des fonctions 
 mathématiques permettant, pour chaque point $(x,y)$, de déterminer sa position par rapport à un obstacle (intérieur, extérieur ou bord).  
-Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \].
+Par exemple, dans le cas d'un cercle de centre $(cx,cy)$ et de rayon $r$, la distance au bord est donnée par : \[ d(x,y) = \sqrt{(x-cx)^2 + (y-cy)^2} - r \]
 Ainsi, si $d < 0$, le point est à l'intérieur du disque (donc le fluide ne peut pas y pénétrer), si $d = 0$, il est sur le bord (donc le 
 fluide est en contact avec l'obstacle), et si $d > 0$, il est à l'extérieur (donc le fluide peut y pénétrer). 
 
@@ -479,7 +478,7 @@ La figure \ref{evolution4c} illustre l'ajout de plusieurs obstacles dans la simu
 
 % ============================== AXEL 3 =======================================
 
-Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps :
+\hspace*{\parindent} Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avons pas pu finaliser par manque de temps :
 \begin{itemize}
     \item une interface utilisateur sur smartphone
     \item la méthode semi-lagrangienne
@@ -487,11 +486,15 @@ Nous avons envisagé plusieurs fonctionnalités dans notre projet que nous n'avo
 \end{itemize}
 
 \paragraph{Interface utilisateur sur smartphone}
+\leavevmode\\
+
 Parmi elles, nous avons une interactivité avec la simulation. Non pas avec IMGUI depuis la fenêtre OpenGL, mais avec une 
 application depuis une machine externe. Une application de test et une gestion de port à des fins de transmissions de données ont 
 été développées. Malheureusement sans qu'une connexion ne puisse être établie. Nous avons essayé d'établir une connexion depuis plusieurs téléphones d'OS différentes avec l'application couplés avec plusieurs ordinateurs sous Linux et Windows.
 
 \paragraph{Semi-Lagrangien}
+\leavevmode\\
+
 Pour enrichir notre simulation, nous souhaitions implementer une méthode semi-lagrangienne. Le semi-Lagrangien étant une méthode 
 de simulation hybride entre l'Eulérien (utilisation de grilles à paramètres) et du Lagrangien (utilisation de particules au comportement 
 régi par des lois physiques) nous voulions utiliser notre grille déjà existante\\ (mentionnée dans la partie 
@@ -502,6 +505,8 @@ particules qui est principalement un vecteur de structure particule, relativemen
 (cellules de la grille). Voir Diagramme UML du projet : \underline{\emph{\nameref{diagUML}}}.
 
 \paragraph{Calcul parallèle}
+\leavevmode\\
+
 Une approche de parallélisme a été envisagée ; nous avons installé OpenMP pour faire donc du \emph{Multi-Processing} sur OpenGL afin de pouvoir se permettre d'augmenter la résolution (taille de grille) de notre simulation, mais nous n'avons pu faire aboutir cette option par faute de temps.
 
 
@@ -510,7 +515,7 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 \label{sec:interface-utilisateur}
 % ============================== AXEL 4 =======================================
 
-    Notre panneau d'interaction avec la simulation permet de mettre la main sur 
+\hspace*{\parindent} Notre panneau d'interaction avec la simulation permet de mettre la main sur 
     de nombreuses variables de la simulation. 
     Nous avons essayé de faire en sorte que chaque variable arbitraire devienne un curseur, une 
     valeur à saisir, un interrupteur à enclencher afin de rendre notre simulation riche en 
@@ -523,9 +528,9 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
         \label{figure3}
     \end{figure}
 
-    \gaelle {
+    
         Notre affichage comporte un panneau de paramètres développé avec ImGui. Ce panneau nous permet de modifier en temps réel, lors de la simulation, différents paramètres tels que la densité, la couleur ou encore la direction du fluide. Les valeurs saisies par l'utilisateur sont envoyées au module de simulation qui met à jour la grille. Ce panneau peut être affiché ou masqué en pressant la touchant \texttt{h}.
-    }
+    
     
     Nous avons aussi des obstacles que nous pouvons ajouter, supprimer ou déplacer.
     On peut choisir leur nombre, leurs formes ainsi que leur position avec un simple clic ou déplacement de la souris.
@@ -535,7 +540,7 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 \subsection{Format des données d'entrée}
 % ============================== AXEL 5 =======================================
 
-Notre encodage des données se fait majoritairement via des scalaires. Le fluide se décompose en plusieurs données physiques (densité, 
+\hspace*{\parindent} Notre encodage des données se fait majoritairement via des scalaires. Le fluide se décompose en plusieurs données physiques (densité, 
 pression, viscosité, \emph{etc...}) que l'on encode via des flottants et que l'on stock dans une structure Cell (cellule) dont on forme 
 un vecteur d'ensemble dans une structure Grid (grille). Dans ce genre de structure on implémente des attributs-méthodes de tailles en 
 entiers. On perfectionne notre diversité de simulation avec des conditions booléenne pour savoir si oui ou non, on affiche un obstacle, 
@@ -546,7 +551,7 @@ si oui ou non on a plusieurs points de fuites, \emph{etc ...}
 
 \subsection{Statistiques}
 
-    En termes de statistiques, notre projet est composé de structures et classes principales : Cellule, Grille, Obstacle, ImageMatrix, etc. Il est composé de 15 fichiers (cpp et h), et 
+\hspace*{\parindent} En termes de statistiques, notre projet est composé de structures et classes principales : Cellule, Grille, Obstacle, ImageMatrix, etc. Il est composé de 15 fichiers (cpp et h), et 
     contient environ 2770 lignes de code. Le projet est organisé en modules logiques facilitant la maintenance.
 
     \begin{table}[H]
@@ -584,7 +589,7 @@ si oui ou non on a plusieurs points de fuites, \emph{etc ...}
 \subsection{Principaux algorithmes utilisés}
 
 
-     Dans cette section, nous allons présenter et analyser l'un des algorithmes principaux du projet : \texttt{vel\_step}. Pour cela, nous allons détailler 3 algorithmes essentiels : advection, diffusion et projection. \texttt{vel\_step} est l'algorithme qui fait évoluer la vitesse du fluide à chaque itération de la simulation.
+\hspace*{\parindent} Dans cette section, nous allons présenter et analyser l'un des algorithmes principaux du projet : \texttt{vel\_step}. Pour cela, nous allons détailler 3 algorithmes essentiels : advection, diffusion et projection. \texttt{vel\_step} est l'algorithme qui fait évoluer la vitesse du fluide à chaque itération de la simulation.
 
 \begin{verbatim}
     fonction vel_step(N, u, v, u_prev, v_prev, dt, visc)
@@ -621,7 +626,7 @@ L'algorithme \texttt{vel\_step} prend en entrée les paramètres suivants :
 
 \subsubsection{Advection}
 
-L'advection est un processus physique qui décrit le transport d'une quantité (densité, chaleur ou vitesse) par 
+\hspace*{\parindent} L'advection est un processus physique qui décrit le transport d'une quantité (densité, chaleur ou vitesse) par 
 le fluide.L'advection déplace l'information en suivant le mouvement du fluide. Selon le travail de Jos Stam 
 \cite{Stam99}, nous utilisons l'approche \emph{semi-lagrangienne} introduite. L'équation de l'advection est  :
 \[
@@ -699,7 +704,7 @@ L'advection semi-lagrangienne peut être vue comme un déplacement de matière :
 
 \subsubsection{Diffusion}
 
-Comme l'advection, la diffusion est un processus physique qui décrit la propagation d'une substance. Nous avons donc choisit de l'implementer en pseudocode comme suit :
+\hspace*{\parindent} Comme l'advection, la diffusion est un processus physique qui décrit la propagation d'une substance. Nous avons donc choisit de l'implementer en pseudocode comme suit :
 
 
 \begin{verbatim}
@@ -774,7 +779,7 @@ Cette méthode accélère la convergence et permet une simulation stable et effi
 
 \subsubsection{Projection}
 
-    Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme 
+\hspace*{\parindent} Après avoir appliqué les algorithmes d'advection et de diffusion, l'algorithme 
     de projection implémente la décomposition de Hodge.
     C'est un algorithme qui permet de rendre le champ de vitesse du fluide incompressible et qui force la vitesse à conserver la masse. C'est une propriété importante des fluides réels. 
 
@@ -860,7 +865,9 @@ Les algorithmes d'advection, de diffusion et de projection nous permettent de d�
 \texttt{vel\_step}. Sa complexité en temps est déterminée par les 3 algorithmes principaux qui la composent :
 
     Dans cette section, nous notons $N$ le nombre de cellules totales de la grille.
-\paragraph{Advection.}
+\paragraph{Advection}
+\leavevmode\\
+
 L'algorithme d'advection met à jour la valeur de la densité ou la vitesse pour chaque 
 cellule de la grille. L'algorithme parcourt donc l'ensemble des
 $N$ cellules de la grille à l'aide d'une 
@@ -886,7 +893,9 @@ La complexité finale de l'algorithme \emph{advection} est donc :
 
 $$\mathcal{O}(N) + \mathcal{O}(N) = \mathcal{O}(N)$$.
 
-\paragraph{Diffusion.}
+\paragraph{Diffusion}
+\leavevmode\\
+
 L'algorithme parcourt l'ensemble
 des $N$ cellules de la grille à chaque itération,
  ce qui représente un coût de $\mathcal{O}(N)$.
@@ -894,7 +903,9 @@ Comme le nombre d'itérations est constant (20),
 la complexité totale est en $\mathcal{O}(N)$.
 
 
-\paragraph{Projection.}
+\paragraph{Projection}
+\leavevmode\\
+
 L'algorithme de projection est composé de 3 étapes :
 \begin{itemize}     
     \item Etape 1 : calcul de la divergence : $N$ opérations  
@@ -914,7 +925,7 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 % \begin{enumerate}%pour faire une liste numérotée
 
 
-    On peut voir l'évolution de notre projet a travers son evolution visuelle. Mais egalement c'est peformance en fonction des 
+\hspace*{\parindent} On peut voir l'évolution de notre projet a travers son evolution visuelle. Mais egalement c'est peformance en fonction des 
     différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
 
 
@@ -984,13 +995,13 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \subsection{Répartition des roles}
 
 
-    Durant le projet, nous avons dans un premier temps travaillé ensemble pour la mise en place de la grille de départ et la création du fluide ainsi que pour l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite décidé de nous répartir les tâches pour être plus efficace. Ainsi, Gaelle a permis de déplacer le fluide dans diverses directions et a partir de divers points, Satine a travailler sur les obstacles, Axel à généré le code ImGui afin de pouvoir modifier les différents paramètres du fluides(densité, couleur,...) et le Bluetooth, et Saurane a travailler sur la diffusion de la chaleur.
+\hspace*{\parindent} Durant le projet, nous avons dans un premier temps travaillé ensemble pour la mise en place de la grille de départ et la création du fluide ainsi que pour l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite décidé de nous répartir les tâches pour être plus efficace. Ainsi, Gaelle a permis de déplacer le fluide dans diverses directions et a partir de divers points, Satine a travailler sur les obstacles, Axel à généré le code ImGui afin de pouvoir modifier les différents paramètres du fluides(densité, couleur,...) et le Bluetooth, et Saurane a travailler sur la diffusion de la chaleur.
 
 
 \subsection{Diagramme de Gantt}
 
 
-    Nous avons réalisé un diagramme de Gantt pour planifier les différentes étapes du projet.
+\hspace*{\parindent} Nous avons réalisé un diagramme de Gantt pour planifier les différentes étapes du projet.
 
 \section*{Organisation du travail - Diagramme de Gantt}
 \begin{ganttchart}[
@@ -1023,7 +1034,7 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \subsection{Branches github, commits}
 
 
-    Pour la mise en place d'un travail d'équipe optimale, nous avons utilisé GitHub. Lorsque nous travaillions ensemble, nous nous placions sur la branche main afin que chacun puisse accéder à ce que les autres ont fait facilement, puis lorsque nous avons choisi de nous repartir les taches nous nous sommes tous mis à travailler sur des branches différentes (Gaelle, Satine, Axel, Saurane) afin de pouvoir travailler et enregistrer notre travaille sans risquer de causer des conflits ou d'enregistrer quelque chose qui ne fonctionne pas. Une fois notre programme complet nous le mettions alors sur le main afin que tout le monde puisse y accéder. Nous avons également veillé à faire des commit réguliers et descriptifs pour suivre l'évolution du projet et faciliter la collaboration.
+\hspace*{\parindent} Pour la mise en place d'un travail d'équipe optimale, nous avons utilisé GitHub. Lorsque nous travaillions ensemble, nous nous placions sur la branche main afin que chacun puisse accéder à ce que les autres ont fait facilement, puis lorsque nous avons choisi de nous repartir les taches nous nous sommes tous mis à travailler sur des branches différentes (Gaelle, Satine, Axel, Saurane) afin de pouvoir travailler et enregistrer notre travaille sans risquer de causer des conflits ou d'enregistrer quelque chose qui ne fonctionne pas. Une fois notre programme complet nous le mettions alors sur le main afin que tout le monde puisse y accéder. Nous avons également veillé à faire des commit réguliers et descriptifs pour suivre l'évolution du projet et faciliter la collaboration.
 
 
 
@@ -1049,6 +1060,7 @@ Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et le
 
 \paragraph{Implémentation de la fenêtre des paramètres} 
 \leavevmode\\
+
 Un autre changement majeur a été l'implémentation d'une fenêtre intéractive pour modifier en temps réel les paramètres de la simulation. 
 Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui limitait les possibilités d'expérimentation, mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas de connaissances en programmation. 
 
@@ -1059,7 +1071,7 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 \subsection{Fonctionnalités rélisées présentent dans le cahier des charges}
 
 
-    Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
+\hspace*{\parindent} Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
 \begin{itemize}
   \item L'interface graphique composée de la fenêtre d'affichage du fluide : Cette interface graphique est bien présente dans notre projet et elle correspond presque à l'identique à ce que nous avions imaginé au départ.
 
@@ -1072,7 +1084,7 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 %6.2
 \subsection{Fonctionnalités non-réalisées présentent dans le cahier des charges}
 
-Dans le cahier des charges initial, nous avions envisagé d’ajouter une fonctionnalité permettant 
+\hspace*{\parindent} Dans le cahier des charges initial, nous avions envisagé d’ajouter une fonctionnalité permettant 
 de faire réagir la simulation à un signal sonore comme la musique. L’idée était d’utiliser la fréquence 
 d’un flux audio (musique ou microphone) pour influencer certains paramètres du fluide, comme 
 la densité injectée, la force appliquée ou encore la couleur. Cette approche aurait permis de créer 
@@ -1110,7 +1122,7 @@ Comme mentionné dans la partie \underline{\emph{\nameref{sec:Modules en cours d
 
 \section{Conclusion générale}
 
-    Ce projet nous a permis d’aborder la simulation de fluides en 2D,
+\hspace*{\parindent} Ce projet nous a permis d’aborder la simulation de fluides en 2D,
     en mêlant des compétences en algorithmique, en programmation C++ et en développement graphique
     avec OpenGL. Nous avons pu consolider des notions apprises au cours de notre licence
     telles que la structuration d’un projet, l’utilisation de Git, ainsi que la mise en
