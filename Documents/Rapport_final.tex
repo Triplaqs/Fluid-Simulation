@@ -533,12 +533,6 @@ Une approche de parallélisme a été envisagée ; nous avons installé OpenMP p
 
 %2.5       AXEL
 \subsection{Format des données d'entrée}
-\begin{itemize}
-    \item fluide stocké dans une grille
-    \item grille composée de cellules
-    \item cellules contiennent les paramètres de la simulation (densité, chaleur, vitesse)
-    \item expliquer ce que représentent ces paramètres
-
 % ============================== AXEL 5 =======================================
 \axel{
 Notre encodage des données se fait majoritairement via des scalaires. Le fluide se décompose en plusieurs données physiques (densité, 
@@ -549,7 +543,6 @@ si oui ou non on a plusieurs points de fuites, \emph{etc ...}
 
 }
 %2.6     SAURANE
-\end{itemize}
 
 \subsection{Statistiques}
 \sauranne {
@@ -835,15 +828,14 @@ L'algorithme de projection prend en entrée les paramètres suivants :
 Cet algorithme est composé de 3 étapes : 
 
 % \begin{itemize}
-    \paragraph{Etape 1 :} calcul de la divergence : pour chaque cellule de la grille, on évalue la divergence discrète
+    \paragraph{Etape 1 :} calcul de la divergence : \\ Pour chaque cellule de la grille, on évalue la divergence discrète
 \begin{equation}
     {div}_{i,j} = -\frac{h}{2}(u_{i+1,j} - u_{i-1,j} + v_{i,j+1} - v_{i,j-1})
 \end{equation}
 
 où $h = 1/N$ est la taille d'une cellule de la grille, et $u$ et $v$ sont les composantes de la vitesse du fluide. 
 
-    \paragraph{Etape 2 :} résolution de l'équation de Poisson 
-
+    \paragraph{Etape 2 :} résolution de l'équation de Poisson \\
 On résout itérativement l'équation $\nabla^2 p = div$ par 20 itérations de relaxation de Gauss-Seidel, où $p$ est un champ de pression :
 \begin{equation}
 p_{i,j}^{(k+1)} = \frac{1}{4}({div}_{i,j} + p_{i+1,j}^{(k)} + p_{i-1,j}^{(k)} + p_{i,j+1}^{(k)} + p_{i,j-1}^{(k)} - div_{i,j})
@@ -851,9 +843,8 @@ p_{i,j}^{(k+1)} = \frac{1}{4}({div}_{i,j} + p_{i+1,j}^{(k)} + p_{i-1,j}^{(k)} + 
 
 On réutilisa exactement le code de la diffusion pour assurer la cohérence du code et éviter les redondances. 
 
-    \paragraph{Etape 3 :} correction du champ de vitesse 
-
-pour chaque cellule de la grille, on corrige la vitesse en soustrayant le gradient du champ de pression :
+    \paragraph{Etape 3 :} correction du champ de vitesse \\
+Pour chaque cellule de la grille, on corrige la vitesse en soustrayant le gradient du champ de pression :
 \begin{align}
     u'_{i,j} &= {u}_{i,j} - \frac{1}{2h} ( p_{i+1,j} - p_{i-1,j})  \\
     v'_{i,j} &= {v}_{i,j} - \frac{1}{2h} ( p_{i,j+1} - p_{i,j-1})
@@ -922,10 +913,6 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \section{Analyse des résultats }
 
 % \begin{enumerate}%pour faire une liste numérotée
-\begin{itemize}
-    \item eulerien vs lagrangien (uniquement eulerien a été implémenté)
-    \item analyser les performances visuelles en fonction du nombre d'obstacles, densité, etc (mettre des screenshot)
-\end{itemize}
 
 \satine{
     On peut voir l'évolution de notre projet a travers son evolution visuelle. Mais egalement c'est peformance en fonction des 
@@ -1044,36 +1031,26 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 %5.2    SAURANE - SATINE - AXEL
 \subsection{Changements majeurs effectués en cours de projet}
 
-\begin{itemize}
-  \item passage de la grille de départ à la nouvelle grille (pourquoi?)
 
+\paragraph{Passage de la grille de départ à la nouvelle grille} 
 
-% ============================== AXEL 6 =======================================
 \axel{
- Nous avons au cours de notre projet du réadapter notre structure, en effet, nous avions préparé une grille d'essai pour tester 		notre affichage, mais lorsqu'il a fallu confronter notre prototype aux besoins du papier \emph{Stable Fluids} de Jos Stam, nous nous sommes rendu compte de besoin supplémentaires. Certains algorithmes du papier allaient avoir besoin d'échanger un certain paramètre de toutes les cellules  et notre structure ne nous le permettaient pas. Nous avons donc revu l'organisation. Nouvelles méthodes, nouveaux attributs, \emph{Setters}/  \emph{Getters} plus efficace, \emph{etc...} }
+Nous avons au cours de notre projet du réadapter notre structure, en effet, nous avions préparé une grille d'essai pour tester notre affichage, mais lorsqu'il a fallu confronter notre prototype aux besoins du papier \emph{Stable Fluids} de Jos Stam, nous nous sommes rendu compte de besoin supplémentaires. Certains algorithmes du papier allaient avoir besoin d'échanger un certain paramètre de toutes les cellules  et notre structure ne nous le permettaient pas. Nous avons donc revu l'organisation. Nouvelles méthodes, nouveaux attributs, \emph{Setters}/  \emph{Getters} plus efficace, \emph{etc...} }
 
-  \item la façon d'implémenter les obstacles a été modifiée quand on est passé de l'affichage d'uun obstacle à plusieurs, est-ce que ça a impacté les autres modules ? pourquoi? comment ?
 
+\paragraph{Implémentation des obstacles} 
 \satine{
 Pour la creation d'obstacle, il a fallut dans un premier temps réadapter la fonction qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles, ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle ou la fuite du fluide à travers les bords), ou encore des problèmes de dépendance entre les différents obstacles lorsque nous avons voulu ajouter plusieurs obstacles mobiles. De plus, l'implémentation d'obstacles ayant une autre forme que la boule ( le premier obstacle programmer) pose de nombreux problèmes notamment dans la partie de délimitation du fluide ou encore dans la partie d'affichage.
-
 Pour résoudre ces problèmes il a fallu revoir le code en changeant la façon de voir les obstacles mais également en les implémentant de manière différente. Ainsi, les obstacles ont été rangés dans une liste afin que chaque obstacle soit reconnaissable et manipulable facilement. Ils sont ainsi sélectionnés à partir de cette liste lorsqu'il faut les afficher, et c'est le dernier obstacle de la liste qui est supprimé lorsque l'on désire en retirer un. Cette organisation a également permis de mieux gérer les interactions entre plusieurs obstacles et de réduire les conflits lors de leurs déplacements.
-
 Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et leur gestion dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
 }   
 
-  \item implémentation de la fenêtre pour rentrer les paramètres 
 
+\paragraph{Implémentation de la fenêtre des paramètres} 
 \sauranne {
-
 Un autre changement majeur a été l'implémentation d'une fenêtre intéractive pour modifier en temps réel les paramètres de la simulation. 
-
 Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui limitait les possibilités d'expérimentation, mais également l'accessibilité du projet pour les utilisateurs qui n'ont pas de connaissances en programmation. 
 }
-
-\end{itemize}
-% \end{enumerate}
-
 
 \section{Bilan}
 
