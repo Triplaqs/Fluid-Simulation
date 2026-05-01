@@ -222,8 +222,8 @@ possède la classe B, B n'existe pas sans A, si A est détruite alors B l'est au
 
 L’évolution de la chaleur sur la grille suit ce principe : à chaque itération, la 
     chaleur se propage progressivement vers les cellules voisines.
-    Concrètement, une zone chaude a tendance à s’étaler autour d’elle.
-    les taches rouges se déplacent, s’étirent et se mélangent au fil du temps, ce qui 
+    Concrètement, une zone chaude à tendance à s’étaler autour d’elle.
+    Les taches rouges se déplacent, s’étirent et se mélangent au fil du temps, ce qui 
     permet de visualiser facilement comment la température se diffuse dans le fluide.
 
 
@@ -234,7 +234,7 @@ L’évolution de la chaleur sur la grille suit ce principe : à chaque itérati
 
 \subsubsection{Simulation du fluide}
 
-\hspace*{\parindent} La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permit 
+\hspace*{\parindent} La simulation du fluide repose sur la méthode Jos Stam \emph{Real-Time Fluid Dynamics for Games} \cite{Stam03} qui nous a permis
     d'avoir un rendu dynamique en 2D. Le fluide est représenté sur une grille Eulerienne 
     (voir partie~\ref{part:eulerienne}). 
     Dans cette grille, chaque cellule stocke des informations phyiques comme la densité ou la vitesse sous forme de scalaire (\texttt{float}) ou 
@@ -347,7 +347,7 @@ déplacé grâce au curseur de la souris, cela nous permet d'observer son impact
 
 
 
-     Dans un premier temps, nous avons implémenté la création d'un unique obstacle, en modifiant notamment la fonction de gestion des 
+        Nous avons implémenté la création d'un unique obstacle, en modifiant notamment la fonction de gestion des 
      bords afin qu'elle reconnaisse les obstacles. Nous pouvions également afficher ou non cet obstacle à l'aide d'un bouton on/off qui 
      nous ramenait à l'utilisation ou non de la fonction lançant la création de l'obstacle.  
 
@@ -455,7 +455,7 @@ ou l’étoile.\\
 Si cette réflexion n’était pas mise en place, le fluide traverserait les obstacles sans 
 interaction réaliste. Cela entraînerait des comportements inadaptés, comme la disparition du fluide 
 à l'intérieur des objets ou des fuites à travers les bords, rendant la simulation incohérente.
-Il s'agit donc d'une implémentation essentiel pour garantir une interaction cohérente entre le fluide et les obstacles, et 
+Il s'agit donc d'une implémentation essentielle pour garantir une interaction cohérente entre le fluide et les obstacles, et 
 pour maintenir le réalisme de la simulation.\\
 
  
@@ -925,14 +925,14 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 % \begin{enumerate}%pour faire une liste numérotée
 
 
-\hspace*{\parindent} On peut voir l'évolution de notre projet a travers son evolution visuelle. Mais egalement c'est peformance en fonction des 
+\hspace*{\parindent} On peut voir l'évolution de notre projet a travers son évolution visuelle. Mais également ses peformances en fonction des 
     différents paramètres tels que la densité du fluide ou le nombre d'obstacles.
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../PJ_proj/image de base.png}
-    \caption{Simulation avec un obstacle et toute les proprite du fluides non modifiées}
+    \caption{Simulation avec un obstacle et toutes les propriétés du fluides non modifiées}
     \label{image_d_origine}
 \end{figure}
 
@@ -949,10 +949,9 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \end{figure}
 
 
-    Dans le figure \ref{image1}, on constate une meilleure visibilité des obstacles et du fluide ainsi que sa direction comparer a la figure \ref{image_d_origine}.
-    dut a l'augmentation de la densité du fluide.
-    On constate notament mieux les interaction entre le fluide et l'obstacle ainsi 
-    que c'est divers changement de direction.
+    Dans le figure \ref{image1}, on constate une meilleure visibilité des obstacles et du fluide ainsi que sa direction comparé à la figure \ref{image_d_origine}, dut a l'augmentation de la densité du fluide.
+    On constate notament mieux les interactions entre le fluide et l'obstacle ainsi 
+    que ses divers changements de direction.
 
 
 \begin{figure}[H]
@@ -963,10 +962,10 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \end{figure}
 
 
-    Sur cette figure \ref{bicolor}, On remarque que le fluide sortant ce melange assez facilement en creant des degradés de rouge et de bleu.
-    Du au fait que le fluide chaud et froid se melange, on peut voir que les couleurs se melangent aussi pour representer la chaleur du fluide.
-    Cette implementation met en avant la diffusion de la chaleur dans le fluide, ainsi que les interactions entre les fluides chaud et froid.
-    De plus on constate une certaine symetrie de la simulation vis a vis de la diagonale.
+    Sur cette figure \ref{bicolor}, on remarque que le fluide sortant se melange assez facilement en créant des degradés de rouge et de bleu.
+    Ceci vient du fait que le fluide chaud et le fluide froid se melangent. 
+    Cette implémentation met en avant la diffusion de la chaleur dans le fluide, ainsi que les interactions entre les fluides chaud et froid.
+    De plus on constate une certaine symétrie de la simulation vis a vis de la diagonale.
 
 
 \begin{figure}[H]
@@ -978,10 +977,10 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 
 
     Sur cette figure \ref{line}, on peut voir que le fluide sort en ligne droite verticale. 
-    Cette ligne commence vers le milieu de la grille et fini vers le bas. On constate que dans cette simulation,
-    le fluide monte vers lle haut car la direction de celui ci et la meme que dans la figure \ref{image_d_origine},
-    mais le le fluide est plus concentré et vivible que dans la figure \ref{image_d_origine} du a la sortie du fluide en ligne verticale.
-    Cela permet de voir netement la sortie du fluides.
+    Cette ligne commence vers le milieu de la grille et finit vers le bas. On constate que dans cette simulation,
+    le fluide monte car la direction de celui-ci et la même que dans la figure \ref{image_d_origine}.
+    Cependant le le fluide est plus concentré et visible que dans la figure \ref{image_d_origine} dû à la sortie du fluide en ligne verticale.
+    
 
 % \end{itemize}
 % \end{enumerate}
@@ -995,7 +994,13 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \subsection{Répartition des roles}
 
 
-\hspace*{\parindent} Durant le projet, nous avons dans un premier temps travaillé ensemble pour la mise en place de la grille de départ et la création du fluide ainsi que pour l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite décidé de nous répartir les tâches pour être plus efficace. Ainsi, Gaelle a permis de déplacer le fluide dans diverses directions et a partir de divers points, Satine a travailler sur les obstacles, Axel à généré le code ImGui afin de pouvoir modifier les différents paramètres du fluides(densité, couleur,...) et le Bluetooth, et Saurane a travailler sur la diffusion de la chaleur.
+\hspace*{\parindent} Durant le projet, nous avons dans un premier temps travaillé ensemble 
+pour la mise en place de la grille de départ et la création du fluide ainsi que pour 
+l'affichage de celui-ci. Une fois cette partie terminée, nous avons ensuite décidé de nous
+ répartir les tâches pour être plus efficace. Ainsi, Gaelle a permis de déplacer le fluide dans 
+ diverses directions et à partir de divers points. Satine a travaillé sur les obstacles,
+  Axel a généré le code ImGui afin de pouvoir modifier les différents paramètres du 
+  fluide(densité, couleur,...) et le Bluetooth, et Saurane a travaillé sur la diffusion de la chaleur.
 
 
 \subsection{Diagramme de Gantt}
@@ -1011,14 +1016,14 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
         bar height=0.6
         ]{2024-01-01}{2024-01-14}
     \gantttitlecalendar{day} \\
-    \ganttbar[bar/.style={fill=Cyan}]{\shortstack{Travail collaboratif\\creation du fluide de depart}}{2024-01-01}{2024-01-04} \\
+    \ganttbar[bar/.style={fill=Cyan}]{\shortstack{Travail collaboratif\\création du fluide de départ}}{2024-01-01}{2024-01-04} \\
     \ganttbar[bar/.style={fill=Cyan}]{Répartition des tâches}{2024-01-04}{2024-01-04} \\
-    \ganttbar[bar/.style={fill=BrickRed}]{Creation de la diffusion chaud/froid}{2024-01-05}{2024-01-11} \\
-    \ganttbar[bar/.style={fill=WildStrawberry}]{Creation des obstacles}{2024-01-05}{2024-01-11} \\
+    \ganttbar[bar/.style={fill=BrickRed}]{Création de la diffusion chaud/froid}{2024-01-05}{2024-01-11} \\
+    \ganttbar[bar/.style={fill=WildStrawberry}]{Création des obstacles}{2024-01-05}{2024-01-11} \\
     \ganttbar[bar/.style={fill=Blue}]{Interaction avec le fluide}{2024-01-05}{2024-01-11} \\
-    \ganttbar[bar/.style={fill=ForestGreen}]{Ajout de directions du fluides}{2024-01-05}{2024-01-11} \\
+    \ganttbar[bar/.style={fill=ForestGreen}]{Ajout de directions du fluide}{2024-01-05}{2024-01-11} \\
 
-    \ganttbar[bar/.style={fill=Cyan}]{\shortstack{Fusion finale vers main \\+ redaction du rapport}}{2024-01-12}{2024-01-14}
+    \ganttbar[bar/.style={fill=Cyan}]{\shortstack{Fusion finale vers main \\+ rédaction du rapport}}{2024-01-12}{2024-01-14}
 \end{ganttchart}
 
 \vspace{1cm}
@@ -1034,7 +1039,14 @@ Ce qui nous donne une complexité totale de $\mathcal{O}(N + N + N) = \mathcal{O
 \subsection{Branches github, commits}
 
 
-\hspace*{\parindent} Pour la mise en place d'un travail d'équipe optimale, nous avons utilisé GitHub. Lorsque nous travaillions ensemble, nous nous placions sur la branche main afin que chacun puisse accéder à ce que les autres ont fait facilement, puis lorsque nous avons choisi de nous repartir les taches nous nous sommes tous mis à travailler sur des branches différentes (Gaelle, Satine, Axel, Saurane) afin de pouvoir travailler et enregistrer notre travaille sans risquer de causer des conflits ou d'enregistrer quelque chose qui ne fonctionne pas. Une fois notre programme complet nous le mettions alors sur le main afin que tout le monde puisse y accéder. Nous avons également veillé à faire des commit réguliers et descriptifs pour suivre l'évolution du projet et faciliter la collaboration.
+\hspace*{\parindent} Pour la mise en place d'un travail d'équipe optimal, nous avons utilisé GitHub.
+ Lorsque nous travaillions ensemble, nous nous placions sur la branche main afin que chacun puisse accéder facilement
+  à ce que les autres avait fait. Puis lorsque nous avions choisi de nous répartir les tâches nous nous
+   sommes tous mis à travailler sur des branches différentes (Gaëlle, Satine, Axel, Saurane) afin de pouvoir 
+   travailler et enregistrer notre travail sans créer de conflits. Une fois notre programme complet nous 
+   le mettions alors sur le main afin 
+   que tout le monde puisse y accéder. Nous avons également veillé à faire des commits réguliers et 
+   descriptifs pour suivre l'évolution du projet et faciliter la collaboration.
 
 
 
@@ -1052,7 +1064,7 @@ Nous avons au cours de notre projet du réadapter notre structure, en effet, nou
 \paragraph{Implémentation des obstacles} 
 \leavevmode\\
 
-Pour la creation d'obstacle, il a fallut dans un premier temps réadapter la fonction qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles, ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle ou la fuite du fluide à travers les bords), ou encore des problèmes de dépendance entre les différents obstacles lorsque nous avons voulu ajouter plusieurs obstacles mobiles. De plus, l'implémentation d'obstacles ayant une autre forme que la boule ( le premier obstacle programmer) pose de nombreux problèmes notamment dans la partie de délimitation du fluide ou encore dans la partie d'affichage.
+Pour la creation d'obstacle, il a fallu dans un premier temps réadapter la fonction qui délimite les bords du fluide afin que celui-ci prenne en compte les divers obstacles, ce qui a créé de nombreux problèmes (la disparition du fluide à travers l'obstacle ou la fuite du fluide à travers les bords), ou encore des problèmes de dépendance entre les différents obstacles lorsque nous avons voulu ajouter plusieurs obstacles mobiles. De plus, l'implémentation d'obstacles ayant une autre forme que la boule ( le premier obstacle programmer) pose de nombreux problèmes notamment dans la partie de délimitation du fluide ou encore dans la partie d'affichage.
 Pour résoudre ces problèmes il a fallu revoir le code en changeant la façon de voir les obstacles mais également en les implémentant de manière différente. Ainsi, les obstacles ont été rangés dans une liste afin que chaque obstacle soit reconnaissable et manipulable facilement. Ils sont ainsi sélectionnés à partir de cette liste lorsqu'il faut les afficher, et c'est le dernier obstacle de la liste qui est supprimé lorsque l'on désire en retirer un. Cette organisation a également permis de mieux gérer les interactions entre plusieurs obstacles et de réduire les conflits lors de leurs déplacements.
 Enfin, cette nouvelle structure a facilité l'ajout de formes différentes et leur gestion dans la simulation, en rendant le système plus flexible et plus stable dans le temps.
  
@@ -1068,16 +1080,16 @@ Initialement, les paramètres étaient prédéfinis en dur dans le code, ce qui 
 \section{Bilan}
 
 %6.1     SAURANE
-\subsection{Fonctionnalités réalisées présentent dans le cahier des charges}
+\subsection{Fonctionnalités réalisées présentes dans le cahier des charges}
 
 
-\hspace*{\parindent} Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévu au moment de l'écriture du cahier des charges.
+\hspace*{\parindent} Parmis toutes les fonctionnalités que nous avons implémentées, certaines étaient déjà prévues au moment de l'écriture du cahier des charges.
 \begin{itemize}
-  \item L'interface graphique composée de la fenêtre d'affichage du fluide : Cette interface graphique est bien présente dans notre projet et elle correspond presque à l'identique à ce que nous avions imaginé au départ.
+  \item l'interface graphique composée de la fenêtre d'affichage du fluide : Cette interface graphique est bien présente dans notre projet et elle correspond presque à l'identique à ce que nous avions imaginé au départ.
 
-  \item possibilité d'agir sur le fluide avec des curseurs : Nous avons en effet la possibilité de modofier les paramêtres du fluide en temps réel, cependant, nous avons finalement opté pour des boutons et des champs de saisie plutôt que des curseurs. Ce choix a été assez naturel car il nous permet d'étre plus précis dans le choix des paramêtres, tels que la densité ou la vitesse.
+  \item possibilité d'agir sur le fluide avec des curseurs : nous avons en effet la possibilité de modofier les paramêtres du fluide en temps réel, cependant, nous avons finalement opté pour des boutons et des champs de saisie plutôt que des curseurs. Ce choix a été assez naturel car il nous permet d'étre plus précis dans le choix des paramêtres, tels que la densité ou la vitesse.
   
-  \item possibilité d'ajouter des obstacles : Cette fonctionnalité a fini par être l'une des principales de notre projet, et elle permet de rendre la simulation plus ludique et plus réaliste.
+  \item possibilité d'ajouter des obstacles : cette fonctionnalité a fini par être l'une des principales de notre projet, et elle permet de rendre la simulation plus ludique et plus réaliste.
 \end{itemize}
 
 
